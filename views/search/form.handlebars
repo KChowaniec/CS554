@@ -1,0 +1,81 @@
+<div class="row">
+  <h1>Movie Preferences</h1>
+  <div class="col-sm-12">
+    <form id="server-form" method="post">
+      <h2>Search By Name</h2>
+      <div class="form-group">
+      <label for="title">Movie Name</label>
+      <input type="text" class="form-control" id="title" name="title" placeholder="Movie Name" value="{{title}}">
+      </div>
+      <h3>OR...</h3><br>
+      <h2>Search By Criteria</h2>
+      <div class="form-group">    
+        <label for="actors">Actor(s):</label>
+        <input type="text" class="form-control" id="actors" name="actors" placeholder="Preferred Actor(s), separated by comma (Ex. Brad Pitt, Matt Damon)" value="{{actors}}">
+      </div>
+            <div class="form-group">
+        <label for="genre">Genre</label>
+        <select class="form-control"  id="genre" name="genre" multiple>
+          <option value="28">Action</option>
+          <option value="12">Adventure</option>
+          <option value="16">Animation</option>
+          <option value="35">Comedy</option>
+          <option value="80">Crime</option>
+          <option value="99">Documentary</option>
+          <option value="18">Drama</option>
+          <option value="10751">Family</option>
+          <option value="14">Fantasy</option>
+          <option value="10769">Foreign</option>
+          <option value="36">History</option>
+          <option value="27">Horror</option>
+          <option value="10402">Music</option>
+          <option value="9648">Mystery</option>
+          <option value="10749">Romance</option>
+          <option value="878">Science Fiction</option>
+          <option value="10770">TV Movie</option>
+          <option value="53">Thriller</option>
+          <option value="10752">War</option>
+          <option value="37">Western</option>
+        </select>
+      </div>
+            <div class="form-group">
+        <label for="crew">Crew:</label>
+        <input type="text" class="form-control" id="crew" name="crew" placeholder="Preferred Crew Member(s) (ex. name of Director, Producer, etc.)" value="{{crew}}">
+      </div>
+         <div class="form-group">
+          <label for="evaluation" id="text1">Rating
+        <select class="form-control" id="evaluation" name="evaluation">
+          <option value="equal" selected="selected">Equal to</option>
+          <option value="lte">Less than or equal to</option>
+        </select>
+        </label>
+        <label for="rating" id="text2">
+        <select class="form-control" id="rating" name="rating">
+          <option value="R">R</option>
+          <option value="PG-13" selected="selected">PG-13</option>
+          <option value="PG">PG</option>
+          <option value="G">G</option>
+          <option value="NR">NR</option>
+          <option value="NC-17">NC-17</option>
+        </select>
+        </label>
+      </div>
+            <div class="form-group">
+        <label for="releaseYear">Release Year</label>
+        <input type="number" class="form-control" id="releaseYear" name="releaseYear" placeholder="Year movie was released" value="{{releaseYear}}">
+      </div>
+            <div class="form-group">
+        <label for="keywords">Keywords</label>
+        <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Movie keywords" value="{{keywords}}">
+      </div>
+  <div class="form-group hidden" id="error-container">
+    <div class="alert alert-danger text-goes-here">
+   </div>
+  </div>
+         <div class="btn-group btn-group-lg"> 
+        <button type="submit" id="search" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> Search</button>
+        <button type="button" id="clear-form" class="btn btn-primary"><span class="glyphicon glyphicon-trash"></span> Clear Search</button>
+      </div>
+    </form>
+  </div>
+</div>
