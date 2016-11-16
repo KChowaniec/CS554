@@ -7,7 +7,7 @@ This module exports methods related to the movie api
 
 
 var https = require("https");
-var pathTail = "?api_key=4b9df4187f2ee368c196c4a4247fc1aa";
+var pathTail = "?api_key=e443ee14fb107feee75db8b448e6a13e";
 var imgHost = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
 var restHost = "https://api.themoviedb.org/3";
 var uuid = require("node-uuid");
