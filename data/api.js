@@ -311,3 +311,4 @@ var exportedMethods = {
 }
 
 module.exports = exportedMethods; //export methods
+

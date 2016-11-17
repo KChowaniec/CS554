@@ -23,9 +23,8 @@ module.exports = function (passport) {
     passport.use(new LocalStrategy({ passReqToCallback: true },
         function (req, username, password, done) {
             process.nextTick(function () {
-                console.log(username);
                 userData.getUserByUsername(username).then((user) => {
-                    if (!userData.verifyUser(password, user.password)) {
+                    if (!userData.verifyLogin(password, user.password)) {
                         return done(null, false, { message: 'Incorrect password.' });
                     }
                     var token = jwt.sign(user, 'secretkey');

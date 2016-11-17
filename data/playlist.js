@@ -12,6 +12,7 @@ var movies = require('./movie');
 var uuid = require('node-uuid');
 const fs = require('fs');  //require fs for file methods
 
+
 var exportedMethods = {
     //get all playlists
     getAllPlaylist() {
@@ -393,7 +394,6 @@ var exportedMethods = {
             });
         });
     }
-
 }
 
 module.exports = exportedMethods;

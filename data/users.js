@@ -42,7 +42,7 @@ var exportedMethods = {
         });
     },
     //verify password is correct
-    verifyUser(password, hashedPwd) {
+    verifyLogin(password, hashedPwd) {
         if (!password) throw ("A password must be provided");
         if (!hashedPwd) throw ("A hashed password must be provided");
         if (passwordHash.verify(password, hashedPwd)) {
@@ -77,6 +77,20 @@ var exportedMethods = {
         });
     },
 
+    // //get user by session id
+    // getUserBySessionId(id) {
+    //     return Users().then((userCollection) => {
+    //         return userCollection.findOne({ sessionId: id }).then((userObj) => {
+    //             if (!userObj) throw "Users not found";
+    //             return userObj;
+    //         }).catch((error) => {
+    //             return error;
+    //         });
+    //     });
+    // },
+
+    // //add user using speciifc parameters
+    // addUsers(password, profile, preferences) {
     // //get user by session id
     // getUserBySessionId(id) {
     //     return Users().then((userCollection) => {
@@ -258,6 +272,14 @@ var exportedMethods = {
     //         return userCollection.update({ sessionId: id }, { $unset: { "sessionId": "" } });
     //     });
     // }
+
+    //delete user's session id
+    // deleteSessionIdBySessionId(id) {
+    //     return Users().then((userCollection) => {
+    //         return userCollection.update({ sessionId: id }, { $unset: { "sessionId": "" } });
+    //     });
+    // }
+
 }
 
 module.exports = exportedMethods;
