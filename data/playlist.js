@@ -6,7 +6,7 @@ This module exports methods related to the playlist collection
 */
 
 
-mongoCollections = require("../config/mongoCollections");
+mongoCollections = require("./config/mongoCollections");
 Playlist = mongoCollections.playlist;
 var movies = require('./movie');
 var uuid = require('node-uuid');

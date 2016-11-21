@@ -5,7 +5,7 @@ Description:
 This module exports methods related to the movie collection
 */
 
-mongoCollections = require("../config/mongoCollections");
+mongoCollections = require("./config/mongoCollections");
 movie = mongoCollections.movie;
 var uuid = require('node-uuid');
 

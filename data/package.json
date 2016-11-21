@@ -13,6 +13,7 @@
     "bluebird": "^3.4.6",
     "mongodb": "^2.2.11",
     "node-uuid": "^1.4.7",
-    "password-hash": "^1.2.2"
+    "password-hash": "^1.2.2",
+    "showtimes": "^2.1.2"
   }
 }

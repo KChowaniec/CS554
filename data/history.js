@@ -4,7 +4,7 @@ Date: 11/16/2016
 Description:
 This module exports methods related to the playlist history collection
 */
-mongoCollections = require("../config/mongoCollections");
+mongoCollections = require("./config/mongoCollections");
 history = mongoCollections.history;
 
 var exportedMethods = {

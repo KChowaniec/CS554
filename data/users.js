@@ -5,7 +5,7 @@ Description:
 This module exports methods related to the user collection
 */
 
-mongoCollections = require("../config/mongoCollections");
+mongoCollections = require("./config/mongoCollections");
 Users = mongoCollections.users;
 var playlist = require('./playlist');
 var uuid = require('node-uuid');
@@ -258,12 +258,12 @@ var exportedMethods = {
         if (!username) { Promise.reject("A username must be provided") };
         if (!email) { Promise.reject("An email must be provided") };
         if(password != confirmedPassword) { Promise.reject("Entered password and confirmed password must match")};
-        return users.checkUserExist(username).then(result => {
+        return users.checkUserExist(username).then((result) => {
 			if (result === false) {
                 return true;
             }
             else {
-            Promise.reject("Username already exists")};
+            Promise.reject("Username already exists");
             }
         });
     }

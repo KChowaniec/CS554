@@ -163,11 +163,11 @@ router.post('/user/register', function (req, res) {
 
     redisConnection.emit(`register-user:${messageId}`, {
         requestId: messageId,
-			username = username,
-		password = password,
-		 confirmedPassword = confirmedPassword,
-		name = name,
-		email = email
+		username: username,
+		password: password,
+		confirmedPassword: confirmedPassword,
+		name: name,
+		email: email
     });
 
 	}),
