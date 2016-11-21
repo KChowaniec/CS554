@@ -104,7 +104,7 @@ var exportedMethods = {
     // },
 
     //add user using speciifc parameters
-    addUsers(password, profile, preferences) {
+    addUsers(username, password, profile, preferences) {
         var userid = uuid.v4();
         profile["_id"] = userid;
         var obj = {
@@ -131,7 +131,6 @@ var exportedMethods = {
         userObj.profile["_id"] = userid;
         var obj = {
             _id: userid,
-            sessionId: userObj.sessionId,
             hashedPassword: userObj.hashedPassword,
             profile: userObj.profile,
             preferences: userObj.preferences
@@ -182,11 +181,10 @@ var exportedMethods = {
     //add user without preferences
     addUser(username, pwd, name, email) {
         return Users().then((userCollection) => {
-            console.log("Adding user");
             var userId = uuid.v4();
             var obj = {
                 _id: userId,
-                hashedPassword: pwd,
+                hashedPassword: passwordHash.generate(pwd),
                 profile: {
                     _id: userId,
                     username: username,
@@ -254,32 +252,21 @@ var exportedMethods = {
         });
     },
 
-    //get user by session id and password
-    // getUserBySessionIdAndPassword(sessionId, password) {
-    //     return Users().then((userCollection) => {
-    //         return userCollection.findOne({ $and: [{ sessionId: sessionId }, { hashedPassword: password }] }).then((userObj) => {
-    //             if (!userObj) throw "Users not found";
-    //             return userObj;
-    //         }).catch((error) => {
-    //             return error;
-    //         });
-    //     });
-    // },
-
-    //delete user's session id
-    // deleteSessionIdBySessionId(id) {
-    //     return Users().then((userCollection) => {
-    //         return userCollection.update({ sessionId: id }, { $unset: { "sessionId": "" } });
-    //     });
-    // }
-
-    //delete user's session id
-    // deleteSessionIdBySessionId(id) {
-    //     return Users().then((userCollection) => {
-    //         return userCollection.update({ sessionId: id }, { $unset: { "sessionId": "" } });
-    //     });
-    // }
-
+    registrationVerification(password, confirmedPassword, username, email){
+        if (!password) { Promise.reject("A password must be provided") };
+        if (!confirmedPassword) { Promise.reject("A confirmed password must be provided") };
+        if (!username) { Promise.reject("A username must be provided") };
+        if (!email) { Promise.reject("An email must be provided") };
+        if(password != confirmedPassword) { Promise.reject("Entered password and confirmed password must match")};
+        return users.checkUserExist(username).then(result => {
+			if (result === false) {
+                return true;
+            }
+            else {
+            Promise.reject("Username already exists")};
+            }
+        });
+    }
 }
 
 module.exports = exportedMethods;

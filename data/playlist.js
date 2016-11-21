@@ -51,7 +51,7 @@ var exportedMethods = {
             var obj = {
                 _id: playlistId,
                 title: title,
-                user: user,
+                user_id: user,
                 playlistMovies: []
             };
             return playlistCollection.insertOne(obj).then((playlistObj) => {
@@ -65,7 +65,7 @@ var exportedMethods = {
     //get playlist by user id
     getPlaylistByUserId(userId) {
         return Playlist().then((playlistCollection) => {
-            return playlistCollection.findOne({ "user._id": userId }).then((playlist) => {
+            return playlistCollection.findOne({ "user_id": userId }).then((playlist) => {
                 if (!playlist) throw "User has no playlist";
                 return playlist;
             }).catch((error) => {
@@ -139,25 +139,25 @@ var exportedMethods = {
     //in the client side and make sure that this movie doesn't exist in the movie collection
     //the movieObj should contain: _id,title,description,genre,rated,releaseDate,runtime,director,cast,averageRating,keywords,and empty allreviews
     //this method will return movieObj inserted into the movie collection
-    addMovieToPlaylistAndMovie(playlistId, movieObj) {
-        return Playlist().then((playlistCollection) => {
-            var obj = {
-                _id: movieObj._id,
-                title: movieObj.title,
-                overview: movieObj.description,
-                viewed: false
-            };
-            return playlistCollection.update({ _id: playlistId }, { $addToSet: { "playlistMovies": obj } }).then(function () {
-                return movieObj;
-            }).then((movieObj) => {
-                return movies.addMovieGeneral(movieObj).then((Movie) => {
-                    return Movie;
-                });
-            }).catch((error) => {
-                return { error: error };
-            });
-        });
-    },
+    // addMovieToPlaylistAndMovie(playlistId, movieObj) {
+    //     return Playlist().then((playlistCollection) => {
+    //         var obj = {
+    //             _id: movieObj._id,
+    //             title: movieObj.title,
+    //             overview: movieObj.description,
+    //             viewed: false
+    //         };
+    //         return playlistCollection.update({ _id: playlistId }, { $addToSet: { "playlistMovies": obj } }).then(function () {
+    //             return movieObj;
+    //         }).then((movieObj) => {
+    //             return movies.addMovieGeneral(movieObj).then((Movie) => {
+    //                 return Movie;
+    //             });
+    //         }).catch((error) => {
+    //             return { error: error };
+    //         });
+    //     });
+    // },
 
     addMovieToPlaylistGeneral(id, obj) {   //add movie to the playlistMovies array by providing playlist id and the movie object.Node:the review id in the movie should be added first
         return Playlist().then((playlistCollection) => {

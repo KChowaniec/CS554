@@ -10,7 +10,7 @@ movie = mongoCollections.movie;
 var uuid = require('node-uuid');
 
 var https = require("https");
-var pathTail = "?api_key=4b9df4187f2ee368c196c4a4247fc1aa";
+var pathTail = "?api_key=e443ee14fb107feee75db8b448e6a13e";
 var restHost = "https://api.themoviedb.org/3";
 
 var exportedMethods = {
@@ -37,7 +37,6 @@ var exportedMethods = {
             return movieCollection.findOne({ id: id }).then((movieObj) => {
                 return movieObj;
             }).catch((error) => {
-                console.log("error");
                 throw error;
             });
         });
@@ -59,19 +58,9 @@ var exportedMethods = {
     },
 
     //add movie using specific parameters
-    addMovie(movieId, title, description, genre, rated, releaseDate, runtime, director, cast, averageRating, keywords) {
+    addMovie(movieId) {
         var obj = {
             _id: movieId,
-            title: title,
-            description: description,
-            genre: genre,
-            rated: rated,
-            releaseDate: releaseDate,
-            runtime: runtime,
-            director: director,
-            cast: cast,
-            averageRating: averageRating,
-            keywords: keywords,
             allReviews: []
         };
         return movie().then((movieCollection) => {

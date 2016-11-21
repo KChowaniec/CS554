@@ -10,6 +10,7 @@ var playlist = require("./playlist");
 var movie = require("./movie");
 var api = require("./api");
 var history = require("./history");
+var theaters = require("./theaters");
 
 module.exports = {
     form: form,
@@ -17,5 +18,6 @@ module.exports = {
     movie: movie,
     playlist: playlist,
     users: users,
-    history: history
+    history: history,
+    theaters: theaters
 };
