@@ -25,8 +25,8 @@ redisConnection.on('register-user:*', (data, channel) => {
     let confirmedPassword = data.password;
     let email = data.email;
     let name = data.name;
-    let verify = userData.registrationVerification(password, confirmedPassword, username, email));
-        verify.then((true) {
+    let verify = userData.registrationVerification(password, confirmedPassword, username, email);
+        verify.then(() => {
         let fullyComposeUser = userData
             .addUser(username, password, name, email)
             .then((newUser) => {
@@ -86,10 +86,7 @@ redisConnection.on('logout-user:*', (data, channel) => {
             }).catch(error => {
                 redisConnection.emit(`logout-failed:${messageId}`, error);
             });
-        }).catch(error => {
-            redisConnection.emit(`logout-failed:${messageId}`, error);
         });
-});
 
 //GET ALL USERS WORKER
 redisConnection.on('get-users:*', (data, channel) => {
@@ -128,11 +125,10 @@ redisConnection.on('login-user:*', (data, channel) => {
     let messageId = data.requestId;
     let sessionData = data.session;
     //add session to cache using token
-            let addEntry = client.setAsync(sessionData.token, JSON.stringify(sessionData));
-            addEntry.then(() => {
-                redisConnection.emit(`logged-in:${messageId}`, sessionData);
-    }).catch(error => {
+    let addEntry = client.setAsync(sessionData.token, JSON.stringify(sessionData));
+    addEntry.then(() => {
+        redisConnection.emit(`logged-in:${messageId}`, sessionData);
+    }).catch((error) => {
         redisConnection.emit(`login-failed:${messageId}`, error);
     });
 });
-
