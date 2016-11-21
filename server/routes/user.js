@@ -13,9 +13,8 @@ var playlist = data.playlist;
 var api = data.api;
 var router = express.Router();
 var xss = require('xss');
-var crypto = require('crypto');
 var passport = require('passport');
-
+const uuid = require("node-uuid");
 
 //get all users
 router.get('/users', function (req, res) {
