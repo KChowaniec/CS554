@@ -11,6 +11,7 @@ var movie = require("./movie");
 var api = require("./api");
 var history = require("./history");
 var theaters = require("./theaters");
+var analytics = require("./analytics");
 
 module.exports = {
     form: form,
@@ -19,5 +20,6 @@ module.exports = {
     playlist: playlist,
     users: users,
     history: history,
-    theaters: theaters
+    theaters: theaters,
+    analytics:analytics
 };

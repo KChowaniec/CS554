@@ -29,5 +29,6 @@ module.exports = {
     playlist: getCollectionFn("playlist"),
     movie: getCollectionFn("movie"),
     history: getCollectionFn("history"),
-    people: getCollectionFn("people")
+    people: getCollectionFn("people"),
+    analytics: getCollectionFn("topmovies_ratings")
 };
