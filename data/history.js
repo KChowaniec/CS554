@@ -29,14 +29,15 @@ var exportedMethods = {
     },
 
     //add history using specific parameters
-    addHistory(userId, movieId, genre, rating, keywords, release, review) {
+    //add review as parameter
+    addHistory(userId, movieId, genre, rating, keywords, release) {
         if (!userId) return Promise.reject("User id must be provided");
         if (!movieId) return Promise.reject("Movie id must be provided");
         if (!genre) return Promise.reject("Genre must be provided");
         if (!rating) return Promise.reject("Rating must be provided");
         if (!keywords) return Promise.reject("Keywords must be provided");
         if (!release) return Promise.reject("Release date must be provided");
-        if (!review) return Promise.reject("User rating must be provided");
+        // if (!review) return Promise.reject("User rating must be provided");
         return history().then((historyCollection) => {
             let movieObj = {
                 _id: movieId,
@@ -44,7 +45,7 @@ var exportedMethods = {
                 rated: rating,
                 keywords: keywords,
                 releaseDate: release,
-                user_rating: review
+                //      user_rating: review
             };
             var timestamp = new Date().toISOString(); //get current date and time
             var obj = {

@@ -13,33 +13,65 @@ var playlist = data.playlist;
 var users = data.users;
 var xss = require('xss');
 var movie = data.movie;
+const uuid = require("node-uuid");
 
 //GET PLAYLIST
 router.get("/", (req, res) => {
     //get playlist information
-    users.getUserBySessionId(req.cookies.next_movie).then((user) => {
-        playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
-            var info = playlist.getPlaylistById(playlistInfo._id);
-            info.then((result) => {
-                var viewed = [];
-                var unviewed = [];
-                for (var i = 0; i < result.playlistMovies.length; i++) {
-                    if (result.playlistMovies[i].viewed == true) {
-                        viewed.push(result.playlistMovies[i]);
-                    }
-                    else {
-                        unviewed.push(result.playlistMovies[i]);
-                    }
+    let userId = req.session.userId;
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+    redisConnection.on(`playlist-retrieved:${messageId}`, (playlist, channel) => {
+        if (playlist) {
+            var viewed = [];
+            var unviewed = [];
+            for (var i = 0; i < playlist.playlistMovies.length; i++) {
+                if (playlist.playlistMovies[i].viewed == true) {
+                    viewed.push(playlist.playlistMovies[i]);
                 }
-                res.render("playlist/page", {
-                    playlist: result,
-                    movies: result.playlistMovies,
-                    viewed: viewed,
-                    unviewed: unviewed,
-                    partial: "playlist-script"
-                });
+                else {
+                    unviewed.push(playlist.playlistMovies[i]);
+                }
+            }
+            res.render("playlist/page", {
+                playlist: playlist,
+                movies: playlist.playlistMovies,
+                viewed: viewed,
+                unviewed: unviewed,
+                partial: "playlist-script"
             });
-        });
+        }
+        redisConnection.off(`playlist-retrieved:${messageId}`);
+        redisConnection.off(`playlist-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`playlist-retrieved-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json(error);
+        redisConnection.off(`playlist-retrieved:${messageId}`);
+        redisConnection.off(`playlist-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`playlist-retrieved:${messageId}`);
+        redisConnection.off(`playlist-retrieved-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`get-playlist:${messageId}`, {
+        requestId: messageId,
+        userId: userId
     });
 });
 
@@ -47,171 +79,354 @@ router.get("/", (req, res) => {
 //CLEAR PLAYLIST
 router.delete("/:playlistId", (req, res) => {
     //method to clear out playlist
-    var playlistId = req.params.playlistId;
-    var clearList = playlist.clearPlaylist(playlistId);
-    clearList.then((emptyList) => {
-        res.json({ success: true });
-    }).catch((error) => {
-        res.json({ success: false, error: error });
+    let playlistId = req.params.playlistId
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`playlist-cleared:${messageId}`, (playlist, channel) => {
+        if (playlist) {
+            res.json({ success: true });
+        }
+        else {
+            res.json({ success: false, error: error });
+        }
+        redisConnection.off(`playlist-cleared:${messageId}`);
+        redisConnection.off(`playlist-cleared-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`playlist-cleared-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json({ success: false, error: error });
+        redisConnection.off(`playlist-cleared:${messageId}`);
+        redisConnection.off(`playlist-cleared-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`playlist-cleared:${messageId}`);
+        redisConnection.off(`playlist-cleared-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`clear-playlist:${messageId}`, {
+        requestId: messageId,
+        playlistId: playlistId
     });
 });
 
 //CHECK-OFF MOVIE FROM PLAYLIST
 router.put("/movie/:movieId", (req, res) => {
-    var movieId = req.params.movieId;
-    users.getUserBySessionId(req.cookies.next_movie).then((user) => {
-        playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
-            var markMovie = playlist.checkOffMovie(playlistInfo._id, movieId);
-            markMovie.then((result) => {
-                res.json({ success: true });
-            }).catch((error) => {
-                res.json({ success: false, error: error });
-            });
-        });
+    let movieId = req.params.movieId;
+    let userId = req.session.userId;
+
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`checked-off:${messageId}`, (result, channel) => {
+        if (result) {
+            res.json({ success: true });
+        }
+        else {
+            res.json({ success: false, error: error });
+        }
+        redisConnection.off(`checked-off:${messageId}`);
+        redisConnection.off(`checked-off-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`checked-off-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json({ success: false, error: error });
+        redisConnection.off(`checked-off:${messageId}`);
+        redisConnection.off(`checked-off-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`checked-off:${messageId}`);
+        redisConnection.off(`checked-off-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`checkoff-movie:${messageId}`, {
+        requestId: messageId,
+        userId: userId,
+        movieId: movieId
     });
 });
 
 //ADD REVIEW TO MOVIE IN PLAYLIST
 router.post("/reviews/:movieId", (req, res) => {
-    var movieId = req.params.movieId;
-    var reviewData = req.body;
-    users.getUserBySessionId(req.cookies.next_movie).then((user) => {
-        playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
-            reviewData.poster = user.profile;
-            //check if review exists
-            let movies = playlistInfo.playlistMovies;
-            var currentMovie = movies.filter(function (e) { return e._id === movieId });
-            if (currentMovie[0].review) { //review already exists
-                //update process
-                reviewData._id = currentMovie[0].review._id;
-                var updateReview = playlist.updateMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
-                updateReview.then((movieInfo) => {
-                    res.json({ success: true, result: xss(movieInfo) });
-                });
-            }
-            else {
-                var postReview = playlist.addMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
-                postReview.then((reviewInfo) => {
-                    res.json({ success: true, result: xss(reviewInfo) });
-                });
-            }
-        }).catch((error) => {
+    let movieId = req.params.movieId;
+    let reviewData = req.body;
+    let userId = req.session.userId;
+
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`added-review:${messageId}`, (result, channel) => {
+        if (result) {
+            res.json({ success: true, result: xss(result) });
+        }
+        else {
             res.json({ success: false, error: error });
-        });
+        }
+        redisConnection.off(`added-review:${messageId}`);
+        redisConnection.off(`added-review-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`added-review-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json({ success: false, error: error });
+        redisConnection.off(`added-review:${messageId}`);
+        redisConnection.off(`added-review-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`added-review:${messageId}`);
+        redisConnection.off(`added-review-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`add-review:${messageId}`, {
+        requestId: messageId,
+        userId: userId,
+        movieId: movieId,
+        reviewData: reviewData
     });
 });
 
 //REMOVE REVIEW FROM MOVIE IN PLAYLIST
 router.delete("/movie/:movieId/reviews/:reviewId", (req, res) => {
-    var reviewId = req.params.reviewId;
-    var movieId = req.params.movieId;
-    //method to delete review from playlist and movie collections
-    users.getUserBySessionId(req.cookies.next_movie).then((user) => {
-        playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
-            var removeReview = playlist.removeReviewFromPlaylist(playlistInfo._id, reviewId);
-            removeReview.then((result) => {
-                //remove corresponding review from movies collection
-                movie.removeReviewByReviewId(movieId, reviewId).then((movie) => {
-                    res.json({ success: true, movie: movieId });
-                });
-            }).catch((error) => {
-                res.json({ success: false, error: error });
-            });
-        });
+    let reviewId = req.params.reviewId;
+    let movieId = req.params.movieId;
+    let userId = req.session.userId;
+
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`removed-review:${messageId}`, (result, channel) => {
+        if (result) {
+            res.json({ success: true, movie: movieId });
+        }
+        else {
+            res.json({ success: false, error: error });
+        }
+        redisConnection.off(`removed-review:${messageId}`);
+        redisConnection.off(`removed-review-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`removed-review-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json({ success: false, error: error });
+        redisConnection.off(`removed-review:${messageId}`);
+        redisConnection.off(`removed-review-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`removed-review:${messageId}`);
+        redisConnection.off(`removed-review-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`remove-review:${messageId}`, {
+        requestId: messageId,
+        userId: userId,
+        movieId: movieId,
+        reviewId: reviewId
     });
 });
 
 //UPDATE PLAYLIST TITLE
 router.put("/title/:playlistId", (req, res) => {
     //method to clear out playlist
-    var playlistId = req.params.playlistId;
-    var newTitle = req.body.title;
-    var setTitle = playlist.setNewTitle(playlistId, newTitle);
-    setTitle.then((result) => {
-        res.json({ success: true });
-    }).catch((error) => {
-        res.json({ success: false, error: error });
+    let newTitle = req.body.title;
+    let playlistId = req.params.playlistId
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`title-updated:${messageId}`, (result, channel) => {
+        if (result) {
+            res.json({ success: true });
+        }
+        else {
+            res.json({ success: false, error: error });
+        }
+        redisConnection.off(`title-updated:${messageId}`);
+        redisConnection.off(`title-updated-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`title-updated-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json({ success: false, error: error });
+        redisConnection.off(`title-updated:${messageId}`);
+        redisConnection.off(`title-updated-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`title-updated:${messageId}`);
+        redisConnection.off(`title-updated-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`update-playlist-title:${messageId}`, {
+        requestId: messageId,
+        playlistId: playlistId,
+        title: newTitle
     });
 });
 
 
 //REMOVE MOVIE FROM PLAYLIST
 router.delete("/movie/:movieId", (req, res) => {
-    var movieId = req.params.movieId;
-    users.getUserBySessionId(req.cookies.next_movie).then((user) => {
-        playlist.getPlaylistByUserId(user._id).then((playlistInfo) => {
-            var removeMovie = playlist.removeMovieByMovieId(playlistInfo._id, movieId);
-            removeMovie.then((result) => {
-                res.json({ success: true });
-            }).catch((error) => {
-                res.json({ succes: false, error: error });
-            });
-        });
+    let movieId = req.params.movieId;
+    let userId = req.session.userId;
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`removed-movie:${messageId}`, (result, channel) => {
+        if (result) {
+            res.json({ success: true });
+        }
+        else {
+            res.json({ success: false, error: error });
+        }
+        redisConnection.off(`removed-movie:${messageId}`);
+        redisConnection.off(`removed-movie-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`removed-movie-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json({ success: false, error: error });
+        redisConnection.off(`removed-movie:${messageId}`);
+        redisConnection.off(`removed-movie-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`removed-movie:${messageId}`);
+        redisConnection.off(`removed-movie-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`remove-movie-playlist:${messageId}`, {
+        requestId: messageId,
+        movieId: movieId,
+        userId: userId
     });
 });
 
 //ADD MOVIE TO PLAYLIST
 router.post("/:movieId", (req, res) => {
-    var movieId = req.params.movieId;
-    users.getUserBySessionId(req.cookies.next_movie).then((user) => {
-        //check limit of playlist
-        var playlistInfo = playlist.getPlaylistByUserId(user._id);
-        playlistInfo.then((userPlaylist) => {
-            //check if movie already exists in playlist
-            var currentMovies = userPlaylist.playlistMovies;
-            var index = currentMovies.map(function (e) { return e._id; }).indexOf(movieId);
-            if (index == -1) { //movie not in playlist
-                if (userPlaylist.playlistMovies.length == 10) {
-                    res.json({ success: false, error: "You have reached the maximum of 10 movies in your playlist" });
-                }
-                else {
-                    //check if movie exists in collection
-                    var movieInfo = "";
-                    movie.getMovieById(movieId).then((details) => {
-                        if (!details) { //get details using api
-                            var newMovie = api.getMovieDetails(movieId).then((info) => {
-                                //insert movie into movie collection
-                                movie.addMovie(info._id, info.title, info.description, info.genre, info.rated, info.releaseDate, info.runtime, info.director, info.cast, info.averageRating, info.keywords);
-                                return info;
-                            }).catch((error) => {
-                                res.json({ success: false, error: error });
-                            });
-                        }
-                        Promise.all([newMovie]).then(values => {
-                            if (values[0]) {
-                                movieInfo = values[0];
-                            }
-                            else {
-                                movieInfo = details;
-                            }
-                            var userId = user._id;
-                            var title = movieInfo.title;
-                            var overview;
-                            if (movieInfo.description) {
-                                overview = movieInfo.description;
-                            }
-                            else {
-                                overview = movieInfo.overview;
-                            }
-                            //insert movie into playlist collection
-                            var newList = playlist.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
-                            newList.then((addedMovie) => {
-                                res.json({ success: true });
-                            });
+    let movieId = req.params.movieId;
+    let userId = req.session.userId;
 
-                        }).catch((error) => {
-                            res.json({ success: false, error: error });
-                        });
-                    });
-                }
-            }
-            else { //movie is already in playlist
-                res.json({ success: false, error: "This movie is already in your playlist" });
-            }
-        });
-    }).catch((error) => {
-        res.json({ success: false, error: error });
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`added-movie:${messageId}`, (result, channel) => {
+        if (result) {
+            res.json({ success: true });
+        }
+        else {
+            res.json({ success: false, error: error });
+        }
+        redisConnection.off(`added-movie:${messageId}`);
+        redisConnection.off(`added-movie-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
     });
+
+    redisConnection.on(`added-movie-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json({ success: false, error: error });
+        redisConnection.off(`added-movie:${messageId}`);
+        redisConnection.off(`added-movie-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`added-movie:${messageId}`);
+        redisConnection.off(`added-movie-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`add-movie-playlist:${messageId}`, {
+        requestId: messageId,
+        movieId: movieId,
+        userId: userId
+    });
+
 });
 
 module.exports = router;
