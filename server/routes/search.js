@@ -8,7 +8,7 @@ This script handles all /search routes
 
 var express = require('express');
 var router = express.Router();
-var data = require("data");
+var data = require("../../data");
 var form = data.form;
 var api = data.api;
 var user = data.users;

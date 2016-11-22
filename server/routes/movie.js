@@ -6,7 +6,7 @@ This script handles the /movie routes
 */
 
 var express = require('express');
-var data = require("data");
+var data = require("../../data");
 var movies = data.movie;
 var uuid = require('node-uuid');
 var api = data.api;
