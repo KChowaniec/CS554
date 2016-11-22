@@ -9,6 +9,7 @@ const config = {
     scope: 'movieSearch' // Use a scope to prevent two NRPs from sharing messages
 };
 
+///const config = require("./redis-config.js");
 const redis = require('redis');
 const client = redis.createClient();
 
@@ -25,20 +26,27 @@ redisConnection.on('register-user:*', (data, channel) => {
     let confirmedPassword = data.password;
     let email = data.email;
     let name = data.name;
+    let user = {
+        pwd: password,
+        username: username,
+        name: name,
+        email: email
+    };
+    let title = "My Playlist";
     let verify = userData.registrationVerification(password, confirmedPassword, username, email);
-        verify.then(() => {
+    verify.then(() => {
         let fullyComposeUser = userData
-            .addUser(username, password, name, email)
+            .addUsersAndPlaylist(title, user)
             .then((newUser) => {
                 //cache user by userid
-                let addEntry = client.setAsync(newUser._id, JSON.stringify(newUser));
+                let addEntry = client.setAsync(user._id, JSON.stringify(user));
                 addEntry.then(() => {
-                    redisConnection.emit(`user-registered:${messageId}`, newUser);
+                    redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
                 }).catch(error => {
                     redisConnection.emit(`user-registered-failed:${messageId}`, error);
                 });
             }).catch(error => {
-                redisConnection.emit(`user-created-failed:${messageId}`, error);
+                redisConnection.emit(`user-registered-failed:${messageId}`, error);
             });
     }).catch((error) => {
         redisConnection.emit(`user-registered-failed:${messageId}`, error);
@@ -78,15 +86,15 @@ redisConnection.on('logout-user:*', (data, channel) => {
     let userId = data.userId;
     let sessionData = data.session;
     //delete user in db and all related cache entries
-            let deleteEntry = client.delAsync(userId); //delete user entry
-            deleteEntry.then(() => {
-                return client.delAsync(sessionData.token);
-            }).then(() => {
-                redisConnection.emit(`logged-out:${messageId}`, deleted);
-            }).catch(error => {
-                redisConnection.emit(`logout-failed:${messageId}`, error);
-            });
-        });
+    let deleteEntry = client.delAsync(userId); //delete user entry
+    deleteEntry.then(() => {
+        return client.delAsync(sessionData.token);
+    }).then(() => {
+        redisConnection.emit(`logged-out:${messageId}`, deleted);
+    }).catch(error => {
+        redisConnection.emit(`logout-failed:${messageId}`, error);
+    });
+});
 
 //GET ALL USERS WORKER
 redisConnection.on('get-users:*', (data, channel) => {
@@ -95,9 +103,9 @@ redisConnection.on('get-users:*', (data, channel) => {
     let fullyComposeUser = userData
         .getAllUsers()
         .then((users) => {
-                redisConnection.emit(`users-retrieved:${messageId}`, users);
-            }).catch(error => {
-                redisConnection.emit(`users-retrieved-failed:${messageId}`, error);
+            redisConnection.emit(`users-retrieved:${messageId}`, users);
+        }).catch(error => {
+            redisConnection.emit(`users-retrieved-failed:${messageId}`, error);
         });
 });
 
@@ -131,4 +139,18 @@ redisConnection.on('login-user:*', (data, channel) => {
     }).catch((error) => {
         redisConnection.emit(`login-failed:${messageId}`, error);
     });
+});
+
+//USER PREFERENCES WORKER
+redisConnection.on('get-preferences:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    //get preferences 
+    let fullyComposeUser = userData
+        .getUserPreferences(userId)
+        .then((preferences) => {
+            redisConnection.emit(`preferences-retrieved:${messageId}`, preferences);
+        }).catch((error) => {
+            redisConnection.emit(`preferences-retrieved-failed:${messageId}`, error);
+        });
 });

@@ -9,7 +9,7 @@ const static = express.static(__dirname + '/public');
 const configRoutes = require("./routes");
 var flash = require('connect-flash');
 const exphbs = require('express-handlebars');
-
+var config = require('data/all-config.json');
 const Handlebars = require('handlebars');
 
 const handlebarsInstance = exphbs.create({
@@ -60,7 +60,7 @@ app.set('view engine', 'handlebars');
 
 configRoutes(app, passport);
 
-app.listen(3000, () => {
+app.listen(config.serverPort, () => {
     console.log("We've now got a server!");
     console.log("Your routes will be running on http://localhost:3000");
 

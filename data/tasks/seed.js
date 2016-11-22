@@ -4,8 +4,6 @@ Date: 08/18/2016
 Description:
 This script is the seed file to populate the movie collection with some initial movies
 */
-
-
 var dbConnection = require("../config/mongoConnection");
 var users = require("../users");
 var playlist = require("../playlist");
@@ -15,6 +13,8 @@ var https = require("https");
 var pathTail = "?api_key=e443ee14fb107feee75db8b448e6a13e";
 var restHost = "https://api.themoviedb.org/3";
 
+//also seed people collection (names + ids)
+//seed dummy user history?
 
 dbConnection().then(db => {
     return db.dropDatabase().then(() => {

@@ -104,7 +104,6 @@ var exportedMethods = {
     updatePlaylistById(id, obj) {
         return Playlist().then((playlistCollection) => {
             return playlistCollection.update({ _id: id }, { $set: obj }).then(function () {
-                //console.log(typeof this.getRecipeById(id));
                 return id;
             });
         }).then(id => {
@@ -262,7 +261,6 @@ var exportedMethods = {
             }).then((id) => {
                 return this.getMovieReview(playlistId, id);
             }).catch((error) => {
-                console.log("error");
                 return { error: error };
             });
         });
@@ -315,7 +313,6 @@ var exportedMethods = {
                     return reviewObj;
                 });
             }).catch((error) => {
-                console.log("error");
                 return { error: error };
             });
         });

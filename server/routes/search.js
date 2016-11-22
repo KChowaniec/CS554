@@ -4,8 +4,6 @@ Date: 08/18/2016
 Description:
 This script handles all /search routes
 */
-
-
 var express = require('express');
 var router = express.Router();
 var data = require("../../data");
@@ -14,6 +12,7 @@ var api = data.api;
 var user = data.users;
 var url = require('url');
 var xss = require('xss');
+const uuid = require("node-uuid");
 
 router.get("/", (req, res) => {
     //render search form and user preferences (if any)
@@ -24,14 +23,46 @@ router.get("/", (req, res) => {
 
 router.get("/preferences", (req, res) => {
     //get user preferences (if any)
-    user.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
-        user.getUserPreferences(userObj._id).then((preferences) => {
-            if (Object.keys(preferences).length > 0) { //preferences defined
-                res.json({ success: true, preferences: preferences });
-            }
-        }).catch((error) => {
-            res.json({ success: false, error: error });
-        });
+    let userId = req.session.userId;
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`preferences-retrieved:${messageId}`, (preferences, channel) => {
+        if (Object.keys(preferences).length > 0) { //preferences defined
+            res.json({ success: true, preferences: preferences });
+        }
+
+        redisConnection.off(`preferences-retrieved:${messageId}`);
+        redisConnection.off(`preferences-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`preferences-retrieved-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json(error);
+        redisConnection.off(`preferences-retrievedt:${messageId}`);
+        redisConnection.off(`preferences-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`preferences-retrieved:${messageId}`);
+        redisConnection.off(`preferences-retrieved-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`get-preferences:${messageId}`, {
+        requestId: messageId,
+        userId: userId
     });
 });
 
@@ -46,8 +77,8 @@ router.post("/", (req, res) => {
     let year = req.body.releaseYear;
     let parseWords = req.body.parseWords;
 
-//helper functions
-    var fn = function getId(name) { 
+    //helper functions
+    var fn = function getId(name) {
         return new Promise((fulfill, reject) => {
             return api.getPersonIdByName(name).then((newId) => {
                 fulfill(parseInt(newId.results[0].id));
@@ -55,7 +86,7 @@ router.post("/", (req, res) => {
         });
     };
 
-//helper functions
+    //helper functions
     var wordLookup = function getKeywordId(name) {
         return new Promise((fulfill, reject) => {
             return api.getKeywordIdByName(name).then((newId) => {
@@ -64,13 +95,13 @@ router.post("/", (req, res) => {
         });
     };
 
-//get all actor ids
+    //get all actor ids
     if (parseActors) {
         var actorId = parseActors.map(fn);
         var actorIds = Promise.all(actorId);
     }
 
-//get all crew ids
+    //get all crew ids
     if (parseCrew) {
         var crewId = parseCrew.map(fn);
         var crewIds = Promise.all(crewId);
@@ -82,7 +113,7 @@ router.post("/", (req, res) => {
         var wordIds = Promise.all(keywordId);
     }
 
-//wait until all values are retrieved
+    //wait until all values are retrieved
     Promise.all([crewIds, actorIds, wordIds]).then(values => {
         let crewList, actorList = [], keywordList = [];
         if (values[0]) {
@@ -114,7 +145,7 @@ router.post("/", (req, res) => {
 });
 
 //call search methods using criteria passed in
-router.get("/results/:pageId", (req, res) => { 
+router.get("/results/:pageId", (req, res) => {
     var page = req.params.pageId;
     let queryData = (url.parse(xss(req.url), true).query);
     let queryString = "";
