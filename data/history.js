@@ -53,6 +53,7 @@ var exportedMethods = {
                 user_id: userId,
                 movie: movieObj
             };
+            console.log(obj);
             return historyCollection.insertOne(obj).then((historyObj) => {
                 return historyObj.insertedId;
             }).then((newId) => {

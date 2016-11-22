@@ -148,7 +148,6 @@ var exportedMethods = {
     updateUserById(id, obj) {
         return Users().then((userCollection) => {
             return userCollection.update({ _id: id }, { $set: obj }).then(function() {
-                //console.log(typeof this.getRecipeById(id));
                 return id;
             });
         }).then(id => {

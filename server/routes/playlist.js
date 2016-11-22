@@ -382,7 +382,6 @@ router.delete("/movie/:movieId", (req, res) => {
 router.post("/:movieId", (req, res) => {
     let movieId = req.params.movieId;
     let userId = req.session.userId;
-
     let redisConnection = req
         .app
         .get("redis");

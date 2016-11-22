@@ -15,9 +15,38 @@ var router = express.Router();
 var xss = require('xss');
 var passport = require('passport');
 const uuid = require("node-uuid");
+var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+
+//middleware function to determine if user is authenticated
+function isAuthorized(req, res, next) {
+    // check header parameters for token
+    var token = req.session.token;
+    // decode token
+    if (token) {
+        // verifies secret
+        jwt.verify(token, 'secretkey', function (err, decoded) {
+            if (err) {
+                return res.status(500).json({ error: 'Failed to authenticate token.' });
+            } else {
+                //make sure token exists in session
+                if (req.session && req.session.token === token) {
+                    return next();
+                }
+                else {
+                    return res.status(500).json({ error: 'Token is no longer valid for this user.' });
+                }
+            }
+        });
+
+    } else {
+        // if there is no token
+        // return an error
+        return res.status(500).json({ error: "No token exists for this user" });
+    }
+};
 
 //get all users
-router.get('/users', function(req, res) {
+router.get('/users', function (req, res) {
     let redisConnection = req
         .app
         .get("redis");
@@ -57,21 +86,21 @@ router.get('/users', function(req, res) {
 });
 
 //login page
-router.get('/login', function(req, res) {
+router.get('/login', function (req, res) {
     res.render("layouts/login", {
         partial: "jquery-login-scripts"
     });
 });
 
 //registration page
-router.get('/register', function(req, res) {
+router.get('/register', function (req, res) {
     res.render("layouts/register", {
         partial: "jquery-register-scripts"
     });
 });
 
 //LOG OUT
-router.get('/logout', function(req, res) {
+router.get('/logout', function (req, res) {
     let userId = req.session.userId;
     let sessionData = req.session;
     let redisConnection = req
@@ -117,7 +146,7 @@ router.get('/logout', function(req, res) {
 });
 
 //post user registration
-router.post('/user/register', function(req, res) {
+router.post('/user/register', function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
     let confirmedPassword = req.body.confirm;
@@ -172,7 +201,7 @@ router.post('/user/register', function(req, res) {
 });
 
 //get user information
-router.get('/user', function(req, res) {
+router.get('/user', function (req, res) {
 
     let redisConnection = req
         .app
@@ -218,7 +247,7 @@ router.get('/user', function(req, res) {
 
 
 //update user
-router.put('/users/:id', function(req, res) {
+router.put('/users/:id', function (req, res) {
     let userId = req.params.id;
     let newData = req.body;
     let redisConnection = req
@@ -310,7 +339,7 @@ router.post('/user/login', passport.authenticate('local'), (req, res) => {
 
 
 //post user update email
-router.post('/user/update_email', function(req, res) {
+router.post('/user/update_email', function (req, res) {
     users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
         userObj.profile.email = req.body.email;
         users.updateUserById(userObj._id, userObj).then((newUser) => {
@@ -326,7 +355,7 @@ router.post('/user/update_email', function(req, res) {
 });
 
 //post user update password
-router.post('/user/update_password', function(req, res) {
+router.post('/user/update_password', function (req, res) {
     var newPassword = req.body.newPassword;
     var confirmPassword = req.body.confirmPassword;
     if ((newPassword != confirmPassword) || newPassword == null || newPassword == undefined || newPassword == "") {
@@ -353,7 +382,7 @@ router.post('/user/update_password', function(req, res) {
 });
 
 //post user removes genre from preferences
-router.post('/user/delete_genre', function(req, res) {
+router.post('/user/delete_genre', function (req, res) {
     var deleteVal = req.body.value;
 
     users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
@@ -379,7 +408,7 @@ router.post('/user/delete_genre', function(req, res) {
 });
 
 //post user adds genre to preferences
-router.post('/user/add_genre', function(req, res) {
+router.post('/user/add_genre', function (req, res) {
     var addVal = req.body.value;
 
     movie.getAllGenre().then((genreList) => {
@@ -427,7 +456,7 @@ router.post('/user/add_genre', function(req, res) {
 });
 
 //post user removes age rating from preferences
-router.post('/user/delete_ageRating', function(req, res) {
+router.post('/user/delete_ageRating', function (req, res) {
     var deleteVal = req.body.value;
 
     users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
@@ -453,7 +482,7 @@ router.post('/user/delete_ageRating', function(req, res) {
 });
 
 //post user adds age rating to preferences
-router.post('/user/add_ageRating', function(req, res) {
+router.post('/user/add_ageRating', function (req, res) {
     var addVal = req.body.value;
 
     movie.getAllAgeRating().then((ageRatingList) => {
@@ -501,7 +530,7 @@ router.post('/user/add_ageRating', function(req, res) {
 });
 
 //post user removes keywords from preferences
-router.post('/user/delete_keywords', function(req, res) {
+router.post('/user/delete_keywords', function (req, res) {
     var deleteVal = req.body.value;
 
     users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
@@ -532,7 +561,7 @@ router.post('/user/delete_keywords', function(req, res) {
 });
 
 //post user adds keywords to preferences
-router.post('/user/add_keywords', function(req, res) {
+router.post('/user/add_keywords', function (req, res) {
     var addVal = req.body.value;
 
     api.getKeywordIdByName(addVal).then((keyword) => {
@@ -569,7 +598,7 @@ router.post('/user/add_keywords', function(req, res) {
 });
 
 //post user adds year to preferences
-router.post('/user/add_releaseYear', function(req, res) {
+router.post('/user/add_releaseYear', function (req, res) {
     var year = req.body.year;
     var now = new Date();
 
@@ -608,7 +637,7 @@ router.post('/user/add_releaseYear', function(req, res) {
 });
 
 //post user removes year from preferences
-router.post('/user/delete_releaseYear', function(req, res) {
+router.post('/user/delete_releaseYear', function (req, res) {
     var year = req.body.value;
     users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
         var releaseYear = userObj.preferences.releaseYear;
@@ -639,7 +668,7 @@ router.post('/user/delete_releaseYear', function(req, res) {
 });
 
 //post user adds person to preferences
-router.post('/user/add_person', function(req, res) {
+router.post('/user/add_person', function (req, res) {
     var addVal = req.body.value;
 
     api.getCreditByPersonId(addVal).then((person) => {
@@ -708,7 +737,7 @@ router.post('/user/add_person', function(req, res) {
 });
 
 //post user removes actor from preferences
-router.post('/user/delete_actor', function(req, res) {
+router.post('/user/delete_actor', function (req, res) {
     var actor = req.body.value;
     users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
         var actorArr = userObj.preferences.Actor;
@@ -738,7 +767,7 @@ router.post('/user/delete_actor', function(req, res) {
 });
 
 //post user removes crew from preferences
-router.post('/user/delete_crew', function(req, res) {
+router.post('/user/delete_crew', function (req, res) {
     var crew = req.body.value;
     users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
         var crewArr = userObj.preferences.Crew;
@@ -768,7 +797,7 @@ router.post('/user/delete_crew', function(req, res) {
 });
 
 //post user clears all preferences
-router.post('/user/clear_preferences', function(req, res) {
+router.post('/user/clear_preferences', function (req, res) {
     users.getUserBySessionId(req.cookies.next_movie).then((userObj) => {
         userObj.preferences.Actor = [];
         userObj.preferences.Genre = [];
