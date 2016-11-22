@@ -1,4 +1,4 @@
-const userCollection = require("data");
+const userCollection = require("../data");
 userData = userCollection.users;
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var passport = require('passport')
