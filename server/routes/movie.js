@@ -6,7 +6,7 @@ This script handles the /movie routes
 */
 
 var express = require('express');
-var data = require("../../data");
+var data = require("data");
 var movies = data.movie;
 var uuid = require('node-uuid');
 var api = data.api;
@@ -25,29 +25,47 @@ router.get('/', function (req, res) {
 
 	//get movie details
 	router.get('/detail/:id', function (req, res) {
-		//check movie collection for this movie
-		movies.getMovieByOriginId(req.params.id).then((MovieObj) => {
-			if (MovieObj) {
+		let movieId = req.params.id;
+		let redisConnection = req
+			.app
+			.get("redis");
+		let messageId = uuid.v4();
+		let killswitchTimeoutId = undefined;
+
+		redisConnection.on(`details-retrieved:${messageId}`, (details, channel) => {
+			if (details) {
 				res.render("movie/detail", {
-					movie: MovieObj,
+					movie: details,
 					partial: "jquery-detail-scripts"
 				});
 			}
-			else {
-				//search using api
-				api.getMovieDetails(req.params.id).then((movie) => {
-					if (movie) {
-						movies.addMovieGeneral(movie).then((obj) => {
-							res.render("movie/detail", {
-								movie: movie,
-								partial: "jquery-detail-scripts"
-							});
-						});
-					}
-				}).catch((error) => {
-					res.sendStatus(404);
-				});
-			}
+			redisConnection.off(`details-retrieved:${messageId}`);
+			redisConnection.off(`details-retrieved-failed:${messageId}`);
+
+			clearTimeout(killswitchTimeoutId);
+		});
+
+		redisConnection.on(`details-retrieved-failed:${messageId}`, (error, channel) => {
+			res
+				.status(500)
+				.json(error);
+			redisConnection.off(`details-retrieved:${messageId}`);
+			redisConnection.off(`details-retrieved-failed:${messageId}`);
+
+			clearTimeout(killswitchTimeoutId);
+		});
+
+		killswitchTimeoutId = setTimeout(() => {
+			redisConnection.off(`details-retrieved:${messageId}`);
+			redisConnection.off(`details-retrieved-failed:${messageId}`);
+			res
+				.status(500)
+				.json({ error: "Timeout error" })
+		}, 5000);
+
+		redisConnection.emit(`get-details:${messageId}`, {
+			requestId: messageId,
+			movieId: movieId
 		});
 	}),
 

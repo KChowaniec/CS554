@@ -65,20 +65,16 @@ redisConnection.on('get-reviews:*', (data, channel) => {
 
 //GET MOVIE DETAILS WORKER
 redisConnection.on('get-details:*', (data, channel) => {
-//     let messageId = data.requestId;
-//     let playlistId = data.playlistId;
-//     //delete user in db and all related cache entries
-//     let fullyComposeMovie = movieData
-//         .clearPlaylist(playlistId)
-//         .then((list) => {
-//             return client.delAsync(playlistId);
-//         }).then(() => {
-//             redisConnection.emit(`details-retrieved:${messageId}`, deleted);
-//         }).catch(error => {
-//             redisConnection.emit(`details-retrieved-failed:${messageId}`, error);
-//         });
-// }).catch(error => {
-//     redisConnection.emit(`details-retrieved-failed:${messageId}`, error);
+    let messageId = data.requestId;
+    let movieId = data.movieId;
+    //delete user in db and all related cache entries
+    let fullyComposeMovie = apiData
+        .getMovieDetails(movieId)
+        .then((details) => {
+            redisConnection.emit(`details-retrieved:${messageId}`, details);
+        }).catch(error => {
+            redisConnection.emit(`details-retrieved-failed:${messageId}`, error);
+        });
 });
 
 //DELETE MOVIE WORKER
