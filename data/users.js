@@ -56,7 +56,7 @@ var exportedMethods = {
     getUserByUsername(username) {
         if (!username) { Promise.reject("A username must be provided") };
         return Users().then((userCollection) => {
-            return userCollection.find({ "profile._username": username }).limit(1).toArray().then(function (listOfUsers) {
+            return userCollection.find({ "profile.username": username }).limit(1).toArray().then(function(listOfUsers) {
                 //user could not be retrieved
                 if (listOfUsers.length === 0) throw "Could not find user with username of " + username;
                 return listOfUsers[0]; //else return user
@@ -76,32 +76,6 @@ var exportedMethods = {
             });
         });
     },
-
-    // //get user by session id
-    // getUserBySessionId(id) {
-    //     return Users().then((userCollection) => {
-    //         return userCollection.findOne({ sessionId: id }).then((userObj) => {
-    //             if (!userObj) throw "Users not found";
-    //             return userObj;
-    //         }).catch((error) => {
-    //             return error;
-    //         });
-    //     });
-    // },
-
-    // //add user using speciifc parameters
-    // addUsers(password, profile, preferences) {
-    // //get user by session id
-    // getUserBySessionId(id) {
-    //     return Users().then((userCollection) => {
-    //         return userCollection.findOne({ sessionId: id }).then((userObj) => {
-    //             if (!userObj) throw "Users not found";
-    //             return userObj;
-    //         }).catch((error) => {
-    //             return error;
-    //         });
-    //     });
-    // },
 
     //add user using speciifc parameters
     addUsers(username, password, profile, preferences) {
@@ -127,25 +101,31 @@ var exportedMethods = {
     //please note that: the title is the title for playlist and the userObj contains:sessionId,hashedPassword,profile,preferences
     //the profile attribute doesn't contain the _id and the _id will be created by this function
     addUsersAndPlaylist(title, userObj) {
-        var userid = uuid.v4();
-        userObj.profile["_id"] = userid;
+        var userId = uuid.v4();
         var obj = {
-            _id: userid,
-            hashedPassword: userObj.hashedPassword,
-            profile: userObj.profile,
-            preferences: userObj.preferences
+            _id: userId,
+            password: passwordHash.generate(userObj.pwd),
+            profile: {
+                _id: userId,
+                username: userObj.username,
+                name: userObj.name,
+                email: userObj.email
+            },
+            preferences: {
+                Actor: [],
+                Genre: [],
+                Crew: [],
+                releaseYear: [],
+                ageRating: [],
+                keywords: []
+            }
         };
         return Users().then((userCollection) => {
             return userCollection.insertOne(obj).then((userObj) => {
                 return obj;
             }).then(obj => {
-                var user = {
-                    _id: obj._id,
-                    username: obj.profile.username,
-                    name: obj.profile.name,
-                    email: obj.profile.name
-                }
-                return playlist.addPlaylist(title, user).then((playlistObj) => {
+                let userId = obj._id;
+                return playlist.addPlaylist(title, userId).then((playlistObj) => {
                     return playlistObj;
                 });
             });
@@ -155,7 +135,7 @@ var exportedMethods = {
     //delete user
     deleteUserById(id) {
         return Users().then((userCollection) => {
-            return userCollection.deleteOne({ _id: id }).then(function (deletionInfo) {
+            return userCollection.deleteOne({ _id: id }).then(function(deletionInfo) {
                 if (deletionInfo.deletedCount === 0) throw "Could not find the document with this id to delete";
                 return true;
             });
@@ -167,8 +147,7 @@ var exportedMethods = {
     //update user
     updateUserById(id, obj) {
         return Users().then((userCollection) => {
-            return userCollection.update({ _id: id }, { $set: obj }).then(function () {
-                //console.log(typeof this.getRecipeById(id));
+            return userCollection.update({ _id: id }, { $set: obj }).then(function() {
                 return id;
             });
         }).then(id => {
@@ -217,7 +196,6 @@ var exportedMethods = {
             return userCollection.findOne({ $and: [{ "profile.username": obj.username }, { hashedPassword: obj.password }] }).then((userObj) => {
                 if (!userObj) throw "Users not found";
 
-                userObj.sessionId = uuid.v4();
                 return this.updateUserById(userObj._id, userObj);;
             }).catch((error) => {
                 return error;
@@ -252,18 +230,18 @@ var exportedMethods = {
         });
     },
 
-    registrationVerification(password, confirmedPassword, username, email){
+    registrationVerification(password, confirmedPassword, username, email) {
         if (!password) { Promise.reject("A password must be provided") };
         if (!confirmedPassword) { Promise.reject("A confirmed password must be provided") };
         if (!username) { Promise.reject("A username must be provided") };
         if (!email) { Promise.reject("An email must be provided") };
-        if(password != confirmedPassword) { Promise.reject("Entered password and confirmed password must match")};
-        return users.checkUserExist(username).then((result) => {
-			if (result === false) {
+        if (password != confirmedPassword) { Promise.reject("Entered password and confirmed password must match") };
+        return this.checkUserExist(username).then((result) => {
+            if (result === false) {
                 return true;
             }
             else {
-            Promise.reject("Username already exists");
+                Promise.reject("Username already exists");
             }
         });
     }

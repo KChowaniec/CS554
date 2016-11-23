@@ -6,7 +6,7 @@ This script handles all /search routes
 */
 var express = require('express');
 var router = express.Router();
-var data = require("../../data");
+var data = require("data");
 var form = data.form;
 var api = data.api;
 var user = data.users;
@@ -191,27 +191,93 @@ router.get("/results/:pageId", (req, res) => {
 
 //get keywords
 router.get("/keywords", (req, res) => {
-    api.searchKeywordsByName(req.query.value).then((result) => {
+    let keyword = req.query.value;
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+    redisConnection.on(`keyword-retrieved:${messageId}`, (result, channel) => {
         if (result) {
             res.json({ success: true, results: result });
-        } else {
+        }
+        else {
             res.json({ success: false, message: "Keywords not found" });
         }
-    }).catch((error) => {
-        res.json({ success: false, message: error });
+        redisConnection.off(`keyword-retrieved:${messageId}`);
+        redisConnection.off(`keyword-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`keyword-retrieved-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json({ success: false, message: error });
+        redisConnection.off(`keyword-retrieved:${messageId}`);
+        redisConnection.off(`keyword-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`keyword-retrieved:${messageId}`);
+        redisConnection.off(`keyword-retrieved-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`get-keyword:${messageId}`, {
+        requestId: messageId,
+        keyword: keyword
     });
 });
 
 //get person
 router.get("/person", (req, res) => {
-    api.searchPersonByName(req.query.value).then((result) => {
-        if (result.length > 0) {
+    let person = req.query.value;
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+    redisConnection.on(`person-retrieved:${messageId}`, (result, channel) => {
+        if (result) {
             res.json({ success: true, results: result });
-        } else {
+        }
+        else {
             res.json({ success: false, message: "Person not found" });
         }
-    }).catch((error) => {
-        res.json({ success: false, message: error });
+        redisConnection.off(`person-retrieved:${messageId}`);
+        redisConnection.off(`person-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`person-retrieved-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json({ success: false, message: error });
+        redisConnection.off(`person-retrieved:${messageId}`);
+        redisConnection.off(`person-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`person-retrieved:${messageId}`);
+        redisConnection.off(`person-retrieved-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`get-person:${messageId}`, {
+        requestId: messageId,
+        person: person
     });
 });
 

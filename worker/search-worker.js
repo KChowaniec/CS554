@@ -20,10 +20,9 @@ const redisConnection = new NRP(config); // This is the NRP client
 
 //QUERY STRING FOR MOVIE API WORKER
 redisConnection.on('create-query:*', (data, channel) => {
-    // let messageId = data.requestId;
-    // let playlistInfo = data.playlist;
-    // //add user to database, set of all users in cache and own cache entry
-    // let fullyComposePlaylist = movieData
+    let messageId = data.requestId;
+
+    // let fullyComposeSearch = formData
     //     .addPlaylist(playlist.title, playlist.user)
     //     .then((newPlaylist) => {
     //         //cache playlist by id
@@ -65,32 +64,27 @@ redisConnection.on('search-movies:*', (data, channel) => {
 
 //GET KEYWORD IDS API WORKER
 redisConnection.on('get-keyword:*', (data, channel) => {
-    //     let messageId = data.requestId;
-    //     let playlistId = data.playlistId;
-    //     //delete user in db and all related cache entries
-    //     let fullyComposePlaylist = movieData
-    //         .clearPlaylist(playlistId)
-    //         .then((list) => {
-    //             return client.delAsync(playlistId);
-    //         }).then(() => {
-    //             redisConnection.emit(`keyword-retrieved:${messageId}`, deleted);
-    //         }).catch(error => {
-    //             redisConnection.emit(`keyword-retrieved-failed:${messageId}`, error);
-    //         });
-    // }).catch(error => {
-    //     redisConnection.emit(`playlist-cleared-failed:${messageId}`, error);
+    let messageId = data.requestId;
+    let keywordName = data.keyword;
+    let fullyComposeSearch = apiData
+        .searchKeywordsByName(keywordName)
+        .then((keyId) => {
+            redisConnection.emit(`keyword-retrieved:${messageId}`, keyId);
+        }).catch(error => {
+            redisConnection.emit(`keyword-retrieved-failed:${messageId}`, error);
+        });
 });
 
 //GET PEOPLE IDS API WORKER
 redisConnection.on('get-person:*', (data, channel) => {
-    // let messageId = data.requestId;
-    // let userId = data.userId;
-    // let fullyComposePlaylist = movieData
-    //     .getPlaylistByUserId(userId)
-    //     .then((playlist) => {
-    //         redisConnection.emit(`person-retrieved:${messageId}`, playlist);
-    //     }).catch(error => {
-    //         redisConnection.emit(`person-retrieved-failed:${messageId}`, error);
-    //     });
+    let messageId = data.requestId;
+    let personName = data.person;
+    let fullyComposeSearch = apiData
+        .searchPersonByName(personName)
+        .then((personId) => {
+            redisConnection.emit(`person-retrieved:${messageId}`, personId);
+        }).catch(error => {
+            redisConnection.emit(`person-retrieved-failed:${messageId}`, error);
+        });
 });
 

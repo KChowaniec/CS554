@@ -7,7 +7,7 @@ This script handles all /playlist routes
 
 var express = require('express');
 var router = express.Router();
-var data = require("../../data");
+var data = require("data");
 var api = data.api;
 var playlist = data.playlist;
 var users = data.users;
