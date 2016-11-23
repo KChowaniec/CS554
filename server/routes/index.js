@@ -17,7 +17,7 @@ var multipartMiddleware = multipart();
 module.exports = function(app) {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true })); 
-  app.use("/",routerUser);
+  app.use("/",routerAnalytics);
   app.use("/movies",routerMovie);
   app.use("/playlist",routerPlaylist);
   app.use("/search", routerSearch);

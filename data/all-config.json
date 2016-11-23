@@ -1,5 +1,5 @@
 {
   "serverUrl": "mongodb://localhost:27017/",
-  "database": "matrixMovieSearch",
+  "database": "nextMovie",
   "serverPort": "3000"
 }

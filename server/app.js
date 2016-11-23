@@ -9,7 +9,7 @@ const static = express.static(__dirname + '/public');
 const configRoutes = require("./routes");
 var flash = require('connect-flash');
 const exphbs = require('express-handlebars');
-var config = require('data/all-config.json');
+var config = require('../data/all-config.json');
 const Handlebars = require('handlebars');
 
 const handlebarsInstance = exphbs.create({

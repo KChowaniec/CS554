@@ -6,9 +6,18 @@ var api = data.api;
 var router = express.Router();
 router.get('/', function (req, res) {
     ana.getCountByDecade().then((allRes) => {
-        res.render("analytics/highcharts", {
-            results: allRes
-            , partial: "jquery-detail-scripts"
-        });
+        ana.getTopFifteen().then((allRes2) => {
+            ana.getCountByGenre().then((allRes3) => {
+                ana.getTopRev().then((allRes4) => {
+                    res.render("analytics/highcharts", {
+                        resByDecade: allRes,
+                        resTopFifteen : allRes2,
+                        resByGenre : allRes3,
+                        resTopRev : allRes4,
+                        partial: "jquery-detail-scripts"
+                    });
+                })
+            })
+        })
     })
 }), module.exports = router;

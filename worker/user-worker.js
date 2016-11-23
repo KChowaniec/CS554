@@ -1,4 +1,4 @@
-const dbCollection = require("../data");
+const dbCollection = require("data");
 const userData = dbCollection.users;
 const fetch = require('node-fetch');
 const bluebird = require("bluebird");
