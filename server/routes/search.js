@@ -46,7 +46,7 @@ router.get("/preferences", (req, res) => {
         res
             .status(500)
             .json(error);
-        redisConnection.off(`preferences-retrievedt:${messageId}`);
+        redisConnection.off(`preferences-retrieved:${messageId}`);
         redisConnection.off(`preferences-retrieved-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
@@ -76,77 +76,65 @@ router.post("/", (req, res) => {
     let evaluation = req.body.evaluation;
     let year = req.body.releaseYear;
     let parseWords = req.body.parseWords;
-
-    //helper functions
-    var fn = function getId(name) {
-        return new Promise((fulfill, reject) => {
-            return api.getPersonIdByName(name).then((newId) => {
-                fulfill(parseInt(newId.results[0].id));
-            });
-        });
+    let queryData = {
+        title: title,
+        actors: parseActors,
+        genre: parseGenre,
+        crew: parseCrew,
+        rating: rating,
+        evaluation: evaluation,
+        year: year,
+        keywords: parseWords
     };
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
 
-    //helper functions
-    var wordLookup = function getKeywordId(name) {
-        return new Promise((fulfill, reject) => {
-            return api.getKeywordIdByName(name).then((newId) => {
-                fulfill(parseInt(newId.results[0].id));
-            });
-        });
-    };
 
-    //get all actor ids
-    if (parseActors) {
-        var actorId = parseActors.map(fn);
-        var actorIds = Promise.all(actorId);
-    }
-
-    //get all crew ids
-    if (parseCrew) {
-        var crewId = parseCrew.map(fn);
-        var crewIds = Promise.all(crewId);
-    }
-
-    //get all keyword ids
-    if (parseWords) {
-        var keywordId = parseWords.map(wordLookup);
-        var wordIds = Promise.all(keywordId);
-    }
-
-    //wait until all values are retrieved
-    Promise.all([crewIds, actorIds, wordIds]).then(values => {
-        let crewList, actorList = [], keywordList = [];
-        if (values[0]) {
-            crewList = values[0];
+    redisConnection.on(`query-created:${messageId}`, (queryString, channel) => {
+        if (queryString) {
+            res.json({ success: true, query: queryString });
         }
-        if (values[1]) {
-            actorList = values[1];
-        }
-
-        if (values[2]) {
-            keywordList = values[2];
-        }
-
-        //SEARCH BY MOVIE TITLE
-        if (title) {
-            let criteriaString = "title=" + title;
-            //redirect to new URL
-            res.json({ success: true, query: criteriaString });
-        }
-
-        //SEARCH BY CRITERIA
         else {
-            let criteriaString = form.createQueryString(actorList, parseGenre, crewList, rating, evaluation, year, keywordList);
-            res.json({ success: true, query: criteriaString });
+            res.json({ success: false, error: error });
         }
-    }).catch((error) => {
-        res.json({ success: false, error: error });
+
+        redisConnection.off(`query-created:${messageId}`);
+        redisConnection.off(`query-created-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`query-created-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json({ success: false, error: error });
+        redisConnection.off(`query-created:${messageId}`);
+        redisConnection.off(`query-created-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`query-created:${messageId}`);
+        redisConnection.off(`query-created-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`create-query:${messageId}`, {
+        requestId: messageId,
+        query: queryData,
+        title: title
     });
 });
 
 //call search methods using criteria passed in
 router.get("/results/:pageId", (req, res) => {
-    var page = req.params.pageId;
+    let page = req.params.pageId;
     let queryData = (url.parse(xss(req.url), true).query);
     let queryString = "";
     let title;
@@ -159,34 +147,50 @@ router.get("/results/:pageId", (req, res) => {
             queryString = queryString + "&" + key + "=" + queryData[key];
         }
     });
-    if (title !== undefined) { //search by title
-        let result = api.searchByTitle(title, page);
-        result.then((movies) => {
-            let movielist = form.formatReleaseDate(movies.results);
-            let total = movies.total_results;
-            let pages = movies.total_pages;
-            res.render("results/movielist", { pages: pages, movies: movielist, total: total, partial: "results-script" });
-        }).catch((e) => {
-            res.render("search/form", {
-                title: title, actors: actors, genres: genre, crew: crew,
-                evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
-            });
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`movies-retrieved:${messageId}`, (results, channel) => {
+        if (results) {
+            res.render("results/movielist", { pages: results.pages, movies: results.movielist, total: results.total, partial: "results-script" });
+        }
+
+        redisConnection.off(`movies-retrieved:${messageId}`);
+        redisConnection.off(`movies-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`movies-retrieved-failed:${messageId}`, (error, channel) => {
+        res.render("search/form", {
+            title: title, actors: actors, genres: genre, crew: crew,
+            evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: error, partial: "form-validation"
         });
-    }
-    else { //search by criteria
-        let result = api.searchByCriteria(queryString, page);
-        result.then((movies) => {
-            let pages = movies.total_pages;
-            let movielist = form.formatReleaseDate(movies.results);
-            let total = movies.total_results;
-            res.render("results/movielist", { pages: pages, movies: movielist, total: total, partial: "results-script" });
-        }).catch((e) => {
-            res.render("search/form", {
-                title: title, actors: actors, genres: genre, crew: crew,
-                evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: e, partial: "form-validation"
-            });
-        });
-    }
+        redisConnection.off(`movies-retrieved:${messageId}`);
+        redisConnection.off(`movies-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`movies-retrieved:${messageId}`);
+        redisConnection.off(`movies-retrieved-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`search-movies:${messageId}`, {
+        requestId: messageId,
+        title: title,
+        page: page,
+        queryString: queryString
+    });
+
 });
 
 //get keywords

@@ -3,6 +3,8 @@ const movieData = dbCollection.movie;
 const apiData = dbCollection.api;
 const fetch = require('node-fetch');
 const bluebird = require("bluebird");
+const flat = require("flat");
+const unflatten = flat.unflatten;
 
 const NRP = require('node-redis-pubsub');
 const config = {
@@ -20,86 +22,48 @@ const redisConnection = new NRP(config); // This is the NRP client
 
 //ADD MOVIE WORKER
 redisConnection.on('add-movie:*', (data, channel) => {
-    // let messageId = data.requestId;
-    // let playlistInfo = data.playlist;
-    // //add user to database, set of all users in cache and own cache entry
-    // let fullyComposeMovie = movieData
-    //     .addPlaylist(playlist.title, playlist.user)
-    //     .then((newPlaylist) => {
-    //         //cache playlist by id
-    //         let addEntry = client.setAsync(newPlaylist._id, JSON.stringify(newPlaylist));
-    //         addEntry.then(() => {
-    //             redisConnection.emit(`movie-added:${messageId}`, newPlaylist);
-    //         }).catch(error => {
-    //             redisConnection.emit(`movie-added-failed:${messageId}`, error);
-    //         });
-    //     });
 });
 
 //GET ALL REVIEWS FOR MOVIE WORKER
 redisConnection.on('get-reviews:*', (data, channel) => {
     let messageId = data.requestId;
-    // let newData = data.update;
-    // let user = data.user;
-    // //update user in db and all cache entries
-    // let fullyComposeUser = movieData
-    //     .updateUserById(user._id, newData)
-    //     .then((updatedUser) => {
-    //         let entryExists = client.getAsync(user._id);
-    //         entryExists.then((userInfo) => {
-    //             let movieData = updatedUser;
-    //             if (userInfo) { //reset expiration time if user entry exists
-    //                 client.setAsync(movieData._id, JSON.stringify(movieData)); // user entry
-    //                 redisConnection.emit(`added-movie:${messageId}`, movieData);
-    //             }
-    //             else {
-    //                 redisConnection.emit(`added-movie:${messageId}`, updatedUser);
-    //             }
-    //         }).catch(error => {
-    //             redisConnection.emit(`added-movie-failed:${messageId}`, error);
-    //         });
-    //     }).catch(error => {
-    //         redisConnection.emit(`added-movie-failed:${messageId}`, error);
-    //     });
+
 });
 
 //GET MOVIE DETAILS WORKER
 redisConnection.on('get-details:*', (data, channel) => {
     let messageId = data.requestId;
     let movieId = data.movieId;
-    //delete user in db and all related cache entries
-    let fullyComposeMovie = apiData
-        .getMovieDetails(movieId)
-        .then((details) => {
-            redisConnection.emit(`details-retrieved:${messageId}`, details);
-        }).catch(error => {
-            redisConnection.emit(`details-retrieved-failed:${messageId}`, error);
-        });
+    let entryExists = client.getAsync(movieId);
+    entryExists.then((movieInfo) => {
+        if (movieInfo) { //retrieve cached data
+            redisConnection.emit(`details-retrieved:${messageId}`, unflatten(movieInfo));
+        }
+        else { //retrieve from db
+            let fullyComposeMovie = apiData
+                .getMovieDetails(movieId)
+                .then((details) => {
+                    let cacheMovie = client.setAsync(movieId, flat(details));
+                    cacheMovie.then(() => {
+                        redisConnection.emit(`details-retrieved:${messageId}`, details);
+                    }).catch(error => {
+                        redisConnection.emit(`details-retrieved-failed:${messageId}`, error);
+                    });
+                });
+        }
+    }).catch(error => {
+        redisConnection.emit(`details-retrieved-failed:${messageId}`, error);
+    });
 });
 
 //DELETE MOVIE WORKER
 redisConnection.on('delete-movie:*', (data, channel) => {
-    // let messageId = data.requestId;
-    // let userId = data.userId;
-    // let fullyComposeMovie = movieData
-    //     .getPlaylistByUserId(userId)
-    //     .then((playlist) => {
-    //         redisConnection.emit(`movie-deleted:${messageId}`, playlist);
-    //     }).catch(error => {
-    //         redisConnection.emit(`movie-deleted-failed:${messageId}`, error);
-    //     });
+
 });
 
 //GET REVIEW WORKER
 redisConnection.on('get-review:*', (data, channel) => {
     let messageId = data.requestId;
-    // let userId = data.userId;
-    // let fullyComposeMovie = movieData
-    //     .getPlaylistByUserId(userId)
-    //     .then((playlist) => {
-    //         redisConnection.emit(`review-retrieved:${messageId}`, playlist);
-    //     }).catch(error => {
-    //         redisConnection.emit(`review-retrieved-failed:${messageId}`, error);
-    //     });
+
 });
 

@@ -5,6 +5,8 @@ const apiData = dbCollection.api;
 const historyData = dbCollection.history;
 const fetch = require('node-fetch');
 const bluebird = require("bluebird");
+const flat = require("flat");
+const unflatten = flat.unflatten;
 
 const NRP = require('node-redis-pubsub');
 const config = {
@@ -29,7 +31,7 @@ redisConnection.on('create-playlist:*', (data, channel) => {
         .addPlaylist(playlist.title, playlist.user)
         .then((newPlaylist) => {
             //cache playlist by id
-            let addEntry = client.setAsync(newPlaylist._id, JSON.stringify(newPlaylist));
+            let addEntry = client.setAsync(newPlaylist._id, flat(newPlaylist));
             addEntry.then(() => {
                 redisConnection.emit(`playlist-created:${messageId}`, newPlaylist);
             }).catch(error => {
@@ -40,7 +42,7 @@ redisConnection.on('create-playlist:*', (data, channel) => {
         });
 });
 
-//ADD MOVIE TO PLAYLIST WORKER (and to movie & history collections)
+//ADD MOVIE TO PLAYLIST WORKER (and to movie & history collections), also update playlist cache entry
 redisConnection.on('add-movie-playlist:*', (data, channel) => {
     let messageId = data.requestId;
     let movieId = data.movieId;
@@ -51,52 +53,65 @@ redisConnection.on('add-movie-playlist:*', (data, channel) => {
         .then((userPlaylist) => {
             //check if movie already exists in playlist
             var currentMovies = userPlaylist.playlistMovies;
-            var index = currentMovies.map(function(e) { return e._id; }).indexOf(movieId);
+            var index = currentMovies.map(function (e) { return e._id; }).indexOf(movieId);
+            console.log(index);
             if (index == -1) { //movie not in playlist
                 if (userPlaylist.playlistMovies.length == 10) {
                     let error = "You have reached the maximum of 10 movies in your playlist";
                     redisConnection.emit(`added-movie-failed:${messageId}`, error);
                 }
                 else {
-                    //check if movie exists in collection
+                    //check if movie exists in cache then go to db
                     var movieInfo = "";
-                    movieData.getMovieById(movieId).then((details) => {
-                        if (!details) { //get details using api
-                            var newMovie = apiData.getMovieDetails(movieId).then((info) => {
-                                //insert movie into movie collection
-                                movieData.addMovie(info._id, info.title, info.description, info.genre, info.rated, info.releaseDate, info.runtime, info.director, info.cast, info.averageRating, info.keywords);
-                                return info;
-                            }).catch((error) => {
-                                res.json({ success: false, error: error });
-                            });
+                    // movieData.getMovieById(movieId).then((details) => {
+                    //     if (!details) { //get details using api
+                    var newMovie = apiData.getMovieDetails(movieId).then((info) => {
+                        console.log(info);
+                        return info;
+                        //cache movie details
+                        // let addEntry = client.setAsync(movieId, flat(info));
+                        // addEntry.then(() => {
+                        //insert movie into movie collection if doesn't exist already'
+                        //       movieData.addMovie(info._id).then((result) => {
+                        // }).catch((error) => {
+                        //     redisConnection.emit(`added-movie-failed:${messageId}`, error);
+                        // });
+                    });
+                    //    });
+                    //  }
+                    Promise.all([newMovie]).then(values => {
+                        console.log(values);
+                        if (values[0]) {
+                            movieInfo = values[0];
                         }
-                        Promise.all([newMovie]).then(values => {
-                            if (values[0]) {
-                                movieInfo = values[0];
-                            }
-                            else {
-                                movieInfo = details;
-                            }
-                            var userId = userId;
-                            var title = movieInfo.title;
-                            var overview;
-                            if (movieInfo.description) {
-                                overview = movieInfo.description;
-                            }
-                            else {
-                                overview = movieInfo.overview;
-                            }
-                            //insert movie into playlist collection
-                            var newList = playlistData.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
-                            newList.then((addedMovie) => {
+                        else {
+                            movieInfo = details;
+                        }
+                        var userId = userId;
+                        var title = movieInfo.title;
+                        var overview;
+                        if (movieInfo.description) {
+                            overview = movieInfo.description;
+                        }
+                        else {
+                            overview = movieInfo.overview;
+                        }
+                        //insert movie into playlist collection
+                        var newList = playlistData.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
+                        newList.then((addedMovie) => {
+                            console.log("movie added to playlist");
+                            console.log(movieInfo);
+                            //update playlist cache entry
+                            let playlistEntry = client.setAsync(userPlaylist._id, flat(addedMovie));
+                            playlistEntry.then(() => {
                                 //add to history table
-                                historyData.addHistory(userId, movieId, movieInfo.genre, movieInfo.rated, movieInfo.keywords, movieInfo.releaseDate).then((data) => {
-                                    redisConnection.emit(`added-movie:${messageId}`, addedMovie);
-                                });
-
-                            }).catch((error) => {
-                                redisConnection.emit(`added-movie-failed:${messageId}`, error);
+                                //    historyData.addHistory(userId, movieId, movieInfo.genre, movieInfo.rated, movieInfo.keywords, movieInfo.releaseDate).then((data) => {
+                                redisConnection.emit(`added-movie:${messageId}`, addedMovie);
+                                //  });
                             });
+                        }).catch((error) => {
+                            redisConnection.emit(`added-movie-failed:${messageId}`, error);
+                            //          });
                         });
                     }).catch((error) => {
                         redisConnection.emit(`added-movie-failed:${messageId}`, error);
@@ -152,9 +167,12 @@ redisConnection.on('checkoff-movie:*', (data, channel) => {
         .getPlaylistByUserId(userId)
         .then((playlist) => {
             playlistData.checkOffMovie(playlist_id, movieId).then((newList) => {
-                redisConnection.emit(`checked-off:${messageId}`, playlist);
-            }).catch(error => {
-                redisConnection.emit(`checked-off-failed:${messageId}`, error);
+                let playlistEntry = client.setAsync(playlist_id, flat(newList));
+                playlistEntry.then(() => {
+                    redisConnection.emit(`checked-off:${messageId}`, playlist);
+                }).catch(error => {
+                    redisConnection.emit(`checked-off-failed:${messageId}`, error);
+                });
             });
         });
 });
@@ -171,7 +189,7 @@ redisConnection.on('remove-movie-playlist:*', (data, channel) => {
         .then((playlist) => {
             playlistData.removeMovieByMovieId(playlist._id, movieId)
                 .then((newPlaylist) => {
-                    let cacheList = client.setAsync(playlist._id, JSON.stringify(newPlaylist));
+                    let cacheList = client.setAsync(playlist._id, flat(newPlaylist));
                     cacheList.then(() => {
                         redisConnection.emit(`removed-movie:${messageId}`, newPlaylist);
                     }).catch(error => {
@@ -195,7 +213,7 @@ redisConnection.on('add-review:*', (data, channel) => {
         .then((playlistInfo) => {
             //check if review exists
             let movies = playlistInfo.playlistMovies;
-            var currentMovie = movies.filter(function(e) { return e._id === movieId });
+            var currentMovie = movies.filter(function (e) { return e._id === movieId });
             if (currentMovie[0].review) { //review already exists
                 //update process
                 reviewData._id = currentMovie[0].review._id;
@@ -232,11 +250,14 @@ redisConnection.on('remove-review:*', (data, channel) => {
         .then((playlistInfo) => {
             let removeReview = playlistData.removeReviewFromPlaylist(playlistInfo._id, reviewId);
             removeReview.then((result) => {
-                //remove corresponding review from movies collection
-                movieData.removeReviewByReviewId(movieId, reviewId).then((movie) => {
-                    redisConnection.emit(`removed-review:${messageId}`, movie);
-                }).catch(error => {
-                    redisConnection.emit(`removed-review-failed:${messageId}`, error);
+                let cacheList = client.setAsync(playlistInfo._id, flat(result));
+                cacheList.then(() => {
+                    //remove corresponding review from movies collection
+                    movieData.removeReviewByReviewId(movieId, reviewId).then((movie) => {
+                        redisConnection.emit(`removed-review:${messageId}`, movie);
+                    }).catch(error => {
+                        redisConnection.emit(`removed-review-failed:${messageId}`, error);
+                    });
                 });
             }).catch(error => {
                 redisConnection.emit(`removed-review-failed:${messageId}`, error);
@@ -252,7 +273,7 @@ redisConnection.on('update-playlist-title:*', (data, channel) => {
     let fullyComposePlaylist = playlistData
         .setNewTitle(playlistId, title)
         .then((playlist) => {
-            let cacheList = client.setAsync(playlistId, JSON.stringify(playlist));
+            let cacheList = client.setAsync(playlistId, flat(playlist));
             cacheList.then(() => {
                 redisConnection.emit(`title-updated:${messageId}`, playlist);
             }).catch(error => {

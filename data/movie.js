@@ -47,8 +47,8 @@ var exportedMethods = {
         return movie().then((movieCollection) => {
             obj["_id"] = obj.id;
             var date = new Date(obj.releaseDate);
-            var formatDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
-            obj.releaseDate = formatDate;
+            // var formatDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+            // obj.releaseDate = formatDate;
             return movieCollection.insertOne(obj).then((movieObj) => {
                 return movieObj.insertedId;
             }).then(newId => {

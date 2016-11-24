@@ -83,7 +83,7 @@ var exportedMethods = {
         profile["_id"] = userid;
         var obj = {
             _id: userid,
-            hashedPassword: passwordHash.generate(password),
+            password: passwordHash.generate(password),
             profile: profile,
             preferences: preferences
         };
@@ -163,7 +163,7 @@ var exportedMethods = {
             var userId = uuid.v4();
             var obj = {
                 _id: userId,
-                hashedPassword: passwordHash.generate(pwd),
+                password: passwordHash.generate(pwd),
                 profile: {
                     _id: userId,
                     username: username,
@@ -193,7 +193,7 @@ var exportedMethods = {
     //verify user
     verifyUser(obj) {
         return Users().then((userCollection) => {
-            return userCollection.findOne({ $and: [{ "profile.username": obj.username }, { hashedPassword: obj.password }] }).then((userObj) => {
+            return userCollection.findOne({ $and: [{ "profile.username": obj.username }, { password: obj.password }] }).then((userObj) => {
                 if (!userObj) throw "Users not found";
 
                 return this.updateUserById(userObj._id, userObj);;

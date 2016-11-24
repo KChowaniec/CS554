@@ -2,6 +2,8 @@ const dbCollection = require("data");
 const userData = dbCollection.users;
 const fetch = require('node-fetch');
 const bluebird = require("bluebird");
+const flat = require("flat");
+const unflatten = flat.unflatten;
 
 const NRP = require('node-redis-pubsub');
 const config = {
@@ -18,7 +20,7 @@ bluebird.promisifyAll(redis.Multi.prototype);
 
 const redisConnection = new NRP(config); // This is the NRP client
 
-//REGISTRATION WORKER
+//REGISTRATION WORKER  - add token information to session
 redisConnection.on('register-user:*', (data, channel) => {
     let messageId = data.requestId;
     let username = data.username;
@@ -39,14 +41,17 @@ redisConnection.on('register-user:*', (data, channel) => {
             .addUsersAndPlaylist(title, user)
             .then((newUser) => {
                 //cache user by userid
-                let addEntry = client.setAsync(user._id, JSON.stringify(user));
+                let addEntry = client.setAsync(user._id, flat(user));
                 addEntry.then(() => {
-                    redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
+                    let playlistEntry = client.setAsync(newUser._id, flat(newUser));
+                    playlistEntry.then(() => {
+                        redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
+                    }).catch(error => {
+                        redisConnection.emit(`user-registered-failed:${messageId}`, error);
+                    });
                 }).catch(error => {
                     redisConnection.emit(`user-registered-failed:${messageId}`, error);
                 });
-            }).catch(error => {
-                redisConnection.emit(`user-registered-failed:${messageId}`, error);
             });
     }).catch((error) => {
         redisConnection.emit(`user-registered-failed:${messageId}`, error);
@@ -58,15 +63,15 @@ redisConnection.on('update-user:*', (data, channel) => {
     let messageId = data.requestId;
     let newData = data.update;
     let userId = data.userId;
-    //update user in db and all cache entries
+    //update user information - also update cache entry (if exists)
     let fullyComposeUser = userData
         .updateUserById(userId, newData)
         .then((updatedUser) => {
             let entryExists = client.getAsync(userId);
             entryExists.then((userInfo) => {
                 let userData = updatedUser;
-                if (userInfo) { //reset expiration time if user entry exists
-                    client.setAsync(userData._id, JSON.stringify(userData)); // user entry
+                if (userInfo) {
+                    client.setAsync(userData._id, flat(userData)); // user entry
                     redisConnection.emit(`user-updated:${messageId}`, userData);
                 }
                 else {
@@ -113,19 +118,27 @@ redisConnection.on('get-users:*', (data, channel) => {
 redisConnection.on('get-user:*', (data, channel) => {
     let messageId = data.requestId;
     let userId = data.userId;
-    //get user information
-    let fullyComposeUser = userData
-        .getUserById(userId)
-        .then((user) => {
-            let cacheUsers = client.setAsync(userId, JSON.stringify(user));
-            cacheUsers.then(() => {
-                redisConnection.emit(`user-retrieved:${messageId}`, user);
-            }).catch(error => {
-                redisConnection.emit(`user-retrieved-failed:${messageId}`, error);
-            });
-        }).catch(error => {
-            redisConnection.emit(`user-retrieved-failed:${messageId}`, error);
-        });
+    //get user information - check if exists in cache first
+    let entryExists = client.getAsync(userId);
+    entryExists.then((userInfo) => {
+        if (userInfo) { //retrieve cached data
+            redisConnection.emit(`user-retrieved:${messageId}`, unflatten(userInfo));
+        }
+        else { //retrieve from db
+            let fullyComposeUser = userData
+                .getUserById(userId)
+                .then((user) => {
+                    let retrieveUser = client.setAsync(userId, flat(user));
+                    retrieveUser.then(() => {
+                        redisConnection.emit(`user-retrieved:${messageId}`, user);
+                    }).catch(error => {
+                        redisConnection.emit(`user-retrieved-failed:${messageId}`, error);
+                    });
+                });
+        }
+    }).catch(error => {
+        redisConnection.emit(`user-retrieved-failed:${messageId}`, error);
+    });
 });
 
 //LOGIN WORKER
@@ -133,7 +146,7 @@ redisConnection.on('login-user:*', (data, channel) => {
     let messageId = data.requestId;
     let sessionData = data.session;
     //add session to cache using token
-    let addEntry = client.setAsync(sessionData.token, JSON.stringify(sessionData));
+    let addEntry = client.setAsync(sessionData.token, flat(sessionData));
     addEntry.then(() => {
         redisConnection.emit(`logged-in:${messageId}`, sessionData);
     }).catch((error) => {
@@ -141,7 +154,7 @@ redisConnection.on('login-user:*', (data, channel) => {
     });
 });
 
-//USER PREFERENCES WORKER
+//USER PREFERENCES WORKER  -->get from cache?
 redisConnection.on('get-preferences:*', (data, channel) => {
     let messageId = data.requestId;
     let userId = data.userId;

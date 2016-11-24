@@ -26,22 +26,22 @@ function isAuthorized(req, res, next) {
         // verifies secret
         jwt.verify(token, 'secretkey', function (err, decoded) {
             if (err) {
-                return res.status(500).json({ error: 'Failed to authenticate token.' });
+                return res.redirect("/login");
             } else {
                 //make sure token exists in session
                 if (req.session && req.session.token === token) {
                     return next();
                 }
                 else {
-                    return res.status(500).json({ error: 'Token is no longer valid for this user.' });
+                    return res.redirect("/login");
                 }
             }
         });
 
     } else {
         // if there is no token
-        // return an error
-        return res.status(500).json({ error: "No token exists for this user" });
+        // redirect to login
+        return res.redirect("/login");
     }
 };
 
