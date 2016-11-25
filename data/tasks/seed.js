@@ -8,6 +8,7 @@ var dbConnection = require("../config/mongoConnection");
 var users = require("../users");
 var playlist = require("../playlist");
 var movie = require("../movie");
+var analytics = require("../analytics");
 
 var https = require("https");
 var pathTail = "?api_key=e443ee14fb107feee75db8b448e6a13e";
@@ -47,7 +48,14 @@ dbConnection().then(db => {
                 });
             }
         }).then(() => {
+            analytics.loadRatings().then((result) => {
+            }).catch((error) => {
+                console.log(error);
+            });
+        }).then(() => {
             console.log("Finished seeding db");
         });
+    }).catch((error) => {
+        console.log(error);
     });
-});
+})
