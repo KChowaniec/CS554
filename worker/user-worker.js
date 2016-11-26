@@ -25,7 +25,7 @@ redisConnection.on('register-user:*', (data, channel) => {
     let messageId = data.requestId;
     let username = data.username;
     let password = data.password;
-    let confirmedPassword = data.password;
+    let confirmedPassword = data.confirmedPassword;
     let email = data.email;
     let name = data.name;
     let user = {
@@ -35,25 +35,25 @@ redisConnection.on('register-user:*', (data, channel) => {
         email: email
     };
     let title = "My Playlist";
+    console.log(confirmedPassword);
     let verify = userData.registrationVerification(password, confirmedPassword, username, email);
     verify.then(() => {
         let fullyComposeUser = userData
             .addUsersAndPlaylist(title, user)
             .then((newUser) => {
                 //cache user by userid
-                let addEntry = client.setAsync(user._id, flat(user));
+                console.log(newUser);
+                let addEntry = client.setAsync(newUser.user_id, JSON.stringify(user));
                 addEntry.then(() => {
-                    let playlistEntry = client.setAsync(newUser._id, flat(newUser));
-                    playlistEntry.then(() => {
-                        redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
-                    }).catch(error => {
-                        redisConnection.emit(`user-registered-failed:${messageId}`, error);
-                    });
+                    redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
                 }).catch(error => {
                     redisConnection.emit(`user-registered-failed:${messageId}`, error);
                 });
+            }).catch(error => {
+                redisConnection.emit(`user-registered-failed:${messageId}`, error);
             });
     }).catch((error) => {
+        console.log(error);
         redisConnection.emit(`user-registered-failed:${messageId}`, error);
     });
 });
@@ -71,7 +71,7 @@ redisConnection.on('update-user:*', (data, channel) => {
             entryExists.then((userInfo) => {
                 let userData = updatedUser;
                 if (userInfo) {
-                    client.setAsync(userData._id, flat(userData)); // user entry
+                    client.setAsync(userData._id, JSON.stringify(userData)); // user entry
                     redisConnection.emit(`user-updated:${messageId}`, userData);
                 }
                 else {
@@ -122,13 +122,14 @@ redisConnection.on('get-user:*', (data, channel) => {
     let entryExists = client.getAsync(userId);
     entryExists.then((userInfo) => {
         if (userInfo) { //retrieve cached data
-            redisConnection.emit(`user-retrieved:${messageId}`, unflatten(userInfo));
+            console.log(userInfo);
+            redisConnection.emit(`user-retrieved:${messageId}`, JSON.parse(userInfo));
         }
         else { //retrieve from db
             let fullyComposeUser = userData
                 .getUserById(userId)
                 .then((user) => {
-                    let retrieveUser = client.setAsync(userId, flat(user));
+                    let retrieveUser = client.setAsync(userId, JSON.stringify(user));
                     retrieveUser.then(() => {
                         redisConnection.emit(`user-retrieved:${messageId}`, user);
                     }).catch(error => {
@@ -146,7 +147,7 @@ redisConnection.on('login-user:*', (data, channel) => {
     let messageId = data.requestId;
     let sessionData = data.session;
     //add session to cache using token
-    let addEntry = client.setAsync(sessionData.token, flat(sessionData));
+    let addEntry = client.setAsync(sessionData.token, JSON.stringify(sessionData));
     addEntry.then(() => {
         redisConnection.emit(`logged-in:${messageId}`, sessionData);
     }).catch((error) => {

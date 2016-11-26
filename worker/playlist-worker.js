@@ -30,14 +30,8 @@ redisConnection.on('create-playlist:*', (data, channel) => {
     let fullyComposePlaylist = playlistData
         .addPlaylist(playlist.title, playlist.user)
         .then((newPlaylist) => {
-            //cache playlist by id
-            let addEntry = client.setAsync(newPlaylist._id, flat(newPlaylist));
-            addEntry.then(() => {
-                redisConnection.emit(`playlist-created:${messageId}`, newPlaylist);
-            }).catch(error => {
-                redisConnection.emit(`playlist-created-failed:${messageId}`, error);
-            });
-        }).catch((error) => {
+            redisConnection.emit(`playlist-created:${messageId}`, newPlaylist);
+        }).catch(error => {
             redisConnection.emit(`playlist-created-failed:${messageId}`, error);
         });
 });
@@ -98,14 +92,11 @@ redisConnection.on('add-movie-playlist:*', (data, channel) => {
                         newList.then((addedMovie) => {
                             console.log("movie added to playlist");
                             console.log(movieInfo);
-                            //update playlist cache entry
-                            let playlistEntry = client.setAsync(userPlaylist._id, flat(addedMovie));
-                            playlistEntry.then(() => {
-                                //add to history table
-                                //    historyData.addHistory(userId, movieId, movieInfo.genre, movieInfo.rated, movieInfo.keywords, movieInfo.releaseDate).then((data) => {
-                                redisConnection.emit(`added-movie:${messageId}`, addedMovie);
-                                //  });
-                            });
+                            //add to history table
+                            //    historyData.addHistory(userId, movieId, movieInfo.genre, movieInfo.rated, movieInfo.keywords, movieInfo.releaseDate).then((data) => {
+                            redisConnection.emit(`added-movie:${messageId}`, addedMovie);
+                            //  });
+
                         }).catch((error) => {
                             redisConnection.emit(`added-movie-failed:${messageId}`, error);
                             //          });
@@ -133,8 +124,6 @@ redisConnection.on('clear-playlist:*', (data, channel) => {
     let fullyComposePlaylist = playlistData
         .clearPlaylist(playlistId)
         .then((list) => {
-            return client.delAsync(playlistId);
-        }).then(() => {
             redisConnection.emit(`playlist-cleared:${messageId}`, playlistId);
         }).catch(error => {
             redisConnection.emit(`playlist-cleared-failed:${messageId}`, error);
@@ -164,12 +153,9 @@ redisConnection.on('checkoff-movie:*', (data, channel) => {
         .getPlaylistByUserId(userId)
         .then((playlist) => {
             playlistData.checkOffMovie(playlist_id, movieId).then((newList) => {
-                let playlistEntry = client.setAsync(playlist_id, flat(newList));
-                playlistEntry.then(() => {
-                    redisConnection.emit(`checked-off:${messageId}`, playlist);
-                }).catch(error => {
-                    redisConnection.emit(`checked-off-failed:${messageId}`, error);
-                });
+                redisConnection.emit(`checked-off:${messageId}`, playlist);
+            }).catch(error => {
+                redisConnection.emit(`checked-off-failed:${messageId}`, error);
             });
         });
 });
@@ -186,15 +172,12 @@ redisConnection.on('remove-movie-playlist:*', (data, channel) => {
         .then((playlist) => {
             playlistData.removeMovieByMovieId(playlist._id, movieId)
                 .then((newPlaylist) => {
-                    let cacheList = client.setAsync(playlist._id, flat(newPlaylist));
-                    cacheList.then(() => {
-                        redisConnection.emit(`removed-movie:${messageId}`, newPlaylist);
-                    }).catch(error => {
-                        redisConnection.emit(`removed-movie-failed:${messageId}`, error);
-                    });
+                    redisConnection.emit(`removed-movie:${messageId}`, newPlaylist);
                 }).catch(error => {
                     redisConnection.emit(`removed-movie-failed:${messageId}`, error);
                 });
+        }).catch(error => {
+            redisConnection.emit(`removed-movie-failed:${messageId}`, error);
         });
 });
 
@@ -247,15 +230,13 @@ redisConnection.on('remove-review:*', (data, channel) => {
         .then((playlistInfo) => {
             let removeReview = playlistData.removeReviewFromPlaylist(playlistInfo._id, reviewId);
             removeReview.then((result) => {
-                let cacheList = client.setAsync(playlistInfo._id, flat(result));
-                cacheList.then(() => {
-                    //remove corresponding review from movies collection
-                    movieData.removeReviewByReviewId(movieId, reviewId).then((movie) => {
-                        redisConnection.emit(`removed-review:${messageId}`, movie);
-                    }).catch(error => {
-                        redisConnection.emit(`removed-review-failed:${messageId}`, error);
-                    });
+                //remove corresponding review from movies collection
+                movieData.removeReviewByReviewId(movieId, reviewId).then((movie) => {
+                    redisConnection.emit(`removed-review:${messageId}`, movie);
+                }).catch(error => {
+                    redisConnection.emit(`removed-review-failed:${messageId}`, error);
                 });
+
             }).catch(error => {
                 redisConnection.emit(`removed-review-failed:${messageId}`, error);
             });
@@ -270,12 +251,7 @@ redisConnection.on('update-playlist-title:*', (data, channel) => {
     let fullyComposePlaylist = playlistData
         .setNewTitle(playlistId, title)
         .then((playlist) => {
-            let cacheList = client.setAsync(playlistId, flat(playlist));
-            cacheList.then(() => {
-                redisConnection.emit(`title-updated:${messageId}`, playlist);
-            }).catch(error => {
-                redisConnection.emit(`title-updated-failed:${messageId}`, error);
-            });
+            redisConnection.emit(`title-updated:${messageId}`, playlist);
         }).catch(error => {
             redisConnection.emit(`title-updated-failed:${messageId}`, error);
         });

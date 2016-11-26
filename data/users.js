@@ -56,7 +56,7 @@ var exportedMethods = {
     getUserByUsername(username) {
         if (!username) { Promise.reject("A username must be provided") };
         return Users().then((userCollection) => {
-            return userCollection.find({ "profile.username": username }).limit(1).toArray().then(function(listOfUsers) {
+            return userCollection.find({ "profile.username": username }).limit(1).toArray().then(function (listOfUsers) {
                 //user could not be retrieved
                 if (listOfUsers.length === 0) throw "Could not find user with username of " + username;
                 return listOfUsers[0]; //else return user
@@ -135,7 +135,7 @@ var exportedMethods = {
     //delete user
     deleteUserById(id) {
         return Users().then((userCollection) => {
-            return userCollection.deleteOne({ _id: id }).then(function(deletionInfo) {
+            return userCollection.deleteOne({ _id: id }).then(function (deletionInfo) {
                 if (deletionInfo.deletedCount === 0) throw "Could not find the document with this id to delete";
                 return true;
             });
@@ -147,7 +147,7 @@ var exportedMethods = {
     //update user
     updateUserById(id, obj) {
         return Users().then((userCollection) => {
-            return userCollection.update({ _id: id }, { $set: obj }).then(function() {
+            return userCollection.update({ _id: id }, { $set: obj }).then(function () {
                 return id;
             });
         }).then(id => {
@@ -231,18 +231,20 @@ var exportedMethods = {
     },
 
     registrationVerification(password, confirmedPassword, username, email) {
-        if (!password) { Promise.reject("A password must be provided") };
-        if (!confirmedPassword) { Promise.reject("A confirmed password must be provided") };
-        if (!username) { Promise.reject("A username must be provided") };
-        if (!email) { Promise.reject("An email must be provided") };
-        if (password != confirmedPassword) { Promise.reject("Entered password and confirmed password must match") };
-        return this.checkUserExist(username).then((result) => {
-            if (result === false) {
-                return true;
-            }
-            else {
-                Promise.reject("Username already exists");
-            }
+        return new Promise((resolve, reject) => {
+            if (!password) { Promise.reject("A password must be provided") };
+            if (!confirmedPassword) { Promise.reject("A confirmed password must be provided") };
+            if (!username) { Promise.reject("A username must be provided") };
+            if (!email) { Promise.reject("An email must be provided") };
+            if (password != confirmedPassword) { reject("Entered password and confirmed password must match") };
+            return this.checkUserExist(username).then((result) => {
+                if (result === false) {
+                    resolve(true);
+                }
+                else {
+                    reject("Username already exists");
+                }
+            });
         });
     }
 }

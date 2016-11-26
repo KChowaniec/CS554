@@ -172,13 +172,19 @@ router.post('/user/register', function (req, res) {
     });
 
     redisConnection.on(`user-registered-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json({ success: false, error: error })
         redisConnection.off(`user-registered:${messageId}`);
         redisConnection.off(`user-registered-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+        console.log("registration failed");
+        // let errors = {};
+        // errors.confirm = "Password must match";
+        return res.status(400).json({
+            success: false,
+            message: error,
+            errors: error
+        });
+
     });
 
     killswitchTimeoutId = setTimeout(() => {
