@@ -8,8 +8,8 @@ Final Project
 5. Make sure Redis and Mongodb are running
 6. To seed database, run 'npm run seed' in data directory 
 7. Server port and database configuration can be changed in all-config.json file
-8. When all is setup, open browser and navigate to http://localhost:{port}/login (port defined in all-config.json, ex. 3000)
-
+8. When all is setup, open browser and navigate to http://localhost:{port} (port defined in all-config.json, ex. 3000)
+9. When making changes to react components, make sure to run webpack to capture changes. 
 
 React Sample - Sunil 
 Description : Sample for Home page since server is not ready, seperate mock server was used. 
