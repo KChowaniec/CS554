@@ -54,7 +54,6 @@ redisConnection.on('add-movie-playlist:*', (data, channel) => {
             //check if movie already exists in playlist
             var currentMovies = userPlaylist.playlistMovies;
             var index = currentMovies.map(function (e) { return e._id; }).indexOf(movieId);
-            console.log(index);
             if (index == -1) { //movie not in playlist
                 if (userPlaylist.playlistMovies.length == 10) {
                     let error = "You have reached the maximum of 10 movies in your playlist";
@@ -66,7 +65,6 @@ redisConnection.on('add-movie-playlist:*', (data, channel) => {
                     // movieData.getMovieById(movieId).then((details) => {
                     //     if (!details) { //get details using api
                     var newMovie = apiData.getMovieDetails(movieId).then((info) => {
-                        console.log(info);
                         return info;
                         //cache movie details
                         // let addEntry = client.setAsync(movieId, flat(info));
@@ -80,7 +78,6 @@ redisConnection.on('add-movie-playlist:*', (data, channel) => {
                     //    });
                     //  }
                     Promise.all([newMovie]).then(values => {
-                        console.log(values);
                         if (values[0]) {
                             movieInfo = values[0];
                         }

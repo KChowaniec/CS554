@@ -85,19 +85,19 @@ router.get('/users', function (req, res) {
     });
 });
 
-//login page
-router.get('/login', function (req, res) {
-    res.render("layouts/login", {
-        partial: "jquery-login-scripts"
-    });
-});
+// //login page
+// router.get('/login', function (req, res) {
+//     res.render("layouts/login", {
+//         // partial: "jquery-login-scripts"
+//     });
+// });
 
-//registration page
-router.get('/register', function (req, res) {
-    res.render("layouts/register", {
-        partial: "jquery-register-scripts"
-    });
-});
+// //registration page
+// router.get('/register', function (req, res) {
+//     res.render("layouts/register", {
+//         partial: "jquery-register-scripts"
+//     });
+// });
 
 //LOG OUT
 router.get('/logout', function (req, res) {
@@ -152,7 +152,7 @@ router.post('/user/register', function (req, res) {
     let confirmedPassword = req.body.confirm;
     let name = req.body.name;
     let email = req.body.email;
-
+    console.log(req.body);
     let redisConnection = req
         .app
         .get("redis");
@@ -163,7 +163,7 @@ router.post('/user/register', function (req, res) {
     redisConnection.on(`user-registered:${messageId}`, (registeredUserId, channel) => {
         if (registeredUserId) {
             req.session.userId = registeredUserId;
-            res.json({ success: true });
+            res.status(200).json({ success: true });
         }
         redisConnection.off(`user-registered:${messageId}`);
         redisConnection.off(`user-registered-failed:${messageId}`);
@@ -293,6 +293,7 @@ router.put('/users/:id', function (req, res) {
 
 //post user login - authenticate using passport local strategy
 router.post('/user/login', passport.authenticate('local'), (req, res) => {
+    console.log("in user login");
     let redisConnection = req
         .app
         .get("redis");
@@ -305,7 +306,8 @@ router.post('/user/login', passport.authenticate('local'), (req, res) => {
 
     redisConnection.on(`logged-in:${messageId}`, (sessionData, channel) => {
         if (sessionData) {
-            res.json({ success: true });
+            //  res.json({ success: true });
+            res.status(200).end();
         }
         redisConnection.off(`logged-in:${messageId}`);
         redisConnection.off(`login-failed:${messageId}`);

@@ -191,9 +191,7 @@ router.post("/reviews/:movieId", (req, res) => {
         if (result) {
             res.json({ success: true, result: xss(result) });
         }
-        else {
-            res.json({ success: false, error: error });
-        }
+
         redisConnection.off(`added-review:${messageId}`);
         redisConnection.off(`added-review-failed:${messageId}`);
 
@@ -242,9 +240,6 @@ router.delete("/movie/:movieId/reviews/:reviewId", (req, res) => {
     redisConnection.on(`removed-review:${messageId}`, (result, channel) => {
         if (result) {
             res.json({ success: true, movie: movieId });
-        }
-        else {
-            res.json({ success: false, error: error });
         }
         redisConnection.off(`removed-review:${messageId}`);
         redisConnection.off(`removed-review-failed:${messageId}`);

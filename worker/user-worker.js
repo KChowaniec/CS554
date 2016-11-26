@@ -29,7 +29,7 @@ redisConnection.on('register-user:*', (data, channel) => {
     let email = data.email;
     let name = data.name;
     let user = {
-        pwd: password,
+        password: password,
         username: username,
         name: name,
         email: email

@@ -104,7 +104,7 @@ var exportedMethods = {
         var userId = uuid.v4();
         var obj = {
             _id: userId,
-            password: passwordHash.generate(userObj.pwd),
+            password: passwordHash.generate(userObj.password),
             profile: {
                 _id: userId,
                 username: userObj.username,

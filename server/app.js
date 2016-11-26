@@ -11,6 +11,7 @@ var flash = require('connect-flash');
 const exphbs = require('express-handlebars');
 var config = require('../data/all-config.json');
 const Handlebars = require('handlebars');
+const path = require("path");
 
 const handlebarsInstance = exphbs.create({
     defaultLayout: 'main',
@@ -42,6 +43,7 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
 app.set('redis', require("./redis-connection"));
 require('./passport')(passport); // pass passport for configuration
 app.use("/public", static);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(rewriteUnsupportedBrowserMethods);
@@ -59,9 +61,12 @@ app.engine('handlebars', handlebarsInstance.engine);
 app.set('view engine', 'handlebars');
 
 configRoutes(app, passport);
+app.use(express.static('./views/static/'));
+app.use(express.static('./public/js/bundle/'));
+
 
 app.listen(config.serverPort, () => {
     console.log("We've now got a server!");
-    console.log("Your routes will be running on http://localhost:3000");
+    console.log("Your routes will be running on http://localhost:" + config.serverPort);
 
 });
