@@ -23,6 +23,6 @@ module.exports = function(app) {
     app.use("/search", routerSearch);
     app.use("/analytics", routerAnalytics);
       // app.use("*", (req, res) => { //any other routes, redirect to user page
-      //   res.redirect("/user");
+      //   res.redirect("/views/static/index.html");
       // })
 };

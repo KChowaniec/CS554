@@ -285,4 +285,52 @@ router.get("/person", (req, res) => {
     });
 });
 
+
+//get theaters playing a movie
+router.get("/theaters/:movieId", (req, res) => {
+    // let movieId = req.params.movieId;
+    // let redisConnection = req
+    //     .app
+    //     .get("redis");
+    // let messageId = uuid.v4();
+    // let killswitchTimeoutId = undefined;
+
+    // redisConnection.on(`person-retrieved:${messageId}`, (result, channel) => {
+    //     if (result) {
+    //         res.json({ success: true, results: result });
+    //     }
+    //     else {
+    //         res.json({ success: false, message: "Person not found" });
+    //     }
+    //     redisConnection.off(`person-retrieved:${messageId}`);
+    //     redisConnection.off(`person-retrieved-failed:${messageId}`);
+
+    //     clearTimeout(killswitchTimeoutId);
+    // });
+
+    // redisConnection.on(`person-retrieved-failed:${messageId}`, (error, channel) => {
+    //     res
+    //         .status(500)
+    //         .json({ success: false, message: error });
+    //     redisConnection.off(`person-retrieved:${messageId}`);
+    //     redisConnection.off(`person-retrieved-failed:${messageId}`);
+
+    //     clearTimeout(killswitchTimeoutId);
+    // });
+
+    // killswitchTimeoutId = setTimeout(() => {
+    //     redisConnection.off(`person-retrieved:${messageId}`);
+    //     redisConnection.off(`person-retrieved-failed:${messageId}`);
+    //     res
+    //         .status(500)
+    //         .json({ error: "Timeout error" })
+    // }, 5000);
+
+    // redisConnection.emit(`get-person:${messageId}`, {
+    //     requestId: messageId,
+    //     person: person
+    // });
+});
+
+
 module.exports = router;

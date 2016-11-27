@@ -16,7 +16,8 @@ class LoginPage extends React.Component {
       user: {
         username: '',
         password: ''
-      }
+      },
+      loggedIn: false
     };
 
     this.processForm = this.processForm.bind(this);
@@ -35,36 +36,35 @@ class LoginPage extends React.Component {
     // create a string for an HTTP body message
     const username = encodeURIComponent(this.state.user.username);
     const password = encodeURIComponent(this.state.user.password);
-    const formData = `username=${username}&password=${password}`;
+   // const formData = `username=${username}&password=${password}`;
 
-    // create an AJAX request
-    const xhr = new XMLHttpRequest();
-    xhr.open('post', '/user/login');
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        // success
+ var requestConfig = {
+    method: "POST",
+    url: "/user/login",
+    contentType: 'application/json',
+    data: JSON.stringify({
+      username: username,
+      password: password,
+    })
+  };
+let reactThis = this;
+  $.ajax(requestConfig).then((responseMessage) => {
+    if (responseMessage.success) {
+      reactThis.setState({
+        errors: {},
+        loggedIn: true
+      });
+      browserHistory.push('/home'); //redirect to home page upon successful registration
+    }
+    else {
+      const errors = responseMessage.errors ? responseMessage.errors : {};
+      errors.summary = responseMessage.message;
 
-        // change the component-container state
-        this.setState({
-          errors: {}
-        });
-
-        console.log('The form is valid');
-      } else {
-        // failure
-
-        // change the component state
-        const errors = xhr.response.errors ? xhr.response.errors : {};
-        errors.summary = xhr.response.message;
-
-        this.setState({
-          errors
-        });
-      }
-    });
-    xhr.send(formData);
+      reactThis.setState({
+        errors
+      });
+    }
+  });
   }
 
   /**

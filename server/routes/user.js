@@ -177,8 +177,7 @@ router.post('/user/register', function (req, res) {
 
         clearTimeout(killswitchTimeoutId);
         console.log("registration failed");
-        // let errors = {};
-        // errors.confirm = "Password must match";
+         console.log(error);
         return res.status(400).json({
             success: false,
             message: error,
@@ -312,8 +311,7 @@ router.post('/user/login', passport.authenticate('local'), (req, res) => {
 
     redisConnection.on(`logged-in:${messageId}`, (sessionData, channel) => {
         if (sessionData) {
-            //  res.json({ success: true });
-            res.status(200).end();
+            res.status(200).json({ success: true });
         }
         redisConnection.off(`logged-in:${messageId}`);
         redisConnection.off(`login-failed:${messageId}`);
@@ -322,13 +320,15 @@ router.post('/user/login', passport.authenticate('local'), (req, res) => {
     });
 
     redisConnection.on(`login-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json(error);
         redisConnection.off(`logged-in:${messageId}`);
         redisConnection.off(`login-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+         return res.status(400).json({
+            success: false,
+            message: error,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {

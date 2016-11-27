@@ -4,22 +4,23 @@ var api;
 var exportedMethods = {
 
   setLocation(location) {
-    api = new Showtimes(location, {});
+    api = new Showtimes(location, { });
   },
 
-  getTheaters(location) {
-    this.setLocation(location);
+  getTheatersForLocation() {
+    console.log(api);
     api.getTheaters(function (error, theaters) {
       if (error) {
+        console.log(error);
         throw error;
       }
-      return theaters;
+      console.log(theaters);
+    return theaters;
     });
   },
 
-  getTheater(location, theaterId) {
-    this.setLocation(location);
-    api.getTheater(theaterId, function (error, theater) {
+  getTheater(theaterId) {
+  return api.getTheater(theaterId, function (error, theater) {
       if (error) {
         throw error;
       }
@@ -27,9 +28,8 @@ var exportedMethods = {
     });
   },
 
-  getMovies(location) {
-    this.setLocation(location);
-    api.getMovies(function (error, movies) {
+  getMovies() {
+    return api.getMovies(function (error, movies) {
       if (error) {
         throw error;
       }
@@ -37,14 +37,26 @@ var exportedMethods = {
     });
   },
 
-  getMovie(location, movieId) {
-    this.setLocation(location);
-    api.getMovie(movieId, function (error, movie) {
+  getMovie(movieId) {
+    return api.getMovie(movieId, function (error, movie) {
       if (error) {
         throw error;
       }
       return movie;
     });
+  },
+
+  getTheatersForMovie(location, movieName){
+    this.setLocation(location);
+    theatersAtLocation = this.getTheatersForLocation();
+    //console.log(theaters);
+    let theatersShowingMovie = [];
+    for(var i =0; i < theatersAtLocation.length; i++){
+      if(theatersAtLocation[i].movies.contains(movieName)){
+        theatersShowingMovie.push(theatersAtLocation[i]);
+      }
+    }
+    return theatersShowingMovie;
   }
 }
 

@@ -34104,18 +34104,32 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	//import HomePage from './containers/HomePage.js';
+
+	function requireAuth(nextState, replace) {
+	  if (!userExists()) {
+	    replace({
+	      pathname: '/login',
+	      state: { nextPathname: nextState.location.pathname }
+	    });
+	  }
+	}
+
 	var routes = {
 	  // base component (wrapper for the whole application).
 	  component: _Base2.default,
 	  childRoutes: [{
 	    path: '/',
-	    component: _HomePage2.default
+	    component: _LoginPage2.default
 	  }, {
 	    path: '/login',
 	    component: _LoginPage2.default
 	  }, {
 	    path: '/signup',
 	    component: _SignUpPage2.default
+	  }, {
+	    path: '/home',
+	    component: _HomePage2.default
 	  }]
 	};
 
@@ -34161,7 +34175,7 @@
 	        { className: 'top-bar-right' },
 	        _react2.default.createElement(
 	          _reactRouter.Link,
-	          { to: '/login' },
+	          { to: '/' },
 	          'Log in'
 	        ),
 	        _react2.default.createElement(
@@ -40716,7 +40730,8 @@
 	      user: {
 	        username: '',
 	        password: ''
-	      }
+	      },
+	      loggedIn: false
 	    };
 
 	    _this.processForm = _this.processForm.bind(_this);
@@ -40734,44 +40749,40 @@
 	  _createClass(LoginPage, [{
 	    key: 'processForm',
 	    value: function processForm(event) {
-	      var _this2 = this;
-
 	      // prevent default action. in this case, action is the form submission event
 	      event.preventDefault();
 
 	      // create a string for an HTTP body message
 	      var username = encodeURIComponent(this.state.user.username);
 	      var password = encodeURIComponent(this.state.user.password);
-	      var formData = 'username=' + username + '&password=' + password;
+	      // const formData = `username=${username}&password=${password}`;
 
-	      // create an AJAX request
-	      var xhr = new XMLHttpRequest();
-	      xhr.open('post', '/user/login');
-	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	      xhr.responseType = 'json';
-	      xhr.addEventListener('load', function () {
-	        if (xhr.status === 200) {
-	          // success
-
-	          // change the component-container state
-	          _this2.setState({
-	            errors: {}
+	      var requestConfig = {
+	        method: "POST",
+	        url: "/user/login",
+	        contentType: 'application/json',
+	        data: JSON.stringify({
+	          username: username,
+	          password: password
+	        })
+	      };
+	      var reactThis = this;
+	      $.ajax(requestConfig).then(function (responseMessage) {
+	        if (responseMessage.success) {
+	          reactThis.setState({
+	            errors: {},
+	            loggedIn: true
 	          });
-
-	          console.log('The form is valid');
+	          browserHistory.push('/home'); //redirect to home page upon successful registration
 	        } else {
-	          // failure
+	          var errors = responseMessage.errors ? responseMessage.errors : {};
+	          errors.summary = responseMessage.message;
 
-	          // change the component state
-	          var errors = xhr.response.errors ? xhr.response.errors : {};
-	          errors.summary = xhr.response.message;
-
-	          _this2.setState({
+	          reactThis.setState({
 	            errors: errors
 	          });
 	        }
 	      });
-	      xhr.send(formData);
 	    }
 
 	    /**
@@ -42923,6 +42934,8 @@
 
 	var _SignUpForm2 = _interopRequireDefault(_SignUpForm);
 
+	var _reactRouter = __webpack_require__(329);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42951,7 +42964,8 @@
 	        email: '',
 	        password: '',
 	        confirm: ''
-	      }
+	      },
+	      loggedIn: false
 	    };
 
 	    _this.processForm = _this.processForm.bind(_this);
@@ -42960,10 +42974,10 @@
 	  }
 
 	  /**
-	   * Change the user object.
-	   *
-	   * @param {object} event - the JavaScript event object
-	   */
+	  * Change the user object.
+	  *
+	  * @param {object} event - the JavaScript event object
+	  */
 
 
 	  _createClass(SignUpPage, [{
@@ -42979,16 +42993,14 @@
 	    }
 
 	    /**
-	     * Process the form.
-	     *
-	     * @param {object} event - the JavaScript event object
-	     */
+	    * Process the form.
+	    *
+	    * @param {object} event - the JavaScript event object
+	    */
 
 	  }, {
 	    key: 'processForm',
 	    value: function processForm(event) {
-	      var _this2 = this;
-
 	      // prevent default action. in this case, action is the form submission event
 	      event.preventDefault();
 
@@ -42998,40 +43010,40 @@
 	      var email = encodeURIComponent(this.state.user.email);
 	      var password = encodeURIComponent(this.state.user.password);
 	      var confirm = encodeURIComponent(this.state.user.confirm);
-	      var formData = 'username=' + username + '&name=' + name + '&email=' + email + '&password=' + password + '&confirm=' + confirm;
+	      //const formData = `username=${username}&name=${name}&email=${email}&password=${password}&confirm=${confirm}`;
 
-	      // create an AJAX request
-	      var xhr = new XMLHttpRequest();
-	      xhr.open('post', '/user/register');
-	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	      xhr.responseType = 'json';
-	      xhr.addEventListener('load', function () {
-	        if (xhr.status === 200) {
-	          // success
-
-	          // change the component-container state
-	          _this2.setState({
-	            errors: {}
+	      var requestConfig = {
+	        method: "POST",
+	        url: "/user/register",
+	        contentType: 'application/json',
+	        data: JSON.stringify({
+	          username: username,
+	          password: password,
+	          name: name,
+	          email: email,
+	          confirm: confirm
+	        })
+	      };
+	      var reactThis = this;
+	      $.ajax(requestConfig).then(function (responseMessage) {
+	        if (responseMessage.success) {
+	          reactThis.setState({
+	            errors: {},
+	            loggedIn: true
 	          });
-
-	          console.log('The form is valid');
+	          _reactRouter.browserHistory.push('/home'); //redirect to home page upon successful registration
 	        } else {
-	          // failure
+	          var errors = responseMessage.errors ? responseMessage.errors : {};
+	          errors.summary = responseMessage.message;
 
-	          var errors = xhr.response.errors ? xhr.response.errors : {};
-	          errors.summary = xhr.response.message;
-
-	          _this2.setState({
+	          reactThis.setState({
 	            errors: errors
 	          });
 	        }
 	      });
-	      xhr.send(formData);
 	    }
 
-	    /**
-	     * Render the component.
-	     */
+	    // Render the component.
 
 	  }, {
 	    key: 'render',
@@ -43167,7 +43179,7 @@
 	        'Already have an account? ',
 	        _react2.default.createElement(
 	          _reactRouter.Link,
-	          { to: '/login' },
+	          { to: '/' },
 	          'Log in'
 	        )
 	      )

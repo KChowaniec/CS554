@@ -56,6 +56,19 @@ redisConnection.on('get-details:*', (data, channel) => {
     });
 });
 
+//GET MOVIE RECOMMENDATIONS WORKER
+redisConnection.on('get-recommendations:*', (data, channel) => {
+    let messageId = data.requestId;
+    let movieId = data.movieId;
+            let fullyComposeMovie = apiData
+                .getMovieRecommendations(movieId)
+                .then((movies) => {
+                        redisConnection.emit(`recommendations-retrieved:${messageId}`,movies);
+                    }).catch(error => {
+                        redisConnection.emit(`recommendations-retrieved-failed:${messageId}`, error);
+                });
+});
+
 //DELETE MOVIE WORKER
 redisConnection.on('delete-movie:*', (data, channel) => {
 

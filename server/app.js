@@ -63,6 +63,9 @@ app.set('view engine', 'handlebars');
 configRoutes(app, passport);
 app.use(express.static('./views/static/'));
 app.use(express.static('./public/js/bundle/'));
+app.get('*', function (request, response){
+  response.sendFile(path.resolve(__dirname, 'views/static', 'index.html'))
+})
 
 
 app.listen(config.serverPort, () => {

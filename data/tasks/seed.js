@@ -9,6 +9,7 @@ var users = require("../users");
 var playlist = require("../playlist");
 var movie = require("../movie");
 var analytics = require("../analytics");
+var theater = require("../theaters");
 
 var https = require("https");
 var pathTail = "?api_key=e443ee14fb107feee75db8b448e6a13e";
@@ -53,6 +54,8 @@ dbConnection().then(db => {
                 console.log(error);
             });
         }).then(() => {
+            // let movies = theater.getTheatersForMovie(10001, "Arrival");
+            // console.log(movies);
             console.log("Finished seeding db");
         });
     }).catch((error) => {
