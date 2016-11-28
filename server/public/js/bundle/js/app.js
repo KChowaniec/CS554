@@ -34102,14 +34102,20 @@
 
 	var _SignUpPage2 = _interopRequireDefault(_SignUpPage);
 
+	var _Logout = __webpack_require__(465);
+
+	var _Logout2 = _interopRequireDefault(_Logout);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	//import HomePage from './containers/HomePage.js';
 
+	//check if user has logged in
 	function requireAuth(nextState, replace) {
-	  if (!userExists()) {
+	  // console.log(SignUpPage.props);
+	  if (!(_SignUpPage2.default.loggedIn && _LoginPage2.default.loggedIn)) {
 	    replace({
-	      pathname: '/login',
+	      pathname: '/',
 	      state: { nextPathname: nextState.location.pathname }
 	    });
 	  }
@@ -34130,6 +34136,9 @@
 	  }, {
 	    path: '/home',
 	    component: _HomePage2.default
+	  }, {
+	    path: '/logout',
+	    component: _Logout2.default
 	  }]
 	};
 
@@ -40705,6 +40714,8 @@
 
 	var _LoginForm2 = _interopRequireDefault(_LoginForm);
 
+	var _reactRouter = __webpack_require__(329);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -40773,11 +40784,11 @@
 	            errors: {},
 	            loggedIn: true
 	          });
-	          browserHistory.push('/home'); //redirect to home page upon successful registration
+	          _reactRouter.browserHistory.push('/home'); //redirect to home page upon successful registration
 	        } else {
 	          var errors = responseMessage.errors ? responseMessage.errors : {};
 	          errors.summary = responseMessage.message;
-
+	          console.log("login failed");
 	          reactThis.setState({
 	            errors: errors
 	          });
@@ -42985,10 +42996,12 @@
 	    value: function changeUser(event) {
 	      var field = event.target.name;
 	      var user = this.state.user;
+	      var loggedIn = this.state.loggedIn;
 	      user[field] = event.target.value;
 
 	      this.setState({
-	        user: user
+	        user: user,
+	        loggedIn: loggedIn
 	      });
 	    }
 
@@ -43052,13 +43065,18 @@
 	        onSubmit: this.processForm,
 	        onChange: this.changeUser,
 	        errors: this.state.errors,
-	        user: this.state.user
+	        user: this.state.user,
+	        loggedIn: this.state.loggedIn
 	      });
 	    }
 	  }]);
 
 	  return SignUpPage;
 	}(_react2.default.Component);
+
+	SignUpPage.contextTypes = {
+	  router: _react.PropTypes.object.isRequired
+	};
 
 	exports.default = SignUpPage;
 
@@ -43094,6 +43112,7 @@
 	  var onSubmit = _ref.onSubmit,
 	      onChange = _ref.onChange,
 	      errors = _ref.errors,
+	      loggedIn = _ref.loggedIn,
 	      user = _ref.user;
 	  return _react2.default.createElement(
 	    _Card.Card,
@@ -43191,10 +43210,17 @@
 	  onSubmit: _react.PropTypes.func.isRequired,
 	  onChange: _react.PropTypes.func.isRequired,
 	  errors: _react.PropTypes.object.isRequired,
-	  user: _react.PropTypes.object.isRequired
+	  user: _react.PropTypes.object.isRequired,
+	  loggedIn: _react.PropTypes.bool.isRequired
 	};
 
 	exports.default = SignUpForm;
+
+/***/ },
+/* 465 */
+/***/ function(module, exports) {
+
+	"use strict";
 
 /***/ }
 /******/ ]);

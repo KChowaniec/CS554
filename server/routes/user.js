@@ -18,32 +18,32 @@ const uuid = require("node-uuid");
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 //middleware function to determine if user is authenticated
-function isAuthorized(req, res, next) {
-    // check header parameters for token
-    var token = req.session.token;
-    // decode token
-    if (token) {
-        // verifies secret
-        jwt.verify(token, 'secretkey', function (err, decoded) {
-            if (err) {
-                return res.redirect("/login");
-            } else {
-                //make sure token exists in session
-                if (req.session && req.session.token === token) {
-                    return next();
-                }
-                else {
-                    return res.redirect("/login");
-                }
-            }
-        });
+// function isAuthorized(req, res, next) {
+//     // check header parameters for token
+//     var token = req.session.token;
+//     // decode token
+//     if (token) {
+//         // verifies secret
+//         jwt.verify(token, 'secretkey', function (err, decoded) {
+//             if (err) {
+//                 return res.redirect("/login");
+//             } else {
+//                 //make sure token exists in session
+//                 if (req.session && req.session.token === token) {
+//                     return next();
+//                 }
+//                 else {
+//                     return res.redirect("/login");
+//                 }
+//             }
+//         });
 
-    } else {
-        // if there is no token
-        // redirect to login
-        return res.redirect("/login");
-    }
-};
+//     } else {
+//         // if there is no token
+//         // redirect to login
+//         return res.redirect("/login");
+//     }
+// };
 
 //get all users
 router.get('/users', function (req, res) {
@@ -177,7 +177,7 @@ router.post('/user/register', function (req, res) {
 
         clearTimeout(killswitchTimeoutId);
         console.log("registration failed");
-         console.log(error);
+        console.log(error);
         return res.status(400).json({
             success: false,
             message: error,
@@ -297,52 +297,61 @@ router.put('/users/:id', function (req, res) {
 });
 
 //post user login - authenticate using passport local strategy
-router.post('/user/login', passport.authenticate('local'), (req, res) => {
-    console.log("in user login");
-    let redisConnection = req
-        .app
-        .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
-    //add data to session object
-    req.session.token = req.user.token;
-    req.session.userId = req.user._id;
-    let sessionData = req.session;
-
-    redisConnection.on(`logged-in:${messageId}`, (sessionData, channel) => {
-        if (sessionData) {
-            res.status(200).json({ success: true });
+router.post('/user/login', function (req, res, next) {
+    return passport.authenticate('local', (err, user) => {
+        if (err) {
+            return res.status(400).json({
+                success: false,
+                message: err
+            });
         }
-        redisConnection.off(`logged-in:${messageId}`);
-        redisConnection.off(`login-failed:${messageId}`);
+        else {
+            let redisConnection = req
+                .app
+                .get("redis");
+            let messageId = uuid.v4();
+            let killswitchTimeoutId = undefined;
+            //add data to session object
+            req.session.token = user.token;
+            req.session.userId = user._id;
+            let sessionData = req.session;
 
-        clearTimeout(killswitchTimeoutId);
-    });
+            redisConnection.on(`logged-in:${messageId}`, (sessionData, channel) => {
+                redisConnection.off(`logged-in:${messageId}`);
+                redisConnection.off(`login-failed:${messageId}`);
 
-    redisConnection.on(`login-failed:${messageId}`, (error, channel) => {
-        redisConnection.off(`logged-in:${messageId}`);
-        redisConnection.off(`login-failed:${messageId}`);
+                clearTimeout(killswitchTimeoutId);
+                if (sessionData) {
+                    return res.status(200).json({ success: true });
+                }
+            });
 
-        clearTimeout(killswitchTimeoutId);
-         return res.status(400).json({
-            success: false,
-            message: error,
-            errors: error
-        });
-    });
+            redisConnection.on(`login-failed:${messageId}`, (error, channel) => {
+                redisConnection.off(`logged-in:${messageId}`);
+                redisConnection.off(`login-failed:${messageId}`);
 
-    killswitchTimeoutId = setTimeout(() => {
-        redisConnection.off(`logged-in:${messageId}`);
-        redisConnection.off(`login-failed:${messageId}`);
-        res
-            .status(500)
-            .json({ error: "Timeout error" })
-    }, 5000);
+                clearTimeout(killswitchTimeoutId);
+                return res.status(400).json({
+                    success: false,
+                    message: error,
+                    errors: error
+                });
+            });
 
-    redisConnection.emit(`login-user:${messageId}`, {
-        requestId: messageId,
-        session: sessionData
-    });
+            killswitchTimeoutId = setTimeout(() => {
+                redisConnection.off(`logged-in:${messageId}`);
+                redisConnection.off(`login-failed:${messageId}`);
+                return res
+                    .status(500)
+                    .json({ error: "Timeout error" })
+            }, 5000);
+
+            redisConnection.emit(`login-user:${messageId}`, {
+                requestId: messageId,
+                session: sessionData
+            });
+        }
+    })(req, res, next);
 });
 
 

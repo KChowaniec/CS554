@@ -2,12 +2,15 @@ import Base from './components/Base.js';
 import HomePage from './components/HomePage.js';
 import LoginPage from './containers/LoginPage.js';
 import SignUpPage from './containers/SignUpPage.js';
+import Logout from './components/Logout.js';
 //import HomePage from './containers/HomePage.js';
 
+//check if user has logged in
 function requireAuth(nextState, replace) {
-  if (!userExists()) {
+ // console.log(SignUpPage.props);
+  if (!(SignUpPage.loggedIn && LoginPage.loggedIn)) {
     replace({
-      pathname: '/login',
+      pathname: '/',
       state: { nextPathname: nextState.location.pathname }
     })
   }
@@ -36,7 +39,12 @@ const routes = {
     {
       path: '/home',
       component: HomePage,
+      // onEnter: requireAuth
     },
+    {
+      path: '/logout',
+      component: Logout
+    }
 
   ]
 };

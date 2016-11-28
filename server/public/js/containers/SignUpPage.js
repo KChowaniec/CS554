@@ -34,10 +34,12 @@ class SignUpPage extends React.Component {
  changeUser(event) {
   const field = event.target.name;
   const user = this.state.user;
+  const loggedIn = this.state.loggedIn;
   user[field] = event.target.value;
   
     this.setState({
-    user
+    user,
+    loggedIn
   });
 }
 
@@ -98,10 +100,16 @@ let reactThis = this;
            onChange={this.changeUser }      
     errors={ this.state.errors} 
     user={ this.state.user}
+    loggedIn={this.state.loggedIn}
       />    
     ); 
 }
   
  }
+
+ SignUpPage.contextTypes = {
+  router: PropTypes.object.isRequired
+};
+
 
 export default SignUpPage;

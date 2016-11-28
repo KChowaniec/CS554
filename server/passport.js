@@ -25,7 +25,6 @@ module.exports = function (passport) {
         function (req, username, password, done) {
             process.nextTick(function () {
                 userData.getUserByUsername(username).then((user) => {
-                    console.log(user);
                     if (!userData.verifyLogin(password, user.password)) {
                         return done(null, false, { message: 'Incorrect password.' });
                     }

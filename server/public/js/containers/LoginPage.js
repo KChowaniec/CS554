@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import LoginForm from '../components/LoginForm.js';
-
+import { browserHistory } from 'react-router';
 
 class LoginPage extends React.Component {
 
@@ -36,35 +36,35 @@ class LoginPage extends React.Component {
     // create a string for an HTTP body message
     const username = encodeURIComponent(this.state.user.username);
     const password = encodeURIComponent(this.state.user.password);
-   // const formData = `username=${username}&password=${password}`;
+    // const formData = `username=${username}&password=${password}`;
 
- var requestConfig = {
-    method: "POST",
-    url: "/user/login",
-    contentType: 'application/json',
-    data: JSON.stringify({
-      username: username,
-      password: password,
-    })
-  };
-let reactThis = this;
-  $.ajax(requestConfig).then((responseMessage) => {
-    if (responseMessage.success) {
-      reactThis.setState({
-        errors: {},
-        loggedIn: true
-      });
-      browserHistory.push('/home'); //redirect to home page upon successful registration
-    }
-    else {
-      const errors = responseMessage.errors ? responseMessage.errors : {};
-      errors.summary = responseMessage.message;
-
-      reactThis.setState({
-        errors
-      });
-    }
-  });
+    var requestConfig = {
+      method: "POST",
+      url: "/user/login",
+      contentType: 'application/json',
+      data: JSON.stringify({
+        username: username,
+        password: password,
+      })
+    };
+    let reactThis = this;
+    $.ajax(requestConfig).then((responseMessage) => {
+      if (responseMessage.success) {
+        reactThis.setState({
+          errors: {},
+          loggedIn: true
+        });
+        browserHistory.push('/home'); //redirect to home page upon successful registration
+      }
+      else {
+        const errors = responseMessage.errors ? responseMessage.errors : {};
+        errors.summary = responseMessage.message;
+        console.log("login failed");
+        reactThis.setState({
+          errors
+        });
+      }
+    });
   }
 
   /**
@@ -92,7 +92,7 @@ let reactThis = this;
         onChange={this.changeUser}
         errors={this.state.errors}
         user={this.state.user}
-      />
+        />
     );
   }
 
