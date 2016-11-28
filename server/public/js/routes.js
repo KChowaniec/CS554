@@ -43,6 +43,11 @@ const routes = {
     {
       path: '/logout',
       component: Logout
+    },
+    //match any other routes - redirect to login page
+    {
+      path: '/*',
+      component: LoginPage
     }
 
   ]

@@ -34139,6 +34139,11 @@
 	  }, {
 	    path: '/logout',
 	    component: _Logout2.default
+	  },
+	  //match any other routes - redirect to login page
+	  {
+	    path: '/*',
+	    component: _LoginPage2.default
 	  }]
 	};
 
