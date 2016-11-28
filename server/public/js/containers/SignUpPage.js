@@ -61,7 +61,7 @@ class SignUpPage extends React.Component {
   //const formData = `username=${username}&name=${name}&email=${email}&password=${password}&confirm=${confirm}`;
 
   var requestConfig = {
-    method: "POST",
+   method: "POST",
     url: "/user/register",
     contentType: 'application/json',
     data: JSON.stringify({
@@ -82,6 +82,7 @@ let reactThis = this;
       browserHistory.push('/home'); //redirect to home page upon successful registration
     }
     else {
+      console.log("error");
       const errors = responseMessage.errors ? responseMessage.errors : {};
       errors.summary = responseMessage.message;
 

@@ -34111,15 +34111,15 @@
 	//import HomePage from './containers/HomePage.js';
 
 	//check if user has logged in
-	function requireAuth(nextState, replace) {
-	  // console.log(SignUpPage.props);
-	  if (!(_SignUpPage2.default.loggedIn && _LoginPage2.default.loggedIn)) {
-	    replace({
-	      pathname: '/',
-	      state: { nextPathname: nextState.location.pathname }
-	    });
-	  }
-	}
+	// function requireAuth(nextState, replace) {
+	//  // console.log(SignUpPage.props);
+	//   if (!(SignUpPage.loggedIn && LoginPage.loggedIn)) {
+	//     replace({
+	//       pathname: '/',
+	//       state: { nextPathname: nextState.location.pathname }
+	//     })
+	//   }
+	// }
 
 	var routes = {
 	  // base component (wrapper for the whole application).
@@ -43046,6 +43046,7 @@
 	          });
 	          _reactRouter.browserHistory.push('/home'); //redirect to home page upon successful registration
 	        } else {
+	          console.log("error");
 	          var errors = responseMessage.errors ? responseMessage.errors : {};
 	          errors.summary = responseMessage.message;
 

@@ -6,15 +6,15 @@ import Logout from './components/Logout.js';
 //import HomePage from './containers/HomePage.js';
 
 //check if user has logged in
-function requireAuth(nextState, replace) {
- // console.log(SignUpPage.props);
-  if (!(SignUpPage.loggedIn && LoginPage.loggedIn)) {
-    replace({
-      pathname: '/',
-      state: { nextPathname: nextState.location.pathname }
-    })
-  }
-}
+// function requireAuth(nextState, replace) {
+//  // console.log(SignUpPage.props);
+//   if (!(SignUpPage.loggedIn && LoginPage.loggedIn)) {
+//     replace({
+//       pathname: '/',
+//       state: { nextPathname: nextState.location.pathname }
+//     })
+//   }
+// }
 
 const routes = {
   // base component (wrapper for the whole application).
@@ -39,7 +39,6 @@ const routes = {
     {
       path: '/home',
       component: HomePage,
-      // onEnter: requireAuth
     },
     {
       path: '/logout',
