@@ -37,13 +37,6 @@ router.get("/", (req, res) => {
                     unviewed.push(playlist.playlistMovies[i]);
                 }
             }
-            res.render("playlist/page", {
-                playlist: playlist,
-                movies: playlist.playlistMovies,
-                viewed: viewed,
-                unviewed: unviewed,
-                partial: "playlist-script"
-            });
         }
         redisConnection.off(`playlist-retrieved:${messageId}`);
         redisConnection.off(`playlist-retrieved-failed:${messageId}`);

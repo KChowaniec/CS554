@@ -14,13 +14,6 @@ var url = require('url');
 var xss = require('xss');
 const uuid = require("node-uuid");
 
-router.get("/", (req, res) => {
-    //render search form and user preferences (if any)
-    res.render("search/form", {
-        partial: "populate-preferences-script"
-    });
-});
-
 router.get("/preferences", (req, res) => {
     //get user preferences (if any)
     let userId = req.session.userId;
