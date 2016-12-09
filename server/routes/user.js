@@ -17,56 +17,15 @@ var passport = require('passport');
 const uuid = require("node-uuid");
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
-// //middleware function to determine if user is authenticated
-// function isAuthorized(req, res, next) {
-//     // check header parameters for token
-//     var token = req.session.token;
-//     // decode token
-//     if (token) {
-//         // verifies secret
-//         jwt.verify(token, 'secretkey', function(err, decoded) {
-//             if (err) {
-//                 return res.status(400).json({
-//                     success: false,
-//                     message: err,
-//                     errors: err
-//                 });
-//             } else {
-//                 //make sure token exists in session
-//                 if (req.session && req.session.token === token) {
-//                     return next();
-//                 }
-//                 else {
-//                     return res.status(400).json({
-//                         success: false,
-//                         message: "Authentication failed",
-//                         errors: "Authentication failed"
-//                     });
-//                 }
-//             }
-//         });
-
-//     } else {
-//         // if there is no token
-//         // redirect to login
-//         return res.status(400).json({
-//             success: false,
-//             message: "Authentication failed",
-//             errors: "Authentication failed"
-//         });
-//     }
-// };
-
-router.get("/authorized", function (req, res) {
+router.get("/user/authorized", function (req, res) {
     var token = req.session.token;
     // decode token
     if (token) {
         // verifies secret
         jwt.verify(token, 'secretkey', function (err, decoded) {
             if (err) {
-                return res.status(400).json({
-                    success: false,
-                    errors: err
+                return res.status(500).json({
+                    success: false
                 });
             } else {
                 //make sure token exists in session
@@ -76,7 +35,7 @@ router.get("/authorized", function (req, res) {
                     });
                 }
                 else {
-                    return res.status(400).json({
+                    return res.status(500).json({
                         success: false
                     });
                 }
@@ -86,7 +45,7 @@ router.get("/authorized", function (req, res) {
     } else {
         // if there is no token
         console.log("no token");
-        return res.status(400).json({
+        return res.status(500).json({
             success: false
         });
     }
@@ -239,7 +198,7 @@ router.post('/user/register', function (req, res) {
 });
 
 //get user information
-router.get('/user', isAuthorized, function (req, res) {
+router.get('/user', function (req, res) {
 
     let redisConnection = req
         .app
@@ -282,7 +241,7 @@ router.get('/user', isAuthorized, function (req, res) {
 
 
 //update user
-router.put('/users/:id', isAuthorized, function (req, res) {
+router.put('/users/:id', function (req, res) {
     let userId = req.params.id;
     let newData = req.body;
     let redisConnection = req

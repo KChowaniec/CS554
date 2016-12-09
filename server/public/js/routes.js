@@ -3,18 +3,23 @@ import HomePage from './components/HomePage.js';
 import LoginPage from './containers/LoginPage.js';
 import SignUpPage from './containers/SignUpPage.js';
 import Logout from './components/Logout.js';
+import { browserHistory } from 'react-router';
 //import HomePage from './containers/HomePage.js';
 
 //check if user has logged in
-// function requireAuth(nextState, replace) {
-//  // console.log(SignUpPage.props);
-//   if (!(SignUpPage.loggedIn && LoginPage.loggedIn)) {
-//     replace({
-//       pathname: '/',
-//       state: { nextPathname: nextState.location.pathname }
-//     })
-//   }
-// }
+function requireAuth(nextState, replace) {
+  $.ajax({
+    url: "/user/authorized",
+    dataType: 'json',
+    cache: false,
+    success: function (authorized) {
+    },
+    error: function (xhr, status, err) {
+      browserHistory.push('/');  //redirect to login
+    }
+  });
+}
+
 
 const routes = {
   // base component (wrapper for the whole application).
@@ -39,6 +44,7 @@ const routes = {
     {
       path: '/home',
       component: HomePage,
+      onEnter: requireAuth
     },
     {
       path: '/logout',
@@ -47,7 +53,8 @@ const routes = {
     //match any other routes - redirect to login page
     {
       path: '/*',
-      component: LoginPage
+      component: HomePage,
+      onEnter: requireAuth
     }
 
   ]

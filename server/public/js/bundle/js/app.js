@@ -34106,20 +34106,24 @@
 
 	var _Logout2 = _interopRequireDefault(_Logout);
 
+	var _reactRouter = __webpack_require__(329);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	//import HomePage from './containers/HomePage.js';
 
 	//check if user has logged in
-	// function requireAuth(nextState, replace) {
-	//  // console.log(SignUpPage.props);
-	//   if (!(SignUpPage.loggedIn && LoginPage.loggedIn)) {
-	//     replace({
-	//       pathname: '/',
-	//       state: { nextPathname: nextState.location.pathname }
-	//     })
-	//   }
-	// }
+	function requireAuth(nextState, replace) {
+	  $.ajax({
+	    url: "/user/authorized",
+	    dataType: 'json',
+	    cache: false,
+	    success: function success(authorized) {},
+	    error: function error(xhr, status, err) {
+	      _reactRouter.browserHistory.push('/'); //redirect to login
+	    }
+	  });
+	}
 
 	var routes = {
 	  // base component (wrapper for the whole application).
@@ -34135,7 +34139,8 @@
 	    component: _SignUpPage2.default
 	  }, {
 	    path: '/home',
-	    component: _HomePage2.default
+	    component: _HomePage2.default,
+	    onEnter: requireAuth
 	  }, {
 	    path: '/logout',
 	    component: _Logout2.default
@@ -34143,7 +34148,8 @@
 	  //match any other routes - redirect to login page
 	  {
 	    path: '/*',
-	    component: _LoginPage2.default
+	    component: _HomePage2.default,
+	    onEnter: requireAuth
 	  }]
 	};
 
