@@ -288,8 +288,8 @@ router.put('/users/:id', function (req, res) {
 //post user login - authenticate using passport local strategy
 router.post('/user/login', function (req, res, next) {
     return passport.authenticate('local', (err, user) => {
-        if (err) {
-            return res.status(400).json({
+        if (err || !user) {
+            return res.json({
                 success: false,
                 message: err
             });
@@ -311,7 +311,7 @@ router.post('/user/login', function (req, res, next) {
 
                 clearTimeout(killswitchTimeoutId);
                 if (sessionData) {
-                    return res.status(200).json({ success: true });
+                    return res.status(200).json({ success: true, token: sessionData.token });
                 }
             });
 

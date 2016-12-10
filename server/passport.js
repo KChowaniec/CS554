@@ -26,7 +26,7 @@ module.exports = function (passport) {
             process.nextTick(function () {
                 userData.getUserByUsername(username).then((user) => {
                     if (!userData.verifyLogin(password, user.password)) {
-                        return done(null, false, { message: 'Incorrect password.' });
+                        return done(null, false, { message: 'Invalid login.' });
                     }
                     var token = jwt.sign(user, 'secretkey');
                     user.token = token;

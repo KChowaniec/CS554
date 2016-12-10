@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import LoginForm from '../components/LoginForm.js';
 import { browserHistory } from 'react-router';
+import auth from '../utils/auth.js';
 
 class LoginPage extends React.Component {
 
@@ -12,12 +13,11 @@ class LoginPage extends React.Component {
 
     // set the initial component state
     this.state = {
-      errors: {},
+      error: false,
       user: {
         username: '',
         password: ''
-      },
-      loggedIn: false
+      }
     };
 
     this.processForm = this.processForm.bind(this);
@@ -36,35 +36,53 @@ class LoginPage extends React.Component {
     // create a string for an HTTP body message
     const username = encodeURIComponent(this.state.user.username);
     const password = encodeURIComponent(this.state.user.password);
-    // const formData = `username=${username}&password=${password}`;
 
-    var requestConfig = {
-      method: "POST",
-      url: "/user/login",
-      contentType: 'application/json',
-      data: JSON.stringify({
-        username: username,
-        password: password,
-      })
-    };
-    let reactThis = this;
-    $.ajax(requestConfig).then((responseMessage) => {
-      if (responseMessage.success) {
-        reactThis.setState({
-          errors: {},
-          loggedIn: true
-        });
-        browserHistory.push('/home'); //redirect to home page upon successful registration
+    auth.login(username, password, (loggedIn) => {
+      console.log(loggedIn);
+      if (!loggedIn) {
+        return this.setState({ error: true })
+
       }
       else {
-        const errors = responseMessage.errors ? responseMessage.errors : {};
-        errors.summary = responseMessage.message;
-        console.log("login failed");
-        reactThis.setState({
-          errors
-        });
+        browserHistory.push('/home');
       }
+
+      //const { location } = this.props
+
+      // if (location.state && location.state.nextPathname) {
+      //   this.history.replaceState(null, location.state.nextPathname)
+      // } else {
+      //   this.history.replaceState(null, '/')
+      // }
     });
+
+    // var requestConfig = {
+    //   method: "POST",
+    //   url: "/user/login",
+    //   contentType: 'application/json',
+    //   data: JSON.stringify({
+    //     username: username,
+    //     password: password,
+    //   })
+    // };
+    // let reactThis = this;
+    // $.ajax(requestConfig).then((responseMessage) => {
+    //   if (responseMessage.success) {
+    //     reactThis.setState({
+    //       errors: {},
+    //       loggedIn: true
+    //     });
+    //     browserHistory.push('/home'); //redirect to home page upon successful registration
+    //   }
+    //   else {
+    //     const errors = responseMessage.errors ? responseMessage.errors : {};
+    //     errors.summary = responseMessage.message;
+    //     console.log("login failed");
+    //     reactThis.setState({
+    //       errors
+    //     });
+    //   }
+    // });
   }
 
   /**
@@ -90,7 +108,7 @@ class LoginPage extends React.Component {
       <LoginForm
         onSubmit={this.processForm}
         onChange={this.changeUser}
-        errors={this.state.errors}
+        error={this.state.error}
         user={this.state.user}
         />
     );

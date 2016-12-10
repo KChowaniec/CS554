@@ -4,22 +4,13 @@ import LoginPage from './containers/LoginPage.js';
 import SignUpPage from './containers/SignUpPage.js';
 import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
-//import HomePage from './containers/HomePage.js';
+import auth from './utils/auth.js';
 
-//check if user has logged in
-function requireAuth(nextState, replace) {
-  $.ajax({
-    url: "/user/authorized",
-    dataType: 'json',
-    cache: false,
-    success: function (authorized) {
-    },
-    error: function (xhr, status, err) {
-      browserHistory.push('/');  //redirect to login
-    }
-  });
+function redirectToLogin(nextState, replace) {
+  if (!auth.loggedIn()) {
+    replace('/login')
+  }
 }
-
 
 const routes = {
   // base component (wrapper for the whole application).
@@ -28,7 +19,8 @@ const routes = {
 
     {
       path: '/',
-      component: LoginPage
+      component: HomePage,
+      onEnter: redirectToLogin
     },
 
     {
@@ -44,17 +36,17 @@ const routes = {
     {
       path: '/home',
       component: HomePage,
-      onEnter: requireAuth
+      onEnter: redirectToLogin
     },
     {
       path: '/logout',
       component: Logout
     },
-    //match any other routes - redirect to login page
+    //match any other routes - redirect to home page
     {
       path: '/*',
       component: HomePage,
-      onEnter: requireAuth
+      onEnter: redirectToLogin
     }
 
   ]
