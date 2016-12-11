@@ -1,5 +1,2 @@
 data/all-config.json
-data/node_modules/*
-worker/node_modules/*
-server/node_modules/*
 server/views/layouts/main.handlebars
