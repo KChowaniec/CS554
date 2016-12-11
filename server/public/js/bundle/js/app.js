@@ -34244,6 +34244,8 @@
 	    replace('/login');
 	  }
 	}
+	// import AnalyticsPage from './containers/AnalyticsPages.js';
+
 
 	var routes = {
 	  // base component (wrapper for the whole application).
@@ -34266,6 +34268,10 @@
 	    path: '/logout',
 	    component: _Logout2.default
 	  },
+	  // {
+	  //   path: '/analytics',
+	  //   component: AnalyticsPage
+	  // },
 	  //match any other routes - redirect to home page
 	  {
 	    path: '/*',
@@ -34333,15 +34339,31 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'top-bar-right' },
-	          this.state.loggedIn ? _react2.default.createElement(
+	          this.state.loggedIn ? [_react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: '/account' },
+	            'My Account'
+	          ), _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: '/playlist' },
+	            'My Playlist'
+	          ), _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: '/analytics' },
+	            'Movie Analytics'
+	          ), _react2.default.createElement(
 	            _reactRouter.Link,
 	            { to: '/logout' },
 	            'Log out'
-	          ) : _react2.default.createElement(
+	          )] : [_react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: '/login' },
+	            'Login'
+	          ), _react2.default.createElement(
 	            _reactRouter.Link,
 	            { to: '/signup' },
 	            'Sign up'
-	          )
+	          )]
 	        )
 	      ),
 	      this.props.children
@@ -34426,6 +34448,26 @@
 	      }
 	    });
 	  },
+	  register: function register(username, password, confirm, email, name, cb) {
+	    var _this2 = this;
+
+	    cb = arguments[arguments.length - 1];
+	    if (localStorage.token) {
+	      if (cb) cb(true);
+	      this.onChange(true);
+	      return;
+	    }
+	    registerRequest(username, password, confirm, email, name, function (res) {
+	      if (res.authenticated) {
+	        localStorage.token = res.token;
+	        if (cb) cb(true);
+	        _this2.onChange(true);
+	      } else {
+	        if (cb) cb(false);
+	        _this2.onChange(false);
+	      }
+	    });
+	  },
 
 
 	  getToken: function getToken() {
@@ -34466,6 +34508,38 @@
 	    })
 	  };
 	  console.log("making ajax call");
+	  $.ajax(requestConfig).then(function (responseMessage) {
+	    if (responseMessage.success) {
+	      cb({
+	        authenticated: true,
+	        token: responseMessage.token
+	      });
+	    } else {
+	      cb({
+	        authenticated: false
+	      });
+	    }
+	  });
+	}
+	function registerRequest(username, password, confirm, email, name, cb) {
+	  if (!username || !password || !confirm || !name || !email) {
+	    return cb({
+	      authenticated: false
+	    });
+	  };
+
+	  var requestConfig = {
+	    method: "POST",
+	    url: "/user/register",
+	    contentType: 'application/json',
+	    data: JSON.stringify({
+	      username: username,
+	      password: password,
+	      name: name,
+	      email: email,
+	      confirm: confirm
+	    })
+	  };
 	  $.ajax(requestConfig).then(function (responseMessage) {
 	    if (responseMessage.success) {
 	      cb({
@@ -43268,15 +43342,14 @@
 	    var _this = _possibleConstructorReturn(this, (SignUpPage.__proto__ || Object.getPrototypeOf(SignUpPage)).call(this, props));
 
 	    _this.state = {
-	      errors: {},
+	      errors: false,
 	      user: {
 	        username: '',
 	        name: '',
 	        email: '',
 	        password: '',
 	        confirm: ''
-	      },
-	      loggedIn: false
+	      }
 	    };
 
 	    _this.processForm = _this.processForm.bind(_this);
@@ -43296,12 +43369,10 @@
 	    value: function changeUser(event) {
 	      var field = event.target.name;
 	      var user = this.state.user;
-	      var loggedIn = this.state.loggedIn;
 	      user[field] = event.target.value;
 
 	      this.setState({
-	        user: user,
-	        loggedIn: loggedIn
+	        user: user
 	      });
 	    }
 
@@ -43314,6 +43385,8 @@
 	  }, {
 	    key: 'processForm',
 	    value: function processForm(event) {
+	      var _this2 = this;
+
 	      // prevent default action. in this case, action is the form submission event
 	      event.preventDefault();
 
@@ -43323,39 +43396,48 @@
 	      var email = encodeURIComponent(this.state.user.email);
 	      var password = encodeURIComponent(this.state.user.password);
 	      var confirm = encodeURIComponent(this.state.user.confirm);
-	      //const formData = `username=${username}&name=${name}&email=${email}&password=${password}&confirm=${confirm}`;
 
-	      var requestConfig = {
-	        method: "POST",
-	        url: "/user/register",
-	        contentType: 'application/json',
-	        data: JSON.stringify({
-	          username: username,
-	          password: password,
-	          name: name,
-	          email: email,
-	          confirm: confirm
-	        })
-	      };
-	      var reactThis = this;
-	      $.ajax(requestConfig).then(function (responseMessage) {
-	        if (responseMessage.success) {
-	          reactThis.setState({
-	            errors: {},
-	            loggedIn: true
-	          });
-	          _reactRouter.browserHistory.push('/home'); //redirect to home page upon successful registration
+	      auth.register(username, password, confirm, email, name, function (loggedIn) {
+	        console.log(loggedIn);
+	        if (!loggedIn) {
+	          return _this2.setState({ errors: true });
 	        } else {
-	          console.log("error");
-	          var errors = responseMessage.errors ? responseMessage.errors : {};
-	          errors.summary = responseMessage.message;
-
-	          reactThis.setState({
-	            errors: errors
-	          });
+	          _reactRouter.browserHistory.push('/home');
 	        }
 	      });
 	    }
+
+	    // var requestConfig = {
+	    //   method: "POST",
+	    //   url: "/user/register",
+	    //   contentType: 'application/json',
+	    //   data: JSON.stringify({
+	    //     username: username,
+	    //     password: password,
+	    //     name: name,
+	    //     email: email,
+	    //     confirm: confirm
+	    //   })
+	    // };
+	    // let reactThis = this;
+	    // $.ajax(requestConfig).then((responseMessage) => {
+	    //   if (responseMessage.success) {
+	    //     reactThis.setState({
+	    //       errors: {}
+	    //     });
+	    //     browserHistory.push('/home'); //redirect to home page upon successful registration
+	    //   }
+	    //   else {
+	    //     console.log("error");
+	    //     const errors = responseMessage.errors ? responseMessage.errors : {};
+	    //     errors.summary = responseMessage.message;
+
+	    //     reactThis.setState({
+	    //       errors
+	    //     });
+	    //   }
+	    // });
+	    //   }
 
 	    // Render the component.
 
@@ -43366,8 +43448,7 @@
 	        onSubmit: this.processForm,
 	        onChange: this.changeUser,
 	        errors: this.state.errors,
-	        user: this.state.user,
-	        loggedIn: this.state.loggedIn
+	        user: this.state.user
 	      });
 	    }
 	  }]);
@@ -43426,10 +43507,10 @@
 	        { className: 'card-heading' },
 	        'Sign Up'
 	      ),
-	      errors.summary && _react2.default.createElement(
+	      errors && _react2.default.createElement(
 	        'p',
 	        { className: 'error-message' },
-	        errors.summary
+	        'Please correct the errors'
 	      ),
 	      _react2.default.createElement(
 	        'div',
@@ -43510,7 +43591,7 @@
 	SignUpForm.propTypes = {
 	  onSubmit: _react.PropTypes.func.isRequired,
 	  onChange: _react.PropTypes.func.isRequired,
-	  errors: _react.PropTypes.object.isRequired,
+	  errors: _react.PropTypes.bool.isRequired,
 	  user: _react.PropTypes.object.isRequired,
 	  loggedIn: _react.PropTypes.bool.isRequired
 	};

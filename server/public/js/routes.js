@@ -2,6 +2,7 @@ import Base from './components/Base.js';
 import HomePage from './components/HomePage.js';
 import LoginPage from './containers/LoginPage.js';
 import SignUpPage from './containers/SignUpPage.js';
+// import AnalyticsPage from './containers/AnalyticsPages.js';
 import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
@@ -42,6 +43,10 @@ const routes = {
       path: '/logout',
       component: Logout
     },
+    // {
+    //   path: '/analytics',
+    //   component: AnalyticsPage
+    // },
     //match any other routes - redirect to home page
     {
       path: '/*',

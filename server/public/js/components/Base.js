@@ -28,11 +28,15 @@ const Base = React.createClass({
             <p>Matrix Movie Search</p>
           </div>
           <div className="top-bar-right">
-            {this.state.loggedIn ? (
+            {this.state.loggedIn ? ([
+              <Link to="/account">My Account</Link>,
+              <Link to="/playlist">My Playlist</Link>,
+              <Link to="/analytics">Movie Analytics</Link>,
               <Link to="/logout">Log out</Link>
-            ) : (
-                <Link to="/signup">Sign up</Link>
-              )}
+            ]) : ([
+              <Link to="/login">Login</Link>,
+              <Link to="/signup">Sign up</Link>
+            ])}
           </div>
 
         </div>
