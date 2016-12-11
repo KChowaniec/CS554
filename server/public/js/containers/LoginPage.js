@@ -38,7 +38,6 @@ class LoginPage extends React.Component {
     const password = encodeURIComponent(this.state.user.password);
 
     auth.login(username, password, (loggedIn) => {
-      console.log(loggedIn);
       if (!loggedIn) {
         return this.setState({ error: true })
 

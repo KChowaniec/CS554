@@ -34227,6 +34227,10 @@
 
 	var _SignUpPage2 = _interopRequireDefault(_SignUpPage);
 
+	var _AnalyticsPage = __webpack_require__(471);
+
+	var _AnalyticsPage2 = _interopRequireDefault(_AnalyticsPage);
+
 	var _Logout = __webpack_require__(470);
 
 	var _Logout2 = _interopRequireDefault(_Logout);
@@ -34244,8 +34248,17 @@
 	    replace('/login');
 	  }
 	}
-	// import AnalyticsPage from './containers/AnalyticsPages.js';
 
+	function getAnalytics(nextState, replace) {
+	  var requestConfig = {
+	    method: "GET",
+	    url: "/analytics",
+	    contentType: 'application/json'
+	  };
+	  $.ajax(requestConfig).then(function (responseMessage) {
+	    window.location.reload();
+	  });
+	}
 
 	var routes = {
 	  // base component (wrapper for the whole application).
@@ -34267,11 +34280,11 @@
 	  }, {
 	    path: '/logout',
 	    component: _Logout2.default
+	  }, {
+	    path: '/analytics',
+	    component: _AnalyticsPage2.default,
+	    onEnter: getAnalytics
 	  },
-	  // {
-	  //   path: '/analytics',
-	  //   component: AnalyticsPage
-	  // },
 	  //match any other routes - redirect to home page
 	  {
 	    path: '/*',
@@ -34331,39 +34344,51 @@
 	          'div',
 	          { className: 'top-bar-left' },
 	          _react2.default.createElement(
-	            'p',
-	            null,
-	            'Matrix Movie Search'
+	            _reactRouter.IndexLink,
+	            { to: '/' },
+	            'Movie Matrix Search'
 	          )
 	        ),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'top-bar-right' },
-	          this.state.loggedIn ? [_react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: '/account' },
-	            'My Account'
-	          ), _react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: '/playlist' },
-	            'My Playlist'
-	          ), _react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: '/analytics' },
-	            'Movie Analytics'
-	          ), _react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: '/logout' },
-	            'Log out'
-	          )] : [_react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: '/login' },
-	            'Login'
-	          ), _react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: '/signup' },
-	            'Sign up'
-	          )]
+	          this.state.loggedIn ? _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: '/account' },
+	              'My Account'
+	            ),
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: '/playlist' },
+	              'My Playlist'
+	            ),
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: '/analytics' },
+	              'Movie Analytics'
+	            ),
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: '/logout' },
+	              'Log out'
+	            )
+	          ) : _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: '/login' },
+	              'Login'
+	            ),
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: '/signup' },
+	              'Sign up'
+	            )
+	          )
 	        )
 	      ),
 	      this.props.children
@@ -34376,50 +34401,6 @@
 	};
 
 	exports.default = Base;
-
-	// const App = React.createClass({
-
-	//   getInitialState() {
-	//     return {
-	//       loggedIn: auth.loggedIn()
-	//     }
-	//   },
-
-	//   updateAuth(loggedIn) {
-	//     this.setState({
-	//       loggedIn: !!loggedIn
-	//     })
-	//   },
-
-	//   componentWillMount() {
-	//     auth.onChange = this.updateAuth
-	//     auth.login()
-	//   },
-
-	//   render() {
-	//     return (
-	//       <div>
-	//         <ul>
-	//           <li>
-	//             {this.state.loggedIn ? (
-	//               <Link to="/logout">Log out</Link>
-	//             ) : (
-	//                 <Link to="/login">Sign in</Link>
-	//               )}
-	//           </li>
-	//           <li><Link to="/about">About</Link></li>
-	//           <li><Link to="/">Home</Link> (changes depending on auth status)</li>
-	//           <li><Link to="/page2">Page Two</Link> (authenticated)</li>
-	//           <li><Link to="/user/foo">User: Foo</Link> (authenticated)</li>
-	//         </ul>
-	//         {this.props.children}
-	//       </div>
-	//     )
-	//   }
-
-	// })
-
-	// export default App
 
 /***/ },
 /* 389 */
@@ -34507,7 +34488,6 @@
 	      password: password
 	    })
 	  };
-	  console.log("making ajax call");
 	  $.ajax(requestConfig).then(function (responseMessage) {
 	    if (responseMessage.success) {
 	      cb({
@@ -41123,7 +41103,6 @@
 	      var password = encodeURIComponent(this.state.user.password);
 
 	      _auth2.default.login(username, password, function (loggedIn) {
-	        console.log(loggedIn);
 	        if (!loggedIn) {
 	          return _this2.setState({ error: true });
 	        } else {
@@ -43494,7 +43473,6 @@
 	  var onSubmit = _ref.onSubmit,
 	      onChange = _ref.onChange,
 	      errors = _ref.errors,
-	      loggedIn = _ref.loggedIn,
 	      user = _ref.user;
 	  return _react2.default.createElement(
 	    _Card.Card,
@@ -43592,8 +43570,7 @@
 	  onSubmit: _react.PropTypes.func.isRequired,
 	  onChange: _react.PropTypes.func.isRequired,
 	  errors: _react.PropTypes.bool.isRequired,
-	  user: _react.PropTypes.object.isRequired,
-	  loggedIn: _react.PropTypes.bool.isRequired
+	  user: _react.PropTypes.object.isRequired
 	};
 
 	exports.default = SignUpForm;
@@ -43636,6 +43613,12 @@
 	});
 
 	exports.default = Logout;
+
+/***/ },
+/* 471 */
+/***/ function(module, exports) {
+
+	"use strict";
 
 /***/ }
 /******/ ]);

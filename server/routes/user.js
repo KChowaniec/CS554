@@ -17,39 +17,39 @@ var passport = require('passport');
 const uuid = require("node-uuid");
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
-router.get("/user/authorized", function (req, res) {
-    var token = req.session.token;
-    // decode token
-    if (token) {
-        // verifies secret
-        jwt.verify(token, 'secretkey', function (err, decoded) {
-            if (err) {
-                return res.status(500).json({
-                    success: false
-                });
-            } else {
-                //make sure token exists in session
-                if (req.session && req.session.token === token) {
-                    return res.status(200).json({
-                        success: true
-                    });
-                }
-                else {
-                    return res.status(500).json({
-                        success: false
-                    });
-                }
-            }
-        });
+// router.get("/user/authorized", function (req, res) {
+//     var token = req.session.token;
+//     // decode token
+//     if (token) {
+//         // verifies secret
+//         jwt.verify(token, 'secretkey', function (err, decoded) {
+//             if (err) {
+//                 return res.status(500).json({
+//                     success: false
+//                 });
+//             } else {
+//                 //make sure token exists in session
+//                 if (req.session && req.session.token === token) {
+//                     return res.status(200).json({
+//                         success: true
+//                     });
+//                 }
+//                 else {
+//                     return res.status(500).json({
+//                         success: false
+//                     });
+//                 }
+//             }
+//         });
 
-    } else {
-        // if there is no token
-        console.log("no token");
-        return res.status(500).json({
-            success: false
-        });
-    }
-});
+//     } else {
+//         // if there is no token
+//         console.log("no token");
+//         return res.status(500).json({
+//             success: false
+//         });
+//     }
+// });
 
 
 //get all users

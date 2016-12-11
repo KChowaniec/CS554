@@ -9,7 +9,6 @@ const SignUpForm = ({
   onSubmit,
   onChange,
   errors,
-  loggedIn,
   user,
 }) => (
     <Card className="container">
@@ -83,7 +82,6 @@ SignUpForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.bool.isRequired,
   user: PropTypes.object.isRequired,
-  loggedIn: PropTypes.bool.isRequired
 };
 
 export default SignUpForm;

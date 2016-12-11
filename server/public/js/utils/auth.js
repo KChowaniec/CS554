@@ -74,7 +74,6 @@ function loginRequest(username, password, cb) {
       password: password,
     })
   };
-  console.log("making ajax call");
   $.ajax(requestConfig).then((responseMessage) => {
     if (responseMessage.success) {
       cb({
