@@ -1,0 +1,3408 @@
+[
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fb1",
+        "Votes": 197421,
+        "Rank": 8,
+        "Title": "Annie Hall",
+        "Year": 1977,
+        "Genre": [
+            "Comedy",
+            "Drama",
+            "Romance"
+        ],
+        "Revenue": 38251425,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fb2",
+        "Votes": 188429,
+        "Rank": 8,
+        "Title": "Before Sunrise",
+        "Year": 1995,
+        "Genre": [
+            "Drama",
+            "Romance"
+        ],
+        "Revenue": 5535405,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fb3",
+        "Votes": 186123,
+        "Rank": 8,
+        "Title": "Dog Day Afternoon",
+        "Year": 1975,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 46665856,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fb5",
+        "Votes": 173691,
+        "Rank": 8,
+        "Title": "Ip Man",
+        "Year": 2008,
+        "Genre": [
+            "Action",
+            "Drama",
+            "History"
+        ],
+        "Revenue": 21888598,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fb6",
+        "Votes": 151966,
+        "Rank": 8,
+        "Title": "A Fistful of Dollars",
+        "Year": 1964,
+        "Genre": [
+            "Western"
+        ],
+        "Revenue": 14000000,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fb8",
+        "Votes": 103589,
+        "Rank": 8,
+        "Title": "Roman Holiday",
+        "Year": 1953,
+        "Genre": [
+            "Comedy",
+            "Romance"
+        ],
+        "Revenue": 12000000,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fb9",
+        "Votes": 104052,
+        "Rank": 8,
+        "Title": "Barry Lyndon",
+        "Year": 1975,
+        "Genre": [
+            "Drama",
+            "Romance",
+            "War"
+        ],
+        "Revenue": 20000000,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fba",
+        "Votes": 102402,
+        "Rank": 8,
+        "Title": "Castle in the Sky",
+        "Year": 1986,
+        "Genre": [
+            "Adventure",
+            "Fantasy",
+            "Animation",
+            "Action",
+            "Family",
+            "Romance"
+        ],
+        "Revenue": 3106327,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fbb",
+        "Votes": 98580,
+        "Rank": 8,
+        "Title": "Strangers on a Train",
+        "Year": 1951,
+        "Genre": [
+            "Crime",
+            "Thriller"
+        ],
+        "Revenue": 0,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fbc",
+        "Votes": 93583,
+        "Rank": 8,
+        "Title": "Infernal Affairs",
+        "Year": 2002,
+        "Genre": [
+            "Drama",
+            "Action",
+            "Thriller",
+            "Crime",
+            "Mystery"
+        ],
+        "Revenue": 8708932,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fbe",
+        "Votes": 70349,
+        "Rank": 8,
+        "Title": "Stalker",
+        "Year": 1979,
+        "Genre": [
+            "Drama",
+            "Science Fiction",
+            "Thriller"
+        ],
+        "Revenue": 0,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fbf",
+        "Votes": 69943,
+        "Rank": 8,
+        "Title": "Memories of Murder",
+        "Year": 2003,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 0,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fc0",
+        "Votes": 64550,
+        "Rank": 8,
+        "Title": "The Grapes of Wrath",
+        "Year": 1940,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fc1",
+        "Votes": 48522,
+        "Rank": 8,
+        "Title": "Gangs of Wasseypur",
+        "Year": 2012,
+        "Genre": [
+            "Action",
+            "Thriller",
+            "Crime"
+        ],
+        "Revenue": 4100000,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fc2",
+        "Votes": 43183,
+        "Rank": 8,
+        "Title": "Diabolique",
+        "Year": 1955,
+        "Genre": [
+            "Drama",
+            "Horror",
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 0,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fc3",
+        "Votes": 41126,
+        "Rank": 8,
+        "Title": "The Best Years of Our Lives",
+        "Year": 1946,
+        "Genre": [
+            "Drama",
+            "History",
+            "Romance"
+        ],
+        "Revenue": 23650000,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fc4",
+        "Votes": 38423,
+        "Rank": 8,
+        "Title": "The Battle of Algiers",
+        "Year": 1966,
+        "Genre": [
+            "Drama",
+            "War",
+            "History"
+        ],
+        "Revenue": 921548,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fc5",
+        "Votes": 27982,
+        "Rank": 8,
+        "Title": "Song of the Sea",
+        "Year": 2014,
+        "Genre": [
+            "Family",
+            "Animation",
+            "Fantasy"
+        ],
+        "Revenue": 857522,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fc6",
+        "Votes": 27372,
+        "Rank": 8,
+        "Title": "Kind Hearts and Coronets",
+        "Year": 1949,
+        "Genre": [
+            "Comedy",
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f64",
+        "Votes": 26558,
+        "Rank": 8.2,
+        "Title": "The Passion of Joan of Arc",
+        "Year": 1928,
+        "Genre": [
+            "Comedy",
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f96",
+        "Votes": 36245,
+        "Rank": 8.1,
+        "Title": "The Wages of Fear",
+        "Year": 1953,
+        "Genre": [
+            "Drama",
+            "Thriller",
+            "Adventure"
+        ],
+        "Revenue": 0,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f7a",
+        "Votes": 321134,
+        "Rank": 8.1,
+        "Title": "Rush",
+        "Year": 2013,
+        "Genre": [
+            "Drama",
+            "Action"
+        ],
+        "Revenue": 90247624,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fbd",
+        "Votes": 80291,
+        "Rank": 8,
+        "Title": "8.5",
+        "Year": 1963,
+        "Genre": [
+            "Fantasy",
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f41",
+        "Votes": 340870,
+        "Rank": 8.2,
+        "Title": "Casino",
+        "Year": 1995,
+        "Genre": [
+            "Drama",
+            "Crime"
+        ],
+        "Revenue": 116112375,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f43",
+        "Votes": 283253,
+        "Rank": 8.2,
+        "Title": "Unforgiven",
+        "Year": 1992,
+        "Genre": [
+            "Western"
+        ],
+        "Revenue": 159157447,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f44",
+        "Votes": 253251,
+        "Rank": 8.2,
+        "Title": "Downfall",
+        "Year": 2004,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f45",
+        "Votes": 239641,
+        "Rank": 8.2,
+        "Title": "Raging Bull",
+        "Year": 1980,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 23000000,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f48",
+        "Votes": 182926,
+        "Rank": 8.2,
+        "Title": "Room",
+        "Year": 2015,
+        "Genre": [
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 35401758,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f4b",
+        "Votes": 176669,
+        "Rank": 8.2,
+        "Title": "The Hunt",
+        "Year": 2012,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f55",
+        "Votes": 84614,
+        "Rank": 8.2,
+        "Title": "All About Eve",
+        "Year": 1950,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 63463,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f29",
+        "Votes": 171370,
+        "Rank": 8.3,
+        "Title": "Das Boot",
+        "Year": 1981,
+        "Genre": [
+            "Action",
+            "Drama",
+            "History",
+            "War",
+            "Adventure"
+        ],
+        "Revenue": 85000000,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f2a",
+        "Votes": 161445,
+        "Rank": 8.3,
+        "Title": "For a Few Dollars More ",
+        "Year": 1965,
+        "Genre": [
+            "Western"
+        ],
+        "Revenue": 15000000,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f2b",
+        "Votes": 153377,
+        "Rank": 8.3,
+        "Title": "Singin' in the Rain",
+        "Year": 1952,
+        "Genre": [
+            "Comedy",
+            "Music",
+            "Romance"
+        ],
+        "Revenue": 1729345,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f2c",
+        "Votes": 111936,
+        "Rank": 8.3,
+        "Title": "The Apartment",
+        "Year": 1960,
+        "Genre": [
+            "Comedy",
+            "Drama",
+            "Romance"
+        ],
+        "Revenue": 25000000,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f2d",
+        "Votes": 105125,
+        "Rank": 8.3,
+        "Title": "Rashomon",
+        "Year": 1950,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Mystery"
+        ],
+        "Revenue": 96568,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f2e",
+        "Votes": 101165,
+        "Rank": 8.3,
+        "Title": "M",
+        "Year": 1931,
+        "Genre": [
+            "Drama",
+            "Action",
+            "Thriller",
+            "Crime"
+        ],
+        "Revenue": 0,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f2f",
+        "Votes": 99993,
+        "Rank": 8.3,
+        "Title": "Double Indemnity",
+        "Year": 1944,
+        "Genre": [
+            "Drama",
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 2500000,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f30",
+        "Votes": 97107,
+        "Rank": 8.3,
+        "Title": "Bicycle Thieves",
+        "Year": 1948,
+        "Genre": [
+            "Comedy",
+            "Romance"
+        ],
+        "Revenue": 0,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f31",
+        "Votes": 88368,
+        "Rank": 8.3,
+        "Title": "Taare Zameen Par",
+        "Year": 2007,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 28430000,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f32",
+        "Votes": 69887,
+        "Rank": 8.3,
+        "Title": "The Kid",
+        "Year": 1921,
+        "Genre": [
+            "Comedy",
+            "Drama"
+        ],
+        "Revenue": 2500000,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f33",
+        "Votes": 65275,
+        "Rank": 8.3,
+        "Title": "Witness for the Prosecution",
+        "Year": 1957,
+        "Genre": [
+            "Drama",
+            "Mystery",
+            "Crime"
+        ],
+        "Revenue": 9000000,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f34",
+        "Votes": 35810,
+        "Rank": 8.3,
+        "Title": "My Father and My Son ",
+        "Year": 2005,
+        "Genre": [
+            "Comedy",
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f35",
+        "Votes": 32789,
+        "Rank": 8.3,
+        "Title": "Andaz Apna Apna",
+        "Year": 1994,
+        "Genre": [
+            "Drama",
+            "Comedy",
+            "Romance"
+        ],
+        "Revenue": 0,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f36",
+        "Votes": 1002183,
+        "Rank": 8.2,
+        "Title": "Batman Begins",
+        "Year": 2005,
+        "Genre": [
+            "Action",
+            "Crime",
+            "Drama"
+        ],
+        "Revenue": 374218673,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f37",
+        "Votes": 682693,
+        "Rank": 8.2,
+        "Title": "Up",
+        "Year": 2009,
+        "Genre": [
+            "Animation",
+            "Comedy",
+            "Family",
+            "Adventure"
+        ],
+        "Revenue": 731342744,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f38",
+        "Votes": 626026,
+        "Rank": 8.2,
+        "Title": "A Beautiful Mind",
+        "Year": 2001,
+        "Genre": [
+            "Drama",
+            "Romance"
+        ],
+        "Revenue": 313542341,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f39",
+        "Votes": 619787,
+        "Rank": 8.2,
+        "Title": "Good Will Hunting",
+        "Year": 1997,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 225933435,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f3a",
+        "Votes": 603757,
+        "Rank": 8.2,
+        "Title": "Die Hard",
+        "Year": 1988,
+        "Genre": [
+            "Action",
+            "Thriller"
+        ],
+        "Revenue": 140767956,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f3b",
+        "Votes": 526069,
+        "Rank": 8.2,
+        "Title": "Indiana Jones and the Last Crusade",
+        "Year": 1989,
+        "Genre": [
+            "Adventure",
+            "Action"
+        ],
+        "Revenue": 474171806,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f3c",
+        "Votes": 477286,
+        "Rank": 8.2,
+        "Title": "Pan's Labyrinth",
+        "Year": 2006,
+        "Genre": [
+            "Fantasy",
+            "Drama",
+            "War"
+        ],
+        "Revenue": 83258226,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f3d",
+        "Votes": 470093,
+        "Rank": 8.2,
+        "Title": "Blade Runner",
+        "Year": 1982,
+        "Genre": [
+            "Science Fiction",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 32768670,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f3e",
+        "Votes": 439427,
+        "Rank": 8.2,
+        "Title": "Heat",
+        "Year": 1995,
+        "Genre": [
+            "Action",
+            "Crime",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 187436818,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f3f",
+        "Votes": 422620,
+        "Rank": 8.2,
+        "Title": "Lock, Stock and Two Smoking Barrels",
+        "Year": 1998,
+        "Genre": [
+            "Comedy",
+            "Crime"
+        ],
+        "Revenue": 3897569,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f40",
+        "Votes": 368856,
+        "Rank": 8.2,
+        "Title": "Inside Out",
+        "Year": 2015,
+        "Genre": [
+            "Comedy",
+            "Animation",
+            "Family"
+        ],
+        "Revenue": 857427711,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f42",
+        "Votes": 339468,
+        "Rank": 8.2,
+        "Title": "Warrior",
+        "Year": 2011,
+        "Genre": [
+            "Action",
+            "Drama"
+        ],
+        "Revenue": 23057115,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f46",
+        "Votes": 220860,
+        "Rank": 8.2,
+        "Title": "Chinatown",
+        "Year": 1974,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 30000000,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f47",
+        "Votes": 220237,
+        "Rank": 8.2,
+        "Title": "Howl's Moving Castle ",
+        "Year": 2004,
+        "Genre": [
+            "Fantasy",
+            "Adventure",
+            "Animation"
+        ],
+        "Revenue": 234710455,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f49",
+        "Votes": 178651,
+        "Rank": 8.2,
+        "Title": "Some Like It Hot",
+        "Year": 1959,
+        "Genre": [
+            "Comedy",
+            "Romance"
+        ],
+        "Revenue": 25000000,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f4a",
+        "Votes": 178162,
+        "Rank": 8.2,
+        "Title": "My Neighbor Totoro",
+        "Year": 1988,
+        "Genre": [
+            "Fantasy",
+            "Animation",
+            "Family"
+        ],
+        "Revenue": 0,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f4c",
+        "Votes": 169160,
+        "Rank": 8.2,
+        "Title": "The Great Escape",
+        "Year": 1963,
+        "Genre": [
+            "Adventure",
+            "Drama",
+            "History",
+            "Thriller",
+            "War"
+        ],
+        "Revenue": 5000000,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f4d",
+        "Votes": 165280,
+        "Rank": 8.2,
+        "Title": "The Elephant Man",
+        "Year": 1980,
+        "Genre": [
+            "Drama",
+            "History"
+        ],
+        "Revenue": 26010864,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f4e",
+        "Votes": 155824,
+        "Rank": 8.2,
+        "Title": "A Separation",
+        "Year": 2011,
+        "Genre": [
+            "Documentary"
+        ],
+        "Revenue": 0,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f4f",
+        "Votes": 152817,
+        "Rank": 8.2,
+        "Title": "The Bridge on the River Kwai",
+        "Year": 1957,
+        "Genre": [
+            "Drama",
+            "History",
+            "War"
+        ],
+        "Revenue": 33300000,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f50",
+        "Votes": 135904,
+        "Rank": 8.2,
+        "Title": "The Secret in Their Eyes",
+        "Year": 2009,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Mystery",
+            "Romance"
+        ],
+        "Revenue": 33965843,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f51",
+        "Votes": 116096,
+        "Rank": 8.2,
+        "Title": "The Third Man",
+        "Year": 1949,
+        "Genre": [
+            "Thriller",
+            "Mystery"
+        ],
+        "Revenue": 596349,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f52",
+        "Votes": 114560,
+        "Rank": 8.2,
+        "Title": "The Seventh Seal",
+        "Year": 1957,
+        "Genre": [
+            "Fantasy",
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f53",
+        "Votes": 103008,
+        "Rank": 8.2,
+        "Title": "On the Waterfront",
+        "Year": 1954,
+        "Genre": [
+            "Crime",
+            "Drama"
+        ],
+        "Revenue": 9600000,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f54",
+        "Votes": 114380,
+        "Rank": 8.2,
+        "Title": "Metropolis",
+        "Year": 1927,
+        "Genre": [
+            "Drama",
+            "Science Fiction"
+        ],
+        "Revenue": 650422,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f56",
+        "Votes": 80915,
+        "Rank": 8.2,
+        "Title": "The Treasure of the Sierra Madre",
+        "Year": 1948,
+        "Genre": [
+            "Action",
+            "Adventure",
+            "Drama",
+            "Western"
+        ],
+        "Revenue": 4307000,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f57",
+        "Votes": 79440,
+        "Rank": 8.2,
+        "Title": "Ran",
+        "Year": 1985,
+        "Genre": [
+            "Action",
+            "Drama",
+            "History"
+        ],
+        "Revenue": 4069653,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f58",
+        "Votes": 78918,
+        "Rank": 8.2,
+        "Title": "Mr. Smith Goes to Washington",
+        "Year": 1939,
+        "Genre": [
+            "Comedy",
+            "Drama"
+        ],
+        "Revenue": 9600000,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f59",
+        "Votes": 75688,
+        "Rank": 8.2,
+        "Title": "Yojimbo",
+        "Year": 1961,
+        "Genre": [
+            "Action",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 0,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f5a",
+        "Votes": 69622,
+        "Rank": 8.2,
+        "Title": "The Gold Rush",
+        "Year": 1925,
+        "Genre": [
+            "Adventure",
+            "Comedy",
+            "Drama",
+            "Family"
+        ],
+        "Revenue": 2500000,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f5b",
+        "Votes": 64605,
+        "Rank": 8.2,
+        "Title": "Wild Strawberries",
+        "Year": 1957,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f5c",
+        "Votes": 54878,
+        "Rank": 8.2,
+        "Title": "The General",
+        "Year": 1926,
+        "Genre": [
+            "Adventure",
+            "Drama",
+            "Action",
+            "Comedy",
+            "Romance",
+            "War"
+        ],
+        "Revenue": 0,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f5d",
+        "Votes": 45824,
+        "Rank": 8.2,
+        "Title": "Judgment at Nuremberg",
+        "Year": 1961,
+        "Genre": [
+            "Drama",
+            "History"
+        ],
+        "Revenue": 10000000,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f5e",
+        "Votes": 44019,
+        "Rank": 8.2,
+        "Title": "A Wednesday",
+        "Year": 2008,
+        "Genre": [
+            "Action",
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f60",
+        "Votes": 35281,
+        "Rank": 8.2,
+        "Title": "The Bandit",
+        "Year": 1996,
+        "Genre": [
+            "Thriller",
+            "Crime",
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f62",
+        "Votes": 30322,
+        "Rank": 8.2,
+        "Title": "Sunrise: A Song of Two Humans",
+        "Year": 1927,
+        "Genre": [
+            "Drama",
+            "Romance"
+        ],
+        "Revenue": 0,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f63",
+        "Votes": 30131,
+        "Rank": 8.2,
+        "Title": "Children of Heaven",
+        "Year": 1997,
+        "Genre": [
+            "Drama",
+            "Family",
+            "Foreign"
+        ],
+        "Revenue": 0,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f65",
+        "Votes": 809607,
+        "Rank": 8.1,
+        "Title": "V for Vendetta",
+        "Year": 2005,
+        "Genre": [
+            "Action",
+            "Thriller",
+            "Fantasy"
+        ],
+        "Revenue": 132511035,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f66",
+        "Votes": 806783,
+        "Rank": 8.1,
+        "Title": "Shutter Island",
+        "Year": 2010,
+        "Genre": [
+            "Drama",
+            "Thriller",
+            "Mystery"
+        ],
+        "Revenue": 294804195,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f67",
+        "Votes": 806768,
+        "Rank": 8.1,
+        "Title": "The Wolf of Wall Street",
+        "Year": 2013,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Comedy"
+        ],
+        "Revenue": 392000694,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f68",
+        "Votes": 751108,
+        "Rank": 8.1,
+        "Title": "Kill Bill: Vol. 1",
+        "Year": 2003,
+        "Genre": [
+            "Action",
+            "Crime"
+        ],
+        "Revenue": 180949000,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f69",
+        "Votes": 717942,
+        "Rank": 8.1,
+        "Title": "The Sixth Sense",
+        "Year": 1999,
+        "Genre": [
+            "Mystery",
+            "Thriller",
+            "Drama"
+        ],
+        "Revenue": 672806292,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f6a",
+        "Votes": 710538,
+        "Rank": 8.1,
+        "Title": "Finding Nemo",
+        "Year": 2003,
+        "Genre": [
+            "Animation",
+            "Family"
+        ],
+        "Revenue": 864625978,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f6b",
+        "Votes": 628933,
+        "Rank": 8.1,
+        "Title": "Jurassic Park",
+        "Year": 1993,
+        "Genre": [
+            "Adventure",
+            "Science Fiction"
+        ],
+        "Revenue": 920100000,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f6c",
+        "Votes": 627157,
+        "Rank": 8.1,
+        "Title": "No Country for Old Men",
+        "Year": 2007,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 171600000,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f6d",
+        "Votes": 596050,
+        "Rank": 8.1,
+        "Title": "The Force Awakens",
+        "Year": 2015,
+        "Genre": [
+            "Adventure",
+            "Action",
+            "Science Fiction",
+            "Fantasy"
+        ],
+        "Revenue": 2068178225,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f6e",
+        "Votes": 589981,
+        "Rank": 8.1,
+        "Title": "Gone Girl",
+        "Year": 2014,
+        "Genre": [
+            "Mystery",
+            "Thriller",
+            "Drama"
+        ],
+        "Revenue": 369330363,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f6f",
+        "Votes": 579165,
+        "Rank": 8.1,
+        "Title": "Mad Max: Fury Road",
+        "Year": 2015,
+        "Genre": [
+            "Action",
+            "Adventure",
+            "Science Fiction",
+            "Thriller"
+        ],
+        "Revenue": 378436354,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f71",
+        "Votes": 549474,
+        "Rank": 8.1,
+        "Title": "The Big Lebowski",
+        "Year": 1998,
+        "Genre": [
+            "Comedy",
+            "Crime"
+        ],
+        "Revenue": 27739163,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f72",
+        "Votes": 497118,
+        "Rank": 8.1,
+        "Title": "How to Train Your Dragon",
+        "Year": 2010,
+        "Genre": [
+            "Fantasy",
+            "Adventure",
+            "Animation",
+            "Family"
+        ],
+        "Revenue": 494878759,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f73",
+        "Votes": 492963,
+        "Rank": 8.1,
+        "Title": "The Grand Budapest Hotel",
+        "Year": 2014,
+        "Genre": [
+            "Comedy",
+            "Drama"
+        ],
+        "Revenue": 174600318,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f74",
+        "Votes": 491947,
+        "Rank": 8.1,
+        "Title": "Million Dollar Baby",
+        "Year": 2004,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 216763646,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f75",
+        "Votes": 479649,
+        "Rank": 8.1,
+        "Title": "Trainspotting",
+        "Year": 1996,
+        "Genre": [
+            "Drama",
+            "Crime"
+        ],
+        "Revenue": 16491080,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f76",
+        "Votes": 463978,
+        "Rank": 8.1,
+        "Title": "Fargo",
+        "Year": 1996,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 60611975,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f77",
+        "Votes": 453012,
+        "Rank": 8.1,
+        "Title": "12 Years a Slave",
+        "Year": 2013,
+        "Genre": [
+            "Drama",
+            "History"
+        ],
+        "Revenue": 187000000,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f78",
+        "Votes": 436529,
+        "Rank": 8.1,
+        "Title": "Into the Wild",
+        "Year": 2007,
+        "Genre": [
+            "Adventure",
+            "Drama"
+        ],
+        "Revenue": 56255142,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f79",
+        "Votes": 381942,
+        "Rank": 8.1,
+        "Title": "There Will Be Blood",
+        "Year": 2007,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 76181545,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f7b",
+        "Votes": 299885,
+        "Rank": 8.1,
+        "Title": "The Princess Bride",
+        "Year": 1987,
+        "Genre": [
+            "Adventure",
+            "Family",
+            "Fantasy",
+            "Comedy",
+            "Romance"
+        ],
+        "Revenue": 30857814,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f7c",
+        "Votes": 297097,
+        "Rank": 8.1,
+        "Title": "Platoon",
+        "Year": 1986,
+        "Genre": [
+            "Drama",
+            "War",
+            "Action"
+        ],
+        "Revenue": 138530565,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f7d",
+        "Votes": 278108,
+        "Rank": 8.1,
+        "Title": "Stand by Me",
+        "Year": 1986,
+        "Genre": [
+            "Crime",
+            "Drama"
+        ],
+        "Revenue": 52287000,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f7e",
+        "Votes": 277820,
+        "Rank": 8.1,
+        "Title": "Life of Brian",
+        "Year": 1979,
+        "Genre": [
+            "Comedy"
+        ],
+        "Revenue": 20045115,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f7f",
+        "Votes": 269512,
+        "Rank": 8.1,
+        "Title": "Hotel Rwanda",
+        "Year": 2004,
+        "Genre": [
+            "Drama",
+            "History",
+            "War"
+        ],
+        "Revenue": 38000000,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f80",
+        "Votes": 265035,
+        "Rank": 8.1,
+        "Title": "The Thing",
+        "Year": 1982,
+        "Genre": [
+            "Horror",
+            "Science Fiction",
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 13782838,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f81",
+        "Votes": 237246,
+        "Rank": 8.1,
+        "Title": "The Deer Hunter",
+        "Year": 1978,
+        "Genre": [
+            "Drama",
+            "War"
+        ],
+        "Revenue": 50000000,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f82",
+        "Votes": 221115,
+        "Rank": 8.1,
+        "Title": "Spotlight",
+        "Year": 2015,
+        "Genre": [
+            "Drama",
+            "Thriller",
+            "History"
+        ],
+        "Revenue": 88346473,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f83",
+        "Votes": 219483,
+        "Rank": 8.1,
+        "Title": "Gone with the Wind",
+        "Year": 1939,
+        "Genre": [
+            "Drama",
+            "Romance",
+            "War"
+        ],
+        "Revenue": 400176459,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f84",
+        "Votes": 176726,
+        "Rank": 8.1,
+        "Title": "Amores perros",
+        "Year": 2000,
+        "Genre": [
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 20908467,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f85",
+        "Votes": 164969,
+        "Rank": 8.1,
+        "Title": "Ben-Hur",
+        "Year": 1959,
+        "Genre": [
+            "Adventure",
+            "History",
+            "Drama"
+        ],
+        "Revenue": 26274090,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f86",
+        "Votes": 162032,
+        "Rank": 8.1,
+        "Title": "Hachi: A Dog's Tale",
+        "Year": 2009,
+        "Genre": [
+            "Drama",
+            "Family"
+        ],
+        "Revenue": 47801389,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f87",
+        "Votes": 122429,
+        "Rank": 8.1,
+        "Title": "Mary and Max",
+        "Year": 2009,
+        "Genre": [
+            "Animation",
+            "Comedy",
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f88",
+        "Votes": 122090,
+        "Rank": 8.1,
+        "Title": "Cool Hand Luke",
+        "Year": 1967,
+        "Genre": [
+            "Crime",
+            "Drama"
+        ],
+        "Revenue": 16217773,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f89",
+        "Votes": 115603,
+        "Rank": 8.1,
+        "Title": "The Maltese Falcon",
+        "Year": 1941,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 1000000,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f8a",
+        "Votes": 155338,
+        "Rank": 8.1,
+        "Title": "Butch Cassidy and the Sundance Kid",
+        "Year": 1969,
+        "Genre": [
+            "History",
+            "Drama",
+            "Western",
+            "Crime"
+        ],
+        "Revenue": 102308889,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f8b",
+        "Votes": 112670,
+        "Rank": 8.1,
+        "Title": "In the Name of the Father",
+        "Year": 1993,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 65796862,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f8c",
+        "Votes": 109238,
+        "Rank": 8.1,
+        "Title": "Dial M for Murder",
+        "Year": 1954,
+        "Genre": [
+            "Crime",
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 3000000,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f8e",
+        "Votes": 99003,
+        "Rank": 8.1,
+        "Title": "Nausicaa of the Valley of the Wind ",
+        "Year": 1984,
+        "Genre": [
+            "Adventure",
+            "Action",
+            "Science Fiction",
+            "Fantasy",
+            "Animation"
+        ],
+        "Revenue": 3301446,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f8f",
+        "Votes": 96336,
+        "Rank": 8.1,
+        "Title": "Wild Tales",
+        "Year": 2014,
+        "Genre": [
+            "Drama",
+            "Thriller",
+            "Comedy"
+        ],
+        "Revenue": 27007072,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f90",
+        "Votes": 89296,
+        "Rank": 8.1,
+        "Title": "Rebecca",
+        "Year": 1940,
+        "Genre": [
+            "Drama",
+            "Mystery",
+            "Romance",
+            "Thriller"
+        ],
+        "Revenue": 43455,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f91",
+        "Votes": 83756,
+        "Rank": 8.1,
+        "Title": "Incendies",
+        "Year": 2010,
+        "Genre": [
+            "Drama",
+            "War",
+            "Mystery"
+        ],
+        "Revenue": 7103838,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f92",
+        "Votes": 74447,
+        "Rank": 8.1,
+        "Title": "Touch of Evil",
+        "Year": 1958,
+        "Genre": [
+            "Drama",
+            "Thriller",
+            "Crime"
+        ],
+        "Revenue": 2247465,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f94",
+        "Votes": 66477,
+        "Rank": 8.1,
+        "Title": "It Happened One Night",
+        "Year": 1934,
+        "Genre": [
+            "Comedy",
+            "Romance"
+        ],
+        "Revenue": 0,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f97",
+        "Votes": 32149,
+        "Rank": 8.1,
+        "Title": "The Message",
+        "Year": 1976,
+        "Genre": [
+            "Adventure",
+            "Drama",
+            "Action",
+            "History"
+        ],
+        "Revenue": 0,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f99",
+        "Votes": 27082,
+        "Rank": 8.1,
+        "Title": "Come and See",
+        "Year": 1985,
+        "Genre": [
+            "Action",
+            "Drama",
+            "History",
+            "War"
+        ],
+        "Revenue": 0,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f9a",
+        "Votes": 26938,
+        "Rank": 8.1,
+        "Title": "Nights of Cabiria",
+        "Year": 1957,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 752045,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f9b",
+        "Votes": 825111,
+        "Rank": 8,
+        "Title": "Pirates of the Caribbean: The Curse of the Black Pearl",
+        "Year": 2003,
+        "Genre": [
+            "Adventure",
+            "Fantasy",
+            "Action"
+        ],
+        "Revenue": 655011224,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f9c",
+        "Votes": 705818,
+        "Rank": 8,
+        "Title": "Guardians of the Galaxy",
+        "Year": 2014,
+        "Genre": [
+            "Action",
+            "Science Fiction",
+            "Adventure"
+        ],
+        "Revenue": 773312399,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f9d",
+        "Votes": 684007,
+        "Rank": 8,
+        "Title": "The Truman Show",
+        "Year": 1998,
+        "Genre": [
+            "Comedy",
+            "Drama"
+        ],
+        "Revenue": 264118201,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f9e",
+        "Votes": 666131,
+        "Rank": 8,
+        "Title": "Sin City",
+        "Year": 2005,
+        "Genre": [
+            "Action",
+            "Thriller",
+            "Crime"
+        ],
+        "Revenue": 158733820,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f9f",
+        "Votes": 612915,
+        "Rank": 8,
+        "Title": "The Terminator",
+        "Year": 1984,
+        "Genre": [
+            "Action",
+            "Thriller",
+            "Science Fiction"
+        ],
+        "Revenue": 78371200,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fa0",
+        "Votes": 600337,
+        "Rank": 8,
+        "Title": "Monsters, Inc.",
+        "Year": 2001,
+        "Genre": [
+            "Fantasy",
+            "Animation",
+            "Family",
+            "Comedy"
+        ],
+        "Revenue": 562816256,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fa1",
+        "Votes": 592274,
+        "Rank": 8,
+        "Title": "Donnie Darko",
+        "Year": 2001,
+        "Genre": [
+            "Fantasy",
+            "Drama",
+            "Mystery"
+        ],
+        "Revenue": 1270522,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fa2",
+        "Votes": 556085,
+        "Rank": 8,
+        "Title": "Harry Potter and the Deathly Hallows: Part 2",
+        "Year": 2011,
+        "Genre": [
+            "Adventure",
+            "Family",
+            "Fantasy"
+        ],
+        "Revenue": 1327817822,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fa3",
+        "Votes": 544208,
+        "Rank": 8,
+        "Title": "Catch Me If You Can",
+        "Year": 2002,
+        "Genre": [
+            "Drama",
+            "Crime"
+        ],
+        "Revenue": 352114312,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fa4",
+        "Votes": 535241,
+        "Rank": 8,
+        "Title": "Deadpool",
+        "Year": 2016,
+        "Genre": [
+            "Action",
+            "Adventure",
+            "Comedy",
+            "Romance"
+        ],
+        "Revenue": 778617348,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fa5",
+        "Votes": 508192,
+        "Rank": 8,
+        "Title": "The Martian",
+        "Year": 2015,
+        "Genre": [
+            "Drama",
+            "Adventure",
+            "Science Fiction"
+        ],
+        "Revenue": 595380321,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fa6",
+        "Votes": 503068,
+        "Rank": 8,
+        "Title": "The Bourne Ultimatum",
+        "Year": 2007,
+        "Genre": [
+            "Action",
+            "Drama",
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 442824138,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fa7",
+        "Votes": 490289,
+        "Rank": 8,
+        "Title": "The Imitation Game",
+        "Year": 2014,
+        "Genre": [
+            "History",
+            "Drama",
+            "Thriller",
+            "War"
+        ],
+        "Revenue": 233555708,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fa8",
+        "Votes": 471188,
+        "Rank": 8,
+        "Title": "Twelve Monkeys",
+        "Year": 1995,
+        "Genre": [
+            "Science Fiction",
+            "Thriller",
+            "Mystery"
+        ],
+        "Revenue": 168840000,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fa9",
+        "Votes": 446787,
+        "Rank": 8,
+        "Title": "Groundhog Day",
+        "Year": 1993,
+        "Genre": [
+            "Romance",
+            "Fantasy",
+            "Drama",
+            "Comedy"
+        ],
+        "Revenue": 70906973,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7faa",
+        "Votes": 443356,
+        "Rank": 8,
+        "Title": "The Revenant",
+        "Year": 2015,
+        "Genre": [
+            "Western",
+            "Drama",
+            "Adventure",
+            "Thriller"
+        ],
+        "Revenue": 532950503,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fab",
+        "Votes": 421527,
+        "Rank": 8,
+        "Title": "Jaws",
+        "Year": 1975,
+        "Genre": [
+            "Horror",
+            "Thriller",
+            "Adventure"
+        ],
+        "Revenue": 470654000,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fac",
+        "Votes": 397294,
+        "Rank": 8,
+        "Title": "Prisoners",
+        "Year": 2013,
+        "Genre": [
+            "Drama",
+            "Thriller",
+            "Crime"
+        ],
+        "Revenue": 122126687,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7faf",
+        "Votes": 297148,
+        "Rank": 8,
+        "Title": "The Wizard of Oz",
+        "Year": 1939,
+        "Genre": [
+            "Adventure",
+            "Family",
+            "Fantasy"
+        ],
+        "Revenue": 16538431,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fb0",
+        "Votes": 218188,
+        "Rank": 8,
+        "Title": "Zootopia",
+        "Year": 2016,
+        "Genre": [
+            "Animation",
+            "Adventure",
+            "Family",
+            "Comedy"
+        ],
+        "Revenue": 1016556108,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ecd",
+        "Votes": 1725892,
+        "Rank": 9.2,
+        "Title": "The Shawshank Redemption",
+        "Year": 1994,
+        "Genre": [
+            "Drama",
+            "Crime"
+        ],
+        "Revenue": 28341469,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ece",
+        "Votes": 1179438,
+        "Rank": 9.2,
+        "Title": "The Godfather",
+        "Year": 1972,
+        "Genre": [
+            "Drama",
+            "Crime"
+        ],
+        "Revenue": 245066411,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ecf",
+        "Votes": 808638,
+        "Rank": 9,
+        "Title": "The Godfather: Part II",
+        "Year": 1974,
+        "Genre": [
+            "Drama",
+            "Crime"
+        ],
+        "Revenue": 47542841,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ed0",
+        "Votes": 1711379,
+        "Rank": 8.9,
+        "Title": "The Dark Knight",
+        "Year": 2008,
+        "Genre": [
+            "Drama",
+            "Action",
+            "Crime",
+            "Thriller"
+        ],
+        "Revenue": 1001921825,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ed1",
+        "Votes": 1351992,
+        "Rank": 8.9,
+        "Title": "Pulp Fiction",
+        "Year": 1994,
+        "Genre": [
+            "Thriller",
+            "Crime"
+        ],
+        "Revenue": 213928762,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ed2",
+        "Votes": 1239986,
+        "Rank": 8.9,
+        "Title": "The Lord of the Rings: The Return of the King",
+        "Year": 2003,
+        "Genre": [
+            "Adventure",
+            "Fantasy",
+            "Action"
+        ],
+        "Revenue": 1118888979,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ed3",
+        "Votes": 883999,
+        "Rank": 8.9,
+        "Title": "Schindlers List",
+        "Year": 1993,
+        "Genre": [
+            "Drama",
+            "History",
+            "War"
+        ],
+        "Revenue": 321265768,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ed4",
+        "Votes": 513742,
+        "Rank": 8.9,
+        "Title": "The Good, the Bad and the Ugly",
+        "Year": 1966,
+        "Genre": [
+            "Western"
+        ],
+        "Revenue": 6000000,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ed7",
+        "Votes": 1262492,
+        "Rank": 8.8,
+        "Title": "The Lord of the Rings: The Fellowship of the Ring",
+        "Year": 2001,
+        "Genre": [
+            "Adventure",
+            "Fantasy",
+            "Action"
+        ],
+        "Revenue": 871368364,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ed8",
+        "Votes": 1502135,
+        "Rank": 8.7,
+        "Title": "Inception",
+        "Year": 2010,
+        "Genre": [
+            "Action",
+            "Thriller",
+            "Science Fiction",
+            "Mystery",
+            "Adventure"
+        ],
+        "Revenue": 825500000,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ed9",
+        "Votes": 1282759,
+        "Rank": 8.7,
+        "Title": "Forrest Gump",
+        "Year": 1994,
+        "Genre": [
+            "Comedy",
+            "Drama",
+            "Romance"
+        ],
+        "Revenue": 677945399,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7eda",
+        "Votes": 1243064,
+        "Rank": 8.7,
+        "Title": "The Matrix",
+        "Year": 1999,
+        "Genre": [
+            "Action",
+            "Science Fiction"
+        ],
+        "Revenue": 463517383,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7edb",
+        "Votes": 1122996,
+        "Rank": 8.7,
+        "Title": "The Lord of the Rings: The Two Towers",
+        "Year": 2002,
+        "Genre": [
+            "Adventure",
+            "Fantasy",
+            "Action"
+        ],
+        "Revenue": 926287400,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7edc",
+        "Votes": 856300,
+        "Rank": 8.7,
+        "Title": "The Empire Strikes Back",
+        "Year": 1980,
+        "Genre": [
+            "Adventure",
+            "Action",
+            "Science Fiction"
+        ],
+        "Revenue": 538400000,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7edd",
+        "Votes": 744348,
+        "Rank": 8.7,
+        "Title": "Goodfellas",
+        "Year": 1990,
+        "Genre": [
+            "Drama",
+            "Crime"
+        ],
+        "Revenue": 46836394,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ede",
+        "Votes": 693381,
+        "Rank": 8.7,
+        "Title": "One Flew Over the Cuckoo's Nest",
+        "Year": 1975,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 108981275,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7edf",
+        "Votes": 1047777,
+        "Rank": 8.6,
+        "Title": "Se7en",
+        "Year": 1995,
+        "Genre": [
+            "Crime",
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 327311859,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ee0",
+        "Votes": 929208,
+        "Rank": 8.6,
+        "Title": "Star Wars",
+        "Year": 1977,
+        "Genre": [
+            "Adventure",
+            "Action",
+            "Science Fiction"
+        ],
+        "Revenue": 775398007,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ee1",
+        "Votes": 908883,
+        "Rank": 8.6,
+        "Title": "The Silence of the Lambs",
+        "Year": 1991,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 272742922,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ee2",
+        "Votes": 756498,
+        "Rank": 8.6,
+        "Title": "The Usual Suspects",
+        "Year": 1995,
+        "Genre": [
+            "Drama",
+            "Crime",
+            "Thriller"
+        ],
+        "Revenue": 23341568,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ee3",
+        "Votes": 543547,
+        "Rank": 8.6,
+        "Title": "City of God",
+        "Year": 2002,
+        "Genre": [
+            "Drama",
+            "Crime"
+        ],
+        "Revenue": 27387381,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ee4",
+        "Votes": 431717,
+        "Rank": 8.6,
+        "Title": "Life Is Beautiful",
+        "Year": 1997,
+        "Genre": [
+            "Comedy",
+            "Drama"
+        ],
+        "Revenue": 229400000,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ee5",
+        "Votes": 281356,
+        "Rank": 8.6,
+        "Title": "It's a Wonderful Life",
+        "Year": 1946,
+        "Genre": [
+            "Drama",
+            "Family",
+            "Fantasy"
+        ],
+        "Revenue": 6600000,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ee6",
+        "Votes": 233926,
+        "Rank": 8.6,
+        "Title": "Seven Samurai",
+        "Year": 1954,
+        "Genre": [
+            "Action",
+            "Drama"
+        ],
+        "Revenue": 271841,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ee7",
+        "Votes": 1003845,
+        "Rank": 8.5,
+        "Title": "Gladiator",
+        "Year": 2000,
+        "Genre": [
+            "Action",
+            "Drama",
+            "Adventure"
+        ],
+        "Revenue": 457640427,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ee8",
+        "Votes": 963527,
+        "Rank": 8.5,
+        "Title": "Interstellar",
+        "Year": 2014,
+        "Genre": [
+            "Adventure",
+            "Drama",
+            "Science Fiction"
+        ],
+        "Revenue": 621752480,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ee9",
+        "Votes": 901708,
+        "Rank": 8.5,
+        "Title": "Saving Private Ryan",
+        "Year": 1998,
+        "Genre": [
+            "Drama",
+            "History",
+            "War"
+        ],
+        "Revenue": 481840909,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7eea",
+        "Votes": 892747,
+        "Rank": 8.5,
+        "Title": "The Departed",
+        "Year": 2006,
+        "Genre": [
+            "Drama",
+            "Thriller",
+            "Crime"
+        ],
+        "Revenue": 289847354,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7eeb",
+        "Votes": 864720,
+        "Rank": 8.5,
+        "Title": "The Prestige",
+        "Year": 2006,
+        "Genre": [
+            "Drama",
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 109676311,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7eec",
+        "Votes": 863627,
+        "Rank": 8.5,
+        "Title": "Memento",
+        "Year": 2000,
+        "Genre": [
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 39723096,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7eed",
+        "Votes": 804621,
+        "Rank": 8.5,
+        "Title": "The Green Mile",
+        "Year": 1999,
+        "Genre": [
+            "Fantasy",
+            "Drama",
+            "Crime"
+        ],
+        "Revenue": 284600000,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7eee",
+        "Votes": 798580,
+        "Rank": 8.5,
+        "Title": "American History X",
+        "Year": 1998,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 23875127,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7eef",
+        "Votes": 759725,
+        "Rank": 8.5,
+        "Title": "Terminator 2: Judgment Day",
+        "Year": 1991,
+        "Genre": [
+            "Action",
+            "Thriller",
+            "Science Fiction"
+        ],
+        "Revenue": 520000000,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ef0",
+        "Votes": 749874,
+        "Rank": 8.5,
+        "Title": "Back to the Future",
+        "Year": 1985,
+        "Genre": [
+            "Adventure",
+            "Comedy",
+            "Science Fiction",
+            "Family"
+        ],
+        "Revenue": 381109762,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ef1",
+        "Votes": 742710,
+        "Rank": 8.5,
+        "Title": "Leon",
+        "Year": 1994,
+        "Genre": [
+            "Thriller",
+            "Crime",
+            "Drama"
+        ],
+        "Revenue": 45284974,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ef2",
+        "Votes": 673910,
+        "Rank": 8.5,
+        "Title": "Raiders of the Lost Ark",
+        "Year": 1981,
+        "Genre": [
+            "Adventure",
+            "Action"
+        ],
+        "Revenue": 389925971,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ef3",
+        "Votes": 661287,
+        "Rank": 8.5,
+        "Title": "The Lion King",
+        "Year": 1994,
+        "Genre": [
+            "Family",
+            "Animation",
+            "Drama"
+        ],
+        "Revenue": 788241776,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ef4",
+        "Votes": 519829,
+        "Rank": 8.5,
+        "Title": "Intouchables",
+        "Year": 2011,
+        "Genre": [
+            "Comedy",
+            "Drama"
+        ],
+        "Revenue": 426480871,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ef5",
+        "Votes": 511647,
+        "Rank": 8.5,
+        "Title": "The Pianist",
+        "Year": 2002,
+        "Genre": [
+            "Drama",
+            "War"
+        ],
+        "Revenue": 120072577,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ef6",
+        "Votes": 459091,
+        "Rank": 8.5,
+        "Title": "Apocalypse Now",
+        "Year": 1979,
+        "Genre": [
+            "Drama",
+            "War"
+        ],
+        "Revenue": 83471511,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ef7",
+        "Votes": 432443,
+        "Rank": 8.5,
+        "Title": "Psycho",
+        "Year": 1960,
+        "Genre": [
+            "Drama",
+            "Horror",
+            "Thriller"
+        ],
+        "Revenue": 32000000,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ef8",
+        "Votes": 430281,
+        "Rank": 8.5,
+        "Title": "Spirited Away",
+        "Year": 2001,
+        "Genre": [
+            "Fantasy",
+            "Adventure",
+            "Animation",
+            "Family"
+        ],
+        "Revenue": 274925095,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ef9",
+        "Votes": 421673,
+        "Rank": 8.5,
+        "Title": "Whiplash",
+        "Year": 2014,
+        "Genre": [
+            "Drama",
+            "Music"
+        ],
+        "Revenue": 13993092,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7efa",
+        "Votes": 394767,
+        "Rank": 8.5,
+        "Title": "Casablanca",
+        "Year": 1942,
+        "Genre": [
+            "Drama",
+            "Romance",
+            "War"
+        ],
+        "Revenue": 10462500,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7efb",
+        "Votes": 323166,
+        "Rank": 8.5,
+        "Title": "Rear Window",
+        "Year": 1954,
+        "Genre": [
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 36764313,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7efc",
+        "Votes": 220880,
+        "Rank": 8.5,
+        "Title": "Once Upon a Time in the West",
+        "Year": 1968,
+        "Genre": [
+            "Action",
+            "Western"
+        ],
+        "Revenue": 5321508,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7efd",
+        "Votes": 147240,
+        "Rank": 8.5,
+        "Title": "Modern Times",
+        "Year": 1936,
+        "Genre": [
+            "Drama",
+            "Comedy"
+        ],
+        "Revenue": 8500000,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7efe",
+        "Votes": 111301,
+        "Rank": 8.5,
+        "Title": "City Lights",
+        "Year": 1931,
+        "Genre": [
+            "Comedy",
+            "Drama",
+            "Romance"
+        ],
+        "Revenue": 19181,
+        "yearRange": "<1940"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7eff",
+        "Votes": 1168604,
+        "Rank": 8.4,
+        "Title": "The Dark Knight Rises",
+        "Year": 2012,
+        "Genre": [
+            "Action",
+            "Crime",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 1081041287,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f00",
+        "Votes": 980230,
+        "Rank": 8.4,
+        "Title": "Django Unchained",
+        "Year": 2012,
+        "Genre": [
+            "Drama",
+            "Western"
+        ],
+        "Revenue": 425368238,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f01",
+        "Votes": 838803,
+        "Rank": 8.4,
+        "Title": "American Beauty",
+        "Year": 1999,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 356296601,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f02",
+        "Votes": 736148,
+        "Rank": 8.4,
+        "Title": "WALL E",
+        "Year": 2008,
+        "Genre": [
+            "Animation",
+            "Family"
+        ],
+        "Revenue": 521311860,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f03",
+        "Votes": 625042,
+        "Rank": 8.4,
+        "Title": "The Shining",
+        "Year": 1980,
+        "Genre": [
+            "Horror",
+            "Thriller"
+        ],
+        "Revenue": 44017374,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f04",
+        "Votes": 576525,
+        "Rank": 8.4,
+        "Title": "Alien",
+        "Year": 1979,
+        "Genre": [
+            "Horror",
+            "Action",
+            "Thriller",
+            "Science Fiction"
+        ],
+        "Revenue": 104931801,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f05",
+        "Votes": 497648,
+        "Rank": 8.4,
+        "Title": "Aliens",
+        "Year": 1986,
+        "Genre": [
+            "Horror",
+            "Action",
+            "Thriller",
+            "Science Fiction"
+        ],
+        "Revenue": 131060248,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f06",
+        "Votes": 365176,
+        "Rank": 8.4,
+        "Title": "Oldboy",
+        "Year": 2003,
+        "Genre": [
+            "Drama",
+            "Thriller",
+            "Mystery",
+            "Action"
+        ],
+        "Revenue": 4861022,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f07",
+        "Votes": 349202,
+        "Rank": 8.4,
+        "Title": "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb",
+        "Year": 1964,
+        "Genre": [
+            "Drama",
+            "Comedy",
+            "War"
+        ],
+        "Revenue": 9440272,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f08",
+        "Votes": 265246,
+        "Rank": 8.4,
+        "Title": "The Lives of Others",
+        "Year": 2006,
+        "Genre": [
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 70000000,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f09",
+        "Votes": 227702,
+        "Rank": 8.4,
+        "Title": "Princess Mononoke",
+        "Year": 1997,
+        "Genre": [
+            "Adventure",
+            "Fantasy",
+            "Animation"
+        ],
+        "Revenue": 159375308,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f0a",
+        "Votes": 226033,
+        "Rank": 8.4,
+        "Title": "Once Upon a Time in America",
+        "Year": 1984,
+        "Genre": [
+            "Drama",
+            "Crime"
+        ],
+        "Revenue": 0,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f0b",
+        "Votes": 156533,
+        "Rank": 8.4,
+        "Title": "Cinema Paradiso",
+        "Year": 1988,
+        "Genre": [
+            "Drama",
+            "Romance"
+        ],
+        "Revenue": 11990401,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f0c",
+        "Votes": 143195,
+        "Rank": 8.4,
+        "Title": "Grave of the Fireflies",
+        "Year": 1988,
+        "Genre": [
+            "TV Movie",
+            "Drama",
+            "War"
+        ],
+        "Revenue": 0,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f0d",
+        "Votes": 142500,
+        "Rank": 8.4,
+        "Title": "Sunset Boulevard",
+        "Year": 1950,
+        "Genre": [
+            "Drama",
+            "Romance"
+        ],
+        "Revenue": 5000000,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f0e",
+        "Votes": 141287,
+        "Rank": 8.4,
+        "Title": "The Great Dictator",
+        "Year": 1940,
+        "Genre": [
+            "Comedy"
+        ],
+        "Revenue": 11000000,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f0f",
+        "Votes": 123786,
+        "Rank": 8.4,
+        "Title": "Paths of Glory",
+        "Year": 1957,
+        "Genre": [
+            "Drama",
+            "War"
+        ],
+        "Revenue": 0,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f10",
+        "Votes": 907102,
+        "Rank": 8.3,
+        "Title": "Inglourious Basterds",
+        "Year": 2009,
+        "Genre": [
+            "Drama",
+            "Action",
+            "Thriller",
+            "War"
+        ],
+        "Revenue": 319131050,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f11",
+        "Votes": 751420,
+        "Rank": 8.3,
+        "Title": "Braveheart",
+        "Year": 1995,
+        "Genre": [
+            "Action",
+            "Drama",
+            "History",
+            "War"
+        ],
+        "Revenue": 210000000,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f12",
+        "Votes": 682084,
+        "Rank": 8.3,
+        "Title": "Eternal Sunshine of the Spotless Mind",
+        "Year": 2004,
+        "Genre": [
+            "Science Fiction",
+            "Drama",
+            "Romance"
+        ],
+        "Revenue": 72258126,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f13",
+        "Votes": 679239,
+        "Rank": 8.3,
+        "Title": "Reservoir Dogs",
+        "Year": 1992,
+        "Genre": [
+            "Crime",
+            "Thriller"
+        ],
+        "Revenue": 14661007,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f14",
+        "Votes": 698066,
+        "Rank": 8.3,
+        "Title": "Return of the Jedi",
+        "Year": 1983,
+        "Genre": [
+            "Adventure",
+            "Action",
+            "Science Fiction"
+        ],
+        "Revenue": 572700000,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f15",
+        "Votes": 638792,
+        "Rank": 8.3,
+        "Title": "Toy Story",
+        "Year": 1995,
+        "Genre": [
+            "Animation",
+            "Comedy",
+            "Family"
+        ],
+        "Revenue": 361958736,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f16",
+        "Votes": 612519,
+        "Rank": 8.3,
+        "Title": "Snatch",
+        "Year": 2000,
+        "Genre": [
+            "Thriller",
+            "Crime"
+        ],
+        "Revenue": 83557872,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f17",
+        "Votes": 585113,
+        "Rank": 8.3,
+        "Title": "Requiem for a Dream",
+        "Year": 2000,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 7390108,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f18",
+        "Votes": 570759,
+        "Rank": 8.3,
+        "Title": "A Clockwork Orange",
+        "Year": 1971,
+        "Genre": [
+            "Science Fiction",
+            "Drama"
+        ],
+        "Revenue": 26589000,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f19",
+        "Votes": 557425,
+        "Rank": 8.3,
+        "Title": "Toy Story 3",
+        "Year": 2010,
+        "Genre": [
+            "Animation",
+            "Family",
+            "Comedy"
+        ],
+        "Revenue": 1063171911,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f1a",
+        "Votes": 548957,
+        "Rank": 8.3,
+        "Title": "Scarface",
+        "Year": 1983,
+        "Genre": [
+            "Action",
+            "Crime",
+            "Drama",
+            "Thriller"
+        ],
+        "Revenue": 65884703,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f1b",
+        "Votes": 545589,
+        "Rank": 8.3,
+        "Title": "Amelie",
+        "Year": 2001,
+        "Genre": [
+            "Comedy",
+            "Romance"
+        ],
+        "Revenue": 173921954,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f1c",
+        "Votes": 518989,
+        "Rank": 8.3,
+        "Title": "Taxi Driver",
+        "Year": 1976,
+        "Genre": [
+            "Crime",
+            "Drama"
+        ],
+        "Revenue": 28262574,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f1d",
+        "Votes": 496312,
+        "Rank": 8.3,
+        "Title": "Full Metal Jacket",
+        "Year": 1987,
+        "Genre": [
+            "Drama",
+            "War"
+        ],
+        "Revenue": 46357676,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f1e",
+        "Votes": 421958,
+        "Rank": 8.3,
+        "Title": "L.A. Confidential",
+        "Year": 1997,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 126216940,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f1f",
+        "Votes": 437154,
+        "Rank": 8.3,
+        "Title": "2001: A Space Odyssey",
+        "Year": 1968,
+        "Genre": [
+            "Science Fiction",
+            "Mystery",
+            "Adventure"
+        ],
+        "Revenue": 56715371,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f20",
+        "Votes": 389311,
+        "Rank": 8.3,
+        "Title": "Monty Python and the Holy Grail",
+        "Year": 1975,
+        "Genre": [
+            "Adventure",
+            "Comedy",
+            "Fantasy"
+        ],
+        "Revenue": 5028948,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f22",
+        "Votes": 276525,
+        "Rank": 8.3,
+        "Title": "Amadeus",
+        "Year": 1984,
+        "Genre": [
+            "Drama",
+            "History",
+            "Music"
+        ],
+        "Revenue": 51973029,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f23",
+        "Votes": 255013,
+        "Rank": 8.3,
+        "Title": "Vertigo",
+        "Year": 1958,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Mystery",
+            "Romance",
+            "Thriller"
+        ],
+        "Revenue": 28000000,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f24",
+        "Votes": 224322,
+        "Rank": 8.3,
+        "Title": "North by Northwest",
+        "Year": 1959,
+        "Genre": [
+            "Mystery",
+            "Thriller"
+        ],
+        "Revenue": 13275000,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f25",
+        "Votes": 219960,
+        "Rank": 8.3,
+        "Title": "To Kill a Mockingbird",
+        "Year": 1962,
+        "Genre": [
+            "Crime",
+            "Drama",
+            "Mystery"
+        ],
+        "Revenue": 13129846,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f26",
+        "Votes": 216801,
+        "Rank": 8.3,
+        "Title": "3 Idiots",
+        "Year": 2009,
+        "Genre": [
+            "Drama",
+            "Comedy",
+            "Romance"
+        ],
+        "Revenue": 70000000,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f27",
+        "Votes": 196827,
+        "Rank": 8.3,
+        "Title": "Lawrence of Arabia",
+        "Year": 1962,
+        "Genre": [
+            "Adventure",
+            "Drama",
+            "History",
+            "War"
+        ],
+        "Revenue": 70000000,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f28",
+        "Votes": 179340,
+        "Rank": 8.3,
+        "Title": "The Sting",
+        "Year": 1973,
+        "Genre": [
+            "Comedy",
+            "Crime",
+            "Drama"
+        ],
+        "Revenue": 159616327,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f61",
+        "Votes": 31406,
+        "Rank": 8.2,
+        "Title": "Hera Pheri",
+        "Year": 2000,
+        "Genre": [
+            "Comedy"
+        ],
+        "Revenue": 0,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f70",
+        "Votes": 571867,
+        "Rank": 8.1,
+        "Title": "Gran Torino",
+        "Year": 2008,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 269958228,
+        "yearRange": "2000s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f8d",
+        "Votes": 105894,
+        "Rank": 8.1,
+        "Title": "Network",
+        "Year": 1976,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 23689877,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f93",
+        "Votes": 71892,
+        "Rank": 8.1,
+        "Title": "The 400 Blows",
+        "Year": 1959,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f95",
+        "Votes": 63659,
+        "Rank": 8.1,
+        "Title": "Persona",
+        "Year": 1966,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "1960s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f98",
+        "Votes": 27987,
+        "Rank": 8.1,
+        "Title": "Tokyo Story",
+        "Year": 1953,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fb4",
+        "Votes": 175145,
+        "Rank": 8,
+        "Title": "Gandhi",
+        "Year": 1982,
+        "Genre": [
+            "Drama",
+            "History"
+        ],
+        "Revenue": 77737889,
+        "yearRange": "1980s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ed5",
+        "Votes": 460304,
+        "Rank": 8.9,
+        "Title": "12 Angry Men",
+        "Year": 1957,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 1000000,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7ed6",
+        "Votes": 1377789,
+        "Rank": 8.8,
+        "Title": "Fight Club",
+        "Year": 1999,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 100853753,
+        "yearRange": "1990s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f21",
+        "Votes": 303604,
+        "Rank": 8.3,
+        "Title": "Citizen Kane",
+        "Year": 1941,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 23217674,
+        "yearRange": "1940s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7f5f",
+        "Votes": 43415,
+        "Rank": 8.2,
+        "Title": "Ikiru",
+        "Year": 1952,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 55240,
+        "yearRange": "1950s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fad",
+        "Votes": 384163,
+        "Rank": 8,
+        "Title": "Rocky",
+        "Year": 1976,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 117235147,
+        "yearRange": "1970s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fae",
+        "Votes": 325531,
+        "Rank": 8,
+        "Title": "The Help",
+        "Year": 2011,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 124272124,
+        "yearRange": "2010s"
+    },
+    {
+        "_id": "58332b8c2dbfcaebbd8e7fb7",
+        "Votes": 106114,
+        "Rank": 8,
+        "Title": "La haine",
+        "Year": 1995,
+        "Genre": [
+            "Drama"
+        ],
+        "Revenue": 0,
+        "yearRange": "1990s"
+    }
+]

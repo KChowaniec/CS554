@@ -1,0 +1,234 @@
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+li {
+    float: left;
+}
+
+
+/*Banners {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    width: auto;
+}
+
+Banner {
+    
+}*/
+
+@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+::-moz-selection {
+    background: #f2c2c9;
+    color: #a4003a;
+    text-shadow: none;
+}
+
+::selection {
+    background: #16a085;
+    color: #a4003a;
+    text-shadow: none;
+}
+
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+.centered {
+    text-align: center
+}
+
+.mt {
+    margin-top: 80px;
+}
+
+.mb {
+    margin-bottom: 80px;
+}
+
+
+/* ==========================================================================
+   General styles
+   ========================================================================== */
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -webkit-overflow-scrolling: touch;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 700;
+    color: #4a4a4a;
+}
+
+.navbar-brand {
+    font-weight: 700;
+}
+
+.navbar-default .navbar-brand {
+    color: white;
+}
+
+.navbar-default {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.navbar-default .navbar-nav>.active>a,
+.navbar-default .navbar-nav>.active>a:hover,
+.navbar-default .navbar-nav>.active>a:focus {
+    color: white;
+    background-color: transparent;
+    border-bottom: 2px solid white;
+}
+
+.navbar-default .navbar-nav>li>a {
+    font-weight: 800;
+    color: white;
+}
+
+#headerwrap {
+    background: url(../images/Matrix-Back.jpg) no-repeat center top;
+    margin-top: -70px;
+    padding-top: 250px;
+    text-align: center;
+    background-attachment: relative;
+    background-position: center center;
+    min-height: 650px;
+    width: 100%;
+    -webkit-background-size: 100%;
+    -moz-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+#headerwrap h1 {
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    letter-spacing: 4px;
+    font-size: 80px;
+    font-weight: bold;
+}
+
+#headerwrap h2 {
+    font-weight: 800;
+    color: white;
+}
+
+.carousel {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.carousel-content {
+    text-align: left;
+    padding: 10px 25px;
+    border-left: solid 1px #dbe1e7;
+}
+
+.carousel-content h3,
+.text-inter h3 {
+    color: #737c85;
+    font-size: 21px;
+    padding-top: 40px;
+}
+
+.carousel-content p,
+.text-inter p {
+    color: #929da5;
+    font-size: 14px;
+    word-spacing: 2px;
+}
+
+.overlay {
+    height: 100%;
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    top: 0px;
+    opacity: 0;
+    border: solid 5px #63c6ae;
+}
+
+.overlay:hover {
+    opacity: 1;
+}
+
+.ca-hover:hover .carousel-content h3 {
+    color: #63c6ae;
+}
+
+.ca-hover:hover .carousel-content p {
+    color: #63c6ae;
+}
+
+.carousel-img img {
+    width: 100%;
+}
+
+.flexcontainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.next,
+.prev,
+.quote-next,
+.quote-prev {
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    margin-top: -.75em;
+    user-select: none;
+    transition: 0.5s ease;
+    -moz-transition: 0.5s ease;
+    -webkit-transition: 0.5s ease;
+    -o-transition: 0.5s ease;
+}
+
+.next:hover,
+.prev:hover,
+.quote-next:hover,
+.quote-prev:hover {
+    cursor: pointer;
+    color: #6dbeaa;
+}
+
+.next,
+.quote-next {
+    right: 15px;
+}
+
+.prev,
+.quote-prev {
+    left: 15px;
+}
