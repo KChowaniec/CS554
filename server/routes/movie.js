@@ -34,10 +34,7 @@ var router = express.Router();
 
 		redisConnection.on(`details-retrieved:${messageId}`, (details, channel) => {
 			if (details) {
-				res.render("movie/detail", {
-					movie: details,
-					partial: "jquery-detail-scripts"
-				});
+                res.send(JSON.stringify(details));
 			}
 			redisConnection.off(`details-retrieved:${messageId}`);
 			redisConnection.off(`details-retrieved-failed:${messageId}`);
