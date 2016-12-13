@@ -24,6 +24,7 @@
     "webpack": "^1.13.3"
   },
   "dependencies": {
+    "axios" : "^0.15.3",
     "body-parser": "^1.15.2",
     "connect-flash": "^0.1.1",
     "connect-multiparty": "^2.0.0",
@@ -40,6 +41,7 @@
     "gulp-sass": "^2.3.2",
     "handlebars": "^4.0.5",
     "highcharts": "^5.0.3",
+    "json-loader": "^0.5.4",
     "jsonwebtoken": "^7.1.9",
     "material-ui": "^0.16.4",
     "mongodb": "^2.2.4",
