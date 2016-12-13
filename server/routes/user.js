@@ -139,11 +139,11 @@ router.get('/logout', function (req, res) {
 
 //post user registration
 router.post('/user/register', function (req, res) {
-    let username = req.body.username;
-    let password = req.body.password;
-    let confirmedPassword = req.body.confirm;
-    let name = req.body.name;
-    let email = req.body.email;
+    let username = xss(req.body.username);
+    let password = xss(req.body.password);
+    let confirmedPassword = xss(req.body.confirm);
+    let name = xss(req.body.name);
+    let email = xss(req.body.email);
     let redisConnection = req
         .app
         .get("redis");
@@ -242,8 +242,8 @@ router.get('/user', function (req, res) {
 
 //update user
 router.put('/users/:id', function (req, res) {
-    let userId = req.params.id;
-    let newData = req.body;
+    let userId = xss(req.params.id);
+    let newData = xss(req.body);
     let redisConnection = req
         .app
         .get("redis");

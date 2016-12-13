@@ -23,6 +23,7 @@ redisConnection.on('create-query:*', (data, channel) => {
     let messageId = data.requestId;
     let query = data.query;
     let title = data.title;
+    console.log(query);
     //helper functions
     var fn = function getId(name) {
         return new Promise((fulfill, reject) => {

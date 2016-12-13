@@ -61,14 +61,16 @@ router.get("/preferences", (req, res) => {
 
 //post search criteria
 router.post("/", (req, res) => {
-    let title = req.body.title;
-    let parseActors = req.body.parseActors;
-    let parseGenre = req.body.parseGenre;
-    let parseCrew = req.body.parseCrew;
-    let rating = req.body.rating;
-    let evaluation = req.body.evaluation;
-    let year = req.body.releaseYear;
-    let parseWords = req.body.parseWords;
+    console.log(req.body);
+    let title = xss(req.body.title);
+    let parseActors = xss(req.body.parseActors);
+    let parseGenre = xss(req.body.parseGenre);
+    let parseCrew = xss(req.body.parseCrew);
+    let rating = xss(req.body.rating);
+    let evaluation = xss(req.body.evaluation);
+    let year = xss(req.body.releaseYear);
+    let parseWords = xss(req.body.parseWords);
+    console.log(parseActors);
     let queryData = {
         title: title,
         actors: parseActors,
@@ -101,9 +103,7 @@ router.post("/", (req, res) => {
     });
 
     redisConnection.on(`query-created-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json({ success: false, error: error });
+        res.json({ success: false, error: error });
         redisConnection.off(`query-created:${messageId}`);
         redisConnection.off(`query-created-failed:${messageId}`);
 
@@ -149,7 +149,7 @@ router.get("/results/:pageId", (req, res) => {
 
     redisConnection.on(`movies-retrieved:${messageId}`, (results, channel) => {
         if (results) {
-            res.render("results/movielist", { pages: results.pages, movies: results.movielist, total: results.total, partial: "results-script" });
+            // res.render("results/movielist", { pages: results.pages, movies: results.movielist, total: results.total, partial: "results-script" });
         }
 
         redisConnection.off(`movies-retrieved:${messageId}`);
@@ -159,10 +159,10 @@ router.get("/results/:pageId", (req, res) => {
     });
 
     redisConnection.on(`movies-retrieved-failed:${messageId}`, (error, channel) => {
-        res.render("search/form", {
-            title: title, actors: actors, genres: genre, crew: crew,
-            evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: error, partial: "form-validation"
-        });
+        // res.render("search/form", {
+        //     title: title, actors: actors, genres: genre, crew: crew,
+        //     evaluation: evalution, rating: rating, releaseYear: year, keywords: keywords, error: error, partial: "form-validation"
+        // });
         redisConnection.off(`movies-retrieved:${messageId}`);
         redisConnection.off(`movies-retrieved-failed:${messageId}`);
 
