@@ -1,5 +1,6 @@
 import Base from './components/Base.js';
 import HomePage from './components/HomePage.js';
+import MovieDetailsPage from './containers/MovieDetailPage.js';
 import LoginPage from './containers/LoginPage.js';
 import SignUpPage from './containers/SignUpPage.js';
 import AnalyticsPage from './containers/AnalyticsPage.js';
@@ -17,6 +18,17 @@ function getAnalytics(nextState, replace) {
   var requestConfig = {
     method: "GET",
     url: "/analytics",
+    contentType: 'application/json'
+  };
+  $.ajax(requestConfig).then((responseMessage) => {
+    window.location.reload();
+  });
+}
+
+function getMovieById(nextState, replace) {
+  var requestConfig = {
+    method: "GET",
+    url: "/detail/5",
     contentType: 'application/json'
   };
   $.ajax(requestConfig).then((responseMessage) => {
@@ -51,6 +63,11 @@ const routes = {
       onEnter: redirectToLogin
     },
     {
+      path: '/movie/:id',
+      component: MovieDetailsPage,
+      onEnter: redirectToLogin
+    },
+    {
       path: '/logout',
       component: Logout
     },
@@ -58,6 +75,10 @@ const routes = {
       path: '/analytics',
       component: AnalyticsPage,
       onEnter: getAnalytics
+    },
+    {
+      path: '/detailm',
+      onEnter: getMovieById
     },
     //match any other routes - redirect to home page
     {
