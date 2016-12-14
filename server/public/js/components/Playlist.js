@@ -3,7 +3,9 @@ import { Card, CardTitle } from 'material-ui/Card';
 import { GridList, GridTile } from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 import axios from 'axios';
+import { browserHistory } from 'react-router';
 
 class Playlist extends React.Component {
 
@@ -31,48 +33,7 @@ class Playlist extends React.Component {
                     width: 200,
                 },
             },
-            tilesData: [
-                {
-                    img: 'https://unsplash.it/200/300?image=0',
-                    title: 'Breakfast',
-                    author: 'jill111',
-                },
-                {
-                    img: 'https://unsplash.it/200/300?image=1',
-                    title: 'Tasty burger',
-                    author: 'pashminu',
-                },
-                {
-                    img: 'https://unsplash.it/200/300?image=2',
-                    title: 'Camera',
-                    author: 'Danson67',
-                },
-                {
-                    img: 'https://unsplash.it/200/300?image=3',
-                    title: 'Morning',
-                    author: 'fancycrave1',
-                },
-                {
-                    img: 'https://unsplash.it/200/300?image=4',
-                    title: 'Hats',
-                    author: 'Hans',
-                },
-                {
-                    img: 'https://unsplash.it/200/300?image=5',
-                    title: 'Honey',
-                    author: 'fancycravel',
-                },
-                {
-                    img: 'https://unsplash.it/200/300?image=6',
-                    title: 'Vegetables',
-                    author: 'jill111',
-                },
-                {
-                    img: 'https://unsplash.it/200/300?image=7',
-                    title: 'Water plant',
-                    author: 'BkrmadtyaKarki',
-                },
-            ],
+            tilesData: [],
         };
     }
 
@@ -84,12 +45,29 @@ class Playlist extends React.Component {
             });
     }
 
-    itemClicked() {
-        console.log("Item Clicked");
+    itemClicked(id) {
+        console.log("Item Clicked: " + id);
+        browserHistory.push('/movie/' + id);
     }
 
-    deleteItem() {
-        console.log("Delete Item Clicked");
+    deleteItem(index) {
+
+        axios.delete('/playlist/movie/' + this.state.tilesData[index]._id)
+            .then(res => {
+                if (res.data.success === true) {
+                    return axios.get('/playlist');
+                }
+            }).then(res => {
+                this.setState({ tilesData: res.data });
+                //console.log(res)
+            });
+        //console.log("Delete Item Clicked : " + index + " - Movie ID : " + this.state.tilesData[index]._id);
+        
+        // code to delete item from array
+        /*var newArr = this.state.tilesData.filter(function (itm, i) {
+            return i !== index;
+        });
+        this.setState({ tilesData: newArr });*/
     }
 
     render() {
@@ -100,11 +78,12 @@ class Playlist extends React.Component {
                         <GridTile
                             key={i}
                             title={tile.title}
-                            actionIcon={<IconButton onClick={this.deleteItem}><StarBorder color="rgb(0, 188, 212)" /></IconButton>}
+                            actionIcon={<IconButton onClick={this.deleteItem.bind(this, i)}><DeleteForever color="rgb(0, 188, 212)" /></IconButton>}
                             titleStyle={this.state.styles.titleStyle}
                             titleBackground="linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
                             >
-                            <img style={this.state.styles.imageStyle} onClick={this.itemClicked} src={"https://image.tmdb.org/t/p/w200_and_h300_bestv2"+tile.image} />
+                            <img style={this.state.styles.imageStyle} onClick={this.itemClicked.bind(this, tile._id)} src={"https://image.tmdb.org/t/p/w200_and_h300_bestv2/" + tile.image} />
+
                         </GridTile>
                     ))}
                 </GridList>
