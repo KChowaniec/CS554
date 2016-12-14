@@ -14,9 +14,7 @@ class MovieDetailsPage extends React.Component {
       movie: {
       },
       recs: [],
-      reviews: [
-          {text:"foo"},{text:"23feid"}
-      ]
+      reviews: []
     };
   }
 
@@ -25,11 +23,13 @@ class MovieDetailsPage extends React.Component {
       .then(res => {
         this.setState({ movie: res.data});
       });
-    debugger;
     axios.get('/movies/recommendations/' + this.props.params.id)
       .then(res => {
-        debugger;
         this.setState({ recs: res.data.results});
+      });
+    axios.get('/movies/reviews/' + this.props.params.id)
+      .then(res => {
+        this.setState({ reviews: res.data.results});
       });
   }
 
@@ -39,6 +39,7 @@ class MovieDetailsPage extends React.Component {
         error={this.state.error}
         movie={this.state.movie}
         recs={this.state.recs}
+        reviews={this.state.reviews}
         />
     );
   }
