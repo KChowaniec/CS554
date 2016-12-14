@@ -36,6 +36,16 @@ class Movie extends React.Component {
                   <a href={'/movie/' + rec.id}><img src={'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + rec.poster_path} style={{width:'180px'}}/></a>
                 </GridTile>);
         });
+        var revs = this.props.reviews.map(function (rec,i){
+            return (
+                <ListItem
+                  key={rec.id}
+                  primaryText={rec.author}
+                  secondaryText={rec.content}
+                  secondaryTextLines={2}
+                />
+            );
+        });
         return (
                 <Card style={{width:'70%',margin: '0 auto',color:'#1976d2'}}>
                     <CardHeader title={this.props.movie.title} subtitle={this.props.movie.releaseDate} titleColor="#00bcd4" titleStyle={{fontSize:'30px',fontWeight:'bold'}}/>
@@ -50,6 +60,10 @@ class Movie extends React.Component {
                                 {recsTiles}
                             </GridList>
                         </div>
+                        <List>
+                            <Subheader>Moview Reviews</Subheader>
+                            {revs}
+                        </List>
                     </CardText>
               </Card>
             );
