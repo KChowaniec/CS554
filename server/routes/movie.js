@@ -77,7 +77,7 @@ var router = express.Router();
 
 		redisConnection.on(`recommendations-retrieved:${messageId}`, (movies, channel) => {
 			if (movies) {
-
+                res.send(JSON.stringify(movies));
 			}
 			redisConnection.off(`recommendations-retrieved:${messageId}`);
 			redisConnection.off(`recommendations-retrieved-failed:${messageId}`);
