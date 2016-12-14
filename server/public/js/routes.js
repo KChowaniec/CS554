@@ -1,5 +1,6 @@
 import Base from './components/Base.js';
 import HomePage from './components/HomePage.js';
+import Playlist from './components/Playlist.js';
 import MovieDetailsPage from './containers/MovieDetailPage.js';
 import LoginPage from './containers/LoginPage.js';
 import SignUpPage from './containers/SignUpPage.js';
@@ -61,6 +62,10 @@ const routes = {
       path: '/home',
       component: HomePage,
       onEnter: redirectToLogin
+    },
+    {
+      path: '/playlist',
+      component: Playlist
     },
     {
       path: '/movie/:id',

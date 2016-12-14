@@ -115,13 +115,14 @@ var exportedMethods = {
 
 
     //operations related to movies
-    addMovieToPlaylist(playlistId, movieId, title, overview) {   //add movie to the playlistMovies array by providing playlist id and the movie object.Node:the review id in the movie should be added first
+    addMovieToPlaylist(playlistId, movieId, title, overview, image_url) {   //add movie to the playlistMovies array by providing playlist id and the movie object.Node:the review id in the movie should be added first
         return Playlist().then((playlistCollection) => {
             var obj = {
                 _id: movieId,
                 title: title,
                 overview: overview,
-                viewed: false
+                viewed: false,
+                image: image_url
             };
             return playlistCollection.update({ _id: playlistId }, { $addToSet: { "playlistMovies": obj } }).then(function () {
                 return playlistId;

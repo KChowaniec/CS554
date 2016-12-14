@@ -19,6 +19,11 @@ const uuid = require("node-uuid");
 router.get("/", (req, res) => {
     //get playlist information
     let userId = req.session.userId;
+    // REMOVE IT
+    if(userId === undefined){
+        userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
+    }
+
     let redisConnection = req
         .app
         .get("redis");
@@ -37,6 +42,7 @@ router.get("/", (req, res) => {
                     unviewed.push(playlist.playlistMovies[i]);
                 }
             }
+            res.json(playlist.playlistMovies);
         }
         redisConnection.off(`playlist-retrieved:${messageId}`);
         redisConnection.off(`playlist-retrieved-failed:${messageId}`);
@@ -321,6 +327,11 @@ router.put("/title/:playlistId", (req, res) => {
 router.delete("/movie/:movieId", (req, res) => {
     let movieId = req.params.movieId;
     let userId = req.session.userId;
+
+    // REMOVE IT
+    if(userId === undefined){
+        userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
+    }
     let redisConnection = req
         .app
         .get("redis");
@@ -368,8 +379,13 @@ router.delete("/movie/:movieId", (req, res) => {
 
 //ADD MOVIE TO PLAYLIST
 router.post("/:movieId", (req, res) => {
+    console.log("in add movie to playlist");
     let movieId = req.params.movieId;
-    let userId = req.session.userId;
+    console.log("Movie ID - " + movieId);
+    //Hardcoded the UserID to add movie to playlist using POSTMAN
+    //let userId = req.session.userId;
+    let userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
+    console.log("User ID - " + req.session.userId);
     let redisConnection = req
         .app
         .get("redis");
