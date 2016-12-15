@@ -14,7 +14,8 @@ class MovieDetailsPage extends React.Component {
       movie: {
       },
       recs: [],
-      reviews: []
+      reviews: [],
+      internalReviews: []
     };
   }
 
@@ -31,6 +32,11 @@ class MovieDetailsPage extends React.Component {
       .then(res => {
         this.setState({ reviews: res.data.results});
       });
+    axios.get('/movies/allreviews/' + this.props.params.id)
+      .then(res => {
+        debugger;
+        this.setState({ internalReviews: res.data});
+      });
   }
 
   render() {
@@ -40,6 +46,7 @@ class MovieDetailsPage extends React.Component {
         movie={this.state.movie}
         recs={this.state.recs}
         reviews={this.state.reviews}
+        intreviews={this.state.internalReviews}
         />
     );
   }
