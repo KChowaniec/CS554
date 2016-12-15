@@ -1,5 +1,6 @@
 import Base from './components/Base.js';
 import HomePage from './components/HomePage.js';
+import Playlist from './components/Playlist.js';
 import MovieDetailsPage from './containers/MovieDetailPage.js';
 import LoginPage from './containers/LoginPage.js';
 import SignUpPage from './containers/SignUpPage.js';
@@ -7,7 +8,6 @@ import AnalyticsPage from './containers/AnalyticsPage.js';
 import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
-import Playlist from './components/Playlist.js';
 // import HomePage from './containers/HomePage.js';
 
 function redirectToLogin(nextState, replace) {
@@ -63,6 +63,10 @@ const routes = {
       path: '/home',
       component: HomePage,
       onEnter: redirectToLogin
+    },
+    {
+      path: '/playlist',
+      component: Playlist
     },
     {
       path: '/movie/:id',

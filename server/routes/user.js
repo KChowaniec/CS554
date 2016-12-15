@@ -261,6 +261,8 @@ router.post('/user/login', function (req, res, next) {
             req.session.userId = user._id;
             let sessionData = req.session;
 
+            console.log("In User Routes");
+            console.log("User Id From Session : " + req.session.userId);
             redisConnection.on(`logged-in:${messageId}`, (sessionData, channel) => {
                 redisConnection.off(`logged-in:${messageId}`);
                 redisConnection.off(`login-failed:${messageId}`);

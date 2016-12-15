@@ -56,17 +56,17 @@ redisConnection.on('get-details:*', (data, channel) => {
     });
 });
 
-//GET MOVIE RECOMMENDATIONS WORKER
 redisConnection.on('get-recommendations:*', (data, channel) => {
-    let messageId = data.requestId;
     let movieId = data.movieId;
-            let fullyComposeMovie = apiData
-                .getMovieRecommendations(movieId)
-                .then((movies) => {
-                        redisConnection.emit(`recommendations-retrieved:${messageId}`,movies);
-                    }).catch(error => {
-                        redisConnection.emit(`recommendations-retrieved-failed:${messageId}`, error);
-                });
+    let messageId = data.requestId;
+    let fullyComposeMovie = apiData
+        .getMovieRecommendations(movieId)
+        .then((movies) => {
+            redisConnection.emit(`recommendations-retrieved:${messageId}`,movies);
+        }).catch(error => {
+            console.log(error);
+            redisConnection.emit(`recommendations-retrieved-failed:${messageId}`, error);
+        });
 });
 
 //DELETE MOVIE WORKER
@@ -74,9 +74,17 @@ redisConnection.on('delete-movie:*', (data, channel) => {
 
 });
 
-//GET REVIEW WORKER
-redisConnection.on('get-review:*', (data, channel) => {
+redisConnection.on('get-reviews:*', (data, channel) => {
+    let movieId = data.movieId;
     let messageId = data.requestId;
-
+    let fullyComposeMovie = apiData
+        .getMovieReviews(movieId)
+        .then((movies) => {
+            console.log(movies);
+            redisConnection.emit(`reviews-retrieved:${messageId}`,movies);
+        }).catch(error => {
+            console.log(error);
+            redisConnection.emit(`reviews-retrieved-failed:${messageId}`, error);
+        });
 });
 

@@ -38,6 +38,9 @@ redisConnection.on('create-playlist:*', (data, channel) => {
 
 //ADD MOVIE TO PLAYLIST WORKER (and to movie & history collections), also update playlist cache entry
 redisConnection.on('add-movie-playlist:*', (data, channel) => {
+
+    console.log("Received in worker");
+    console.log(data);
     let messageId = data.requestId;
     let movieId = data.movieId;
     let userId = data.userId;
@@ -88,7 +91,7 @@ redisConnection.on('add-movie-playlist:*', (data, channel) => {
                             overview = movieInfo.overview;
                         }
                         //insert movie into playlist collection
-                        var newList = playlistData.addMovieToPlaylist(userPlaylist._id, movieId, title, overview);
+                        var newList = playlistData.addMovieToPlaylist(userPlaylist._id, movieId, title, overview, movieInfo.poster_path);
                         newList.then((addedMovie) => {
                             console.log("movie added to playlist");
                             console.log(movieInfo);
@@ -137,6 +140,8 @@ redisConnection.on('get-playlist:*', (data, channel) => {
     let fullyComposePlaylist = playlistData
         .getPlaylistByUserId(userId)
         .then((playlist) => {
+            console.log("IN playlist Worker");
+            console.log(playlist);
             redisConnection.emit(`playlist-retrieved:${messageId}`, playlist);
         }).catch(error => {
             redisConnection.emit(`playlist-retrieved-failed:${messageId}`, error);
