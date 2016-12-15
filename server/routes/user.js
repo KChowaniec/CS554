@@ -32,7 +32,7 @@ router.get('/users', function (req, res) {
 
         clearTimeout(killswitchTimeoutId);
 
-        res.status(200).send(retrievedusers);
+        return res.json({ success: true, users: retrievedusers });
     });
 
     redisConnection.on(`users-retrieved-failed:${messageId}`, (error, channel) => {
@@ -40,7 +40,10 @@ router.get('/users', function (req, res) {
         redisConnection.off(`users-retrieved-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        res.json(error);
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -74,6 +77,7 @@ router.get('/logout', function (req, res) {
         clearTimeout(killswitchTimeoutId);
         if (deletedUser) {
             req.session.destroy();
+            return res.json({ success: true });
         }
     });
 
@@ -82,7 +86,10 @@ router.get('/logout', function (req, res) {
         redisConnection.off(`logout-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        res.json(error);
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -122,7 +129,7 @@ router.post('/user/register', function (req, res) {
         clearTimeout(killswitchTimeoutId);
         if (registeredUserId) {
             req.session.userId = registeredUserId;
-            res.status(200).json({ success: true });
+            return res.json({ success: true });
         }
     });
 
@@ -173,6 +180,9 @@ router.get('/user', function (req, res) {
         redisConnection.off(`user-retrieved-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+        if (retrievedUser) {
+            return res.json({ success: true, user: JSON.stringify(retrievedUser) });
+        }
     });
 
     redisConnection.on(`user-retrieved-failed:${messageId}`, (error, channel) => {
@@ -180,7 +190,10 @@ router.get('/user', function (req, res) {
         redisConnection.off(`user-retrieved-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        res.json(error);
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -199,8 +212,8 @@ router.get('/user', function (req, res) {
 
 
 //update user
-router.put('/users/:id', function (req, res) {
-    let userId = xss(req.params.id);
+router.put('/user', function (req, res) {
+    let userId = req.session.userId;
     let newData = xss(req.body);
     let redisConnection = req
         .app
@@ -215,7 +228,7 @@ router.put('/users/:id', function (req, res) {
         redisConnection.off(`user-updated-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        res.status(200).send(updatedUser);
+        return res.json({ success: true, user: updatedUser });
     });
 
     redisConnection.on(`user-updated-failed:${messageId}`, (error, channel) => {
@@ -223,7 +236,10 @@ router.put('/users/:id', function (req, res) {
         redisConnection.off(`user-updated-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        res.json(error);
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -261,15 +277,13 @@ router.post('/user/login', function (req, res, next) {
             req.session.userId = user._id;
             let sessionData = req.session;
 
-            console.log("In User Routes");
-            console.log("User Id From Session : " + req.session.userId);
             redisConnection.on(`logged-in:${messageId}`, (sessionData, channel) => {
                 redisConnection.off(`logged-in:${messageId}`);
                 redisConnection.off(`login-failed:${messageId}`);
 
                 clearTimeout(killswitchTimeoutId);
                 if (sessionData) {
-                    return res.status(200).json({ success: true, token: sessionData.token });
+                    return res.json({ success: true, token: sessionData.token });
                 }
             });
 
@@ -300,6 +314,46 @@ router.post('/user/login', function (req, res, next) {
         }
     })(req, res, next);
 });
+
+// //get user's password
+// router.get('/forgot/:username', function (req, res) {
+
+//     let redisConnection = req
+//         .app
+//         .get("redis");
+//     let username = req.params.username;
+//     let messageId = uuid.v4();
+//     let killswitchTimeoutId = undefined;
+
+//     redisConnection.on(`user-retrieved:${messageId}`, (retrievedUser, channel) => {
+
+//         redisConnection.off(`user-retrieved:${messageId}`);
+//         redisConnection.off(`user-retrieved-failed:${messageId}`);
+
+//         clearTimeout(killswitchTimeoutId);
+//     });
+
+//     redisConnection.on(`user-retrieved-failed:${messageId}`, (error, channel) => {
+//         redisConnection.off(`user-retrieved:${messageId}`);
+//         redisConnection.off(`user-retrieved-failed:${messageId}`);
+
+//         clearTimeout(killswitchTimeoutId);
+//         res.json(error);
+//     });
+
+//     killswitchTimeoutId = setTimeout(() => {
+//         redisConnection.off(`user-retrieved:${messageId}`);
+//         redisConnection.off(`user-retrieved-failed:${messageId}`);
+//         res
+//             .status(500)
+//             .json({ error: "Timeout error" })
+//     }, 5000);
+
+//     redisConnection.emit(`get-user:${messageId}`, {
+//         requestId: messageId,
+//         userId: userId
+//     });
+// });
 
 
 //post user update email

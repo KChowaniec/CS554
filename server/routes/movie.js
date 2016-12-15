@@ -12,227 +12,270 @@ var uuid = require('node-uuid');
 var api = data.api;
 var router = express.Router();
 
-// //get all movies
-// router.get('/', function (req, res) {
-//   	 var list = movies.getAllMovie().then((Movielist) => {
-// 		if (Movielist) {
-// 			res.status(200).send(Movielist);
-// 		} else {
-// 			res.sendStatus(404);
-// 		}
-// 	});
-// }),
+//get movie details
+router.get('/detail/:id', function (req, res) {
+	let movieId = req.params.id;
+	let redisConnection = req
+		.app
+		.get("redis");
+	let messageId = uuid.v4();
+	let killswitchTimeoutId = undefined;
 
-	//get movie details
-	router.get('/detail/:id', function (req, res) {
-		let movieId = req.params.id;
-		let redisConnection = req
-			.app
-			.get("redis");
-		let messageId = uuid.v4();
-		let killswitchTimeoutId = undefined;
+	redisConnection.on(`details-retrieved:${messageId}`, (details, channel) => {
 
-		redisConnection.on(`details-retrieved:${messageId}`, (details, channel) => {
-			if (details) {
-                res.send(JSON.stringify(details));
-			}
-			redisConnection.off(`details-retrieved:${messageId}`);
-			redisConnection.off(`details-retrieved-failed:${messageId}`);
+		redisConnection.off(`details-retrieved:${messageId}`);
+		redisConnection.off(`details-retrieved-failed:${messageId}`);
 
-			clearTimeout(killswitchTimeoutId);
-		});
-
-		redisConnection.on(`details-retrieved-failed:${messageId}`, (error, channel) => {
-			res
-				.status(500)
-				.json(error);
-			redisConnection.off(`details-retrieved:${messageId}`);
-			redisConnection.off(`details-retrieved-failed:${messageId}`);
-
-			clearTimeout(killswitchTimeoutId);
-		});
-
-		killswitchTimeoutId = setTimeout(() => {
-			redisConnection.off(`details-retrieved:${messageId}`);
-			redisConnection.off(`details-retrieved-failed:${messageId}`);
-			res
-				.status(500)
-				.json({ error: "Timeout error" })
-		}, 5000);
-
-		redisConnection.emit(`get-details:${messageId}`, {
-			requestId: messageId,
-			movieId: movieId
-		});
+		clearTimeout(killswitchTimeoutId);
+		if (details) {
+			return res.send(JSON.stringify(details));
+		}
 	});
 
-		//get recommended movies
-	router.get('/recommendations/:id', function (req, res) {
-		let movieId = req.params.id;
-		let redisConnection = req
-			.app
-			.get("redis");
-		let messageId = uuid.v4();
-		let killswitchTimeoutId = undefined;
+	redisConnection.on(`details-retrieved-failed:${messageId}`, (error, channel) => {
+		redisConnection.off(`details-retrieved:${messageId}`);
+		redisConnection.off(`details-retrieved-failed:${messageId}`);
 
-		redisConnection.on(`recommendations-retrieved:${messageId}`, (movies, channel) => {
-			if (movies) {
-                res.send(JSON.stringify(movies));
-			}
-			redisConnection.off(`recommendations-retrieved:${messageId}`);
-			redisConnection.off(`recommendations-retrieved-failed:${messageId}`);
-
-			clearTimeout(killswitchTimeoutId);
-		});
-
-		redisConnection.on(`recommendations-retrieved-failed:${messageId}`, (error, channel) => {
-			res
-				.status(500)
-				.json(error);
-			redisConnection.off(`recommendations-retrieved:${messageId}`);
-			redisConnection.off(`recommendations-retrieved-failed:${messageId}`);
-
-			clearTimeout(killswitchTimeoutId);
-		});
-
-		killswitchTimeoutId = setTimeout(() => {
-			redisConnection.off(`recommendations-retrieved:${messageId}`);
-			redisConnection.off(`recommendations-retrieved-failed:${messageId}`);
-			res
-				.status(500)
-				.json({ error: "Timeout error" })
-		}, 5000);
-
-		redisConnection.emit(`get-recommendations:${messageId}`, {
-			requestId: messageId,
-			movieId: movieId
-		});
+		clearTimeout(killswitchTimeoutId);
+		return res.json(error);
 	});
 
-    //get reviews by movie id 
-	router.get('/reviews/:id', function (req, res) {
-		let movieId = req.params.id;
-		let redisConnection = req
-			.app
-			.get("redis");
-		let messageId = uuid.v4();
-		let killswitchTimeoutId = undefined;
+	killswitchTimeoutId = setTimeout(() => {
+		redisConnection.off(`details-retrieved:${messageId}`);
+		redisConnection.off(`details-retrieved-failed:${messageId}`);
+		res
+			.status(500)
+			.json({ error: "Timeout error" })
+	}, 5000);
 
-		redisConnection.on(`reviews-retrieved:${messageId}`, (movies, channel) => {
-			if (movies) {
-                res.send(JSON.stringify(movies));
-			}
-			redisConnection.off(`reviews-retrieved:${messageId}`);
-			redisConnection.off(`reviews-retrieved-failed:${messageId}`);
-
-			clearTimeout(killswitchTimeoutId);
-		});
-
-		redisConnection.on(`reviews-retrieved-failed:${messageId}`, (error, channel) => {
-			res
-				.status(500)
-				.json(error);
-			redisConnection.off(`reviews-retrieved:${messageId}`);
-			redisConnection.off(`reviews-retrieved-failed:${messageId}`);
-
-			clearTimeout(killswitchTimeoutId);
-		});
-
-		killswitchTimeoutId = setTimeout(() => {
-			redisConnection.off(`reviews-retrieved:${messageId}`);
-			redisConnection.off(`reviews-retrieved-failed:${messageId}`);
-			res
-				.status(500)
-				.json({ error: "Timeout error" })
-		}, 5000);
-
-		redisConnection.emit(`get-reviews:${messageId}`, {
-			requestId: messageId,
-			movieId: movieId
-		});
+	redisConnection.emit(`get-details:${messageId}`, {
+		requestId: messageId,
+		movieId: movieId
 	});
-	// //add movie
-	// router.post('/', function (req, res) {
-	// 	var obj = req.body;
-	// 	movies.addMovie(obj).then((MovieObj) => {
-	// 		if (MovieObj) {
-	// 			res.status(200).send(MovieObj);
-	// 		} else {
-	// 			res.sendStatus(404);
-	// 		}
-	// 	});
-	// }),
+});
 
-	// //update movie
-	// router.put('/:id', function (req, res) {
-	// 	movies.updateMovieById(req.params.id, req.body).then((MovieObj) => {
-	// 		if (MovieObj) {
-	// 			res.status(200).send(MovieObj);
-	// 		} else {
-	// 			res.sendStatus(404);
-	// 		}
-	// 	});
-	// }),
+//get recommended movies
+router.get('/recommendations/:id', function (req, res) {
+	let movieId = req.params.id;
+	let redisConnection = req
+		.app
+		.get("redis");
+	let messageId = uuid.v4();
+	let killswitchTimeoutId = undefined;
 
-	// //delete movie
-	// router.delete('/:id', function (req, res) {
-	// 	movies.deleteMovieById(req.params.id).then((MovieObj) => {
-	// 		if (MovieObj) {
-	// 			res.status(200).send(MovieObj);
-	// 		} else {
-	// 			res.sendStatus(404);
-	// 		}
-	// 	});
-	// }),
+	redisConnection.on(`recommendations-retrieved:${messageId}`, (movies, channel) => {
+		redisConnection.off(`recommendations-retrieved:${messageId}`);
+		redisConnection.off(`recommendations-retrieved-failed:${messageId}`);
 
-	// //add review to movie
-    // router.post('/review/:id', function (req, res) {
-	// 	var reviewObj = req.body;
-	// 	reviewObj._id = uuid.v4();
-	// 	movies.addReviewToMovieGeneral(req.params.id, reviewObj).then((movieObj) => {
-	// 		if (movieObj) {
-	// 			//console.log(PlaylistObj);
-	// 			res.status(200).send(movieObj);
-	// 		} else {
-	// 			res.sendStatus(404);
-	// 		}
-	// 	});
-	// }),
+		clearTimeout(killswitchTimeoutId);
+		if (movies) {
+			return res.send(JSON.stringify(movies));
+		}
+	});
 
-	// //get reviews for movie
-	// router.get('/review/:mid/:rid', function (req, res) {
-	// 	movies.getReviewByReviewId(req.params.mid, req.params.rid).then((reviewObj) => {
-	// 		if (reviewObj) {
-	// 			//console.log(PlaylistObj);
-	// 			res.status(200).send(reviewObj);
-	// 		} else {
-	// 			res.sendStatus(404);
-	// 		}
-	// 	});
-	// }),
+	redisConnection.on(`recommendations-retrieved-failed:${messageId}`, (error, channel) => {
+		redisConnection.off(`recommendations-retrieved:${messageId}`);
+		redisConnection.off(`recommendations-retrieved-failed:${messageId}`);
 
-	// //delete reviews for movie
-	// router.delete('/review/:mid/:rid', function (req, res) {
-	// 	movies.removeReviewByReviewId(req.params.mid, req.params.rid).then((movieObj) => {
-	// 		if (movieObj) {
-	// 			//console.log(PlaylistObj);
-	// 			res.status(200).send(movieObj);
-	// 		} else {
-	// 			res.sendStatus(404);
-	// 		}
-	// 	});
-	// }),
+		clearTimeout(killswitchTimeoutId);
 
-	// //update reviews for movie
-	// router.put('/review/:mid/:rid', function (req, res) {
-	// 	movies.updateReviewByReviewId(req.params.mid, req.params.rid, req.body).then((reviewObj) => {
-	// 		if (reviewObj) {
-	// 			res.status(200).send(reviewObj);
-	// 		} else {
-	// 			res.sendStatus(404);
-	// 		}
-	// 	});
-	// }),
+		return res.json(error);
+	});
+
+	killswitchTimeoutId = setTimeout(() => {
+		redisConnection.off(`recommendations-retrieved:${messageId}`);
+		redisConnection.off(`recommendations-retrieved-failed:${messageId}`);
+		res
+			.status(500)
+			.json({ error: "Timeout error" })
+	}, 5000);
+
+	redisConnection.emit(`get-recommendations:${messageId}`, {
+		requestId: messageId,
+		movieId: movieId
+	});
+});
+
+//get reviews by movie id from api
+router.get('/reviews/:id', function (req, res) {
+	let movieId = req.params.id;
+	let redisConnection = req
+		.app
+		.get("redis");
+	let messageId = uuid.v4();
+	let killswitchTimeoutId = undefined;
+
+	redisConnection.on(`reviews-retrieved:${messageId}`, (movies, channel) => {
+		redisConnection.off(`reviews-retrieved:${messageId}`);
+		redisConnection.off(`reviews-retrieved-failed:${messageId}`);
+
+		clearTimeout(killswitchTimeoutId);
+		if (movies) {
+			return res.send(JSON.stringify(movies));
+		}
+	});
+
+	redisConnection.on(`reviews-retrieved-failed:${messageId}`, (error, channel) => {
+		redisConnection.off(`reviews-retrieved:${messageId}`);
+		redisConnection.off(`reviews-retrieved-failed:${messageId}`);
+
+		clearTimeout(killswitchTimeoutId);
+		return res.json(error);
+	});
+
+	killswitchTimeoutId = setTimeout(() => {
+		redisConnection.off(`reviews-retrieved:${messageId}`);
+		redisConnection.off(`reviews-retrieved-failed:${messageId}`);
+		res
+			.status(500)
+			.json({ error: "Timeout error" })
+	}, 5000);
+
+	redisConnection.emit(`get-reviews:${messageId}`, {
+		requestId: messageId,
+		movieId: movieId
+	});
+});
+
+//ADD REVIEW TO MOVIE
+router.post("/reviews/:movieId", (req, res) => {
+    let movieId = req.params.movieId;
+	let reviewData = xss(req.body);
+    let userId = req.session.userId;
+
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+    redisConnection.on(`added-review:${messageId}`, (result, channel) => {
+        redisConnection.off(`added-review:${messageId}`);
+        redisConnection.off(`added-review-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+		if (result) {
+            return res.json({ success: true, result: result });
+        }
+
+    });
+
+    redisConnection.on(`added-review-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`added-review:${messageId}`);
+        redisConnection.off(`added-review-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+		return res.json({ success: false, error: error });
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`added-review:${messageId}`);
+        redisConnection.off(`added-review-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`add-review:${messageId}`, {
+        requestId: messageId,
+        userId: userId,
+        movieId: movieId,
+        reviewData: reviewData
+    });
+});
+
+//REMOVE REVIEW FROM MOVIE
+router.delete("/movie/:movieId/reviews/:reviewId", (req, res) => {
+    let reviewId = req.params.reviewId;
+    let movieId = req.params.movieId;
+
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
 
 
-	module.exports = router;
+    redisConnection.on(`removed-review:${messageId}`, (result, channel) => {
+        redisConnection.off(`removed-review:${messageId}`);
+        redisConnection.off(`removed-review-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+
+		        if (result) {
+            return res.json({ success: true, result: result });
+        }
+    });
+
+    redisConnection.on(`removed-review-failed:${messageId}`, (error, channel) => {
+
+        redisConnection.off(`removed-review:${messageId}`);
+        redisConnection.off(`removed-review-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+
+		 return res.json({ success: false, error: error });
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`removed-review:${messageId}`);
+        redisConnection.off(`removed-review-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`remove-review:${messageId}`, {
+        requestId: messageId,
+        movieId: movieId,
+        reviewId: reviewId
+    });
+});
+
+
+
+//get all user reviews for movie from movie collection
+router.get('/allreviews/:id', function (req, res) {
+	let movieId = req.params.id;
+	let redisConnection = req
+		.app
+		.get("redis");
+	let messageId = uuid.v4();
+	let killswitchTimeoutId = undefined;
+
+	redisConnection.on(`all-reviews-retrieved:${messageId}`, (reviews, channel) => {
+
+		redisConnection.off(`all-reviews-retrieved:${messageId}`);
+		redisConnection.off(`all-reviews-retrieved-failed:${messageId}`);
+
+		clearTimeout(killswitchTimeoutId);
+		if (reviews) {
+			return res.json({success: true, reviews: reviews});
+		}
+	});
+
+	redisConnection.on(`all-reviews-retrieved-failed:${messageId}`, (error, channel) => {
+		redisConnection.off(`all-reviews-retrieved:${messageId}`);
+		redisConnection.off(`all-reviews-retrieved-failed:${messageId}`);
+
+		clearTimeout(killswitchTimeoutId);
+				return res
+			.json(error);
+	});
+
+	killswitchTimeoutId = setTimeout(() => {
+		redisConnection.off(`all-reviews-retrieved:${messageId}`);
+		redisConnection.off(`all-reviews-retrieved-failed:${messageId}`);
+		res
+			.status(500)
+			.json({ error: "Timeout error" })
+	}, 5000);
+
+	redisConnection.emit(`get-all-reviews:${messageId}`, {
+		requestId: messageId,
+		movieId: movieId
+	});
+}),
+
+
+module.exports = router;

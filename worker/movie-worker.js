@@ -20,14 +20,44 @@ bluebird.promisifyAll(redis.Multi.prototype);
 
 const redisConnection = new NRP(config); // This is the NRP client
 
-//ADD MOVIE WORKER
-redisConnection.on('add-movie:*', (data, channel) => {
+//GET ALL REVIEWS FOR MOVIE WORKER
+redisConnection.on('get-all-reviews:*', (data, channel) => {
+    let messageId = data.requestId;
+    let movieId = data.movieId;
+    //get all reviews
+    let fullyComposeMovie = movieData.getAllReviews(movieId).then((reviews) => {
+            redisConnection.emit(`all-reviews-retrieved:${messageId}`, reviews);
+         }).catch(error => {
+        redisConnection.emit(`all-reviews-retrieved-failed:${messageId}`, error);
+        });
 });
 
-//GET ALL REVIEWS FOR MOVIE WORKER
-redisConnection.on('get-reviews:*', (data, channel) => {
-    let messageId = data.requestId;
 
+//ADD REVIEW TO MOVIE
+redisConnection.on('add-review:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let movieId = data.movieId;
+    let reviewData = data.reviewData;
+    reviewData.date = new Date();
+    var postReview = movieData.addReviewToMovie(movieId, userId, reviewData.rating, reviewData.date, reviewData.comment);
+    postReview.then((movieInfo) => {
+            redisConnection.emit(`added-review:${messageId}`, movieInfo);
+    }).catch(error => {
+        redisConnection.emit(`added-review-failed:${messageId}`, error);
+    });
+});
+
+//REMOVE REVIEW FROM MOVIE 
+redisConnection.on('remove-review:*', (data, channel) => {
+    let messageId = data.requestId;
+    let movieId = data.movieId;
+    let reviewId = data.reviewId;
+    let removeReview = movieData.removeReviewByReviewId(movieId, reviewId).then((movie) => {
+            redisConnection.emit(`removed-review:${messageId}`, movie);
+        }).catch(error => {
+            redisConnection.emit(`removed-review-failed:${messageId}`, error);
+    });
 });
 
 //GET MOVIE DETAILS WORKER
@@ -69,11 +99,7 @@ redisConnection.on('get-recommendations:*', (data, channel) => {
         });
 });
 
-//DELETE MOVIE WORKER
-redisConnection.on('delete-movie:*', (data, channel) => {
-
-});
-
+//GET REVIEWS FROM API
 redisConnection.on('get-reviews:*', (data, channel) => {
     let movieId = data.movieId;
     let messageId = data.requestId;

@@ -1,3 +1,5 @@
+// var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+
 module.exports = {
   login(username, password, cb) {
     cb = arguments[arguments.length - 1]
@@ -48,7 +50,19 @@ module.exports = {
   },
 
   loggedIn: function () {
-    return !!localStorage.token
+ //   if (localStorage.token) {
+    //   jwt.verify(token, 'secretkey', function (err, decoded) {
+    //     if (err) {
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   });
+    // }
+    // else {
+    //   return false;
+    // }
+     return !!localStorage.token
   },
 
 

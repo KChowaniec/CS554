@@ -74,6 +74,9 @@ class SignUpPage extends React.Component {
     if (!confirm) {
       errors.confirm = "This field is required";
     }
+    if (confirm && password && (confirm != password)) {
+      errors.confirm = "The confirmed password must match the original password";
+    }
     if (!jQuery.isEmptyObject(errors)) {
       return this.setState({ errors })
     }
@@ -83,6 +86,7 @@ class SignUpPage extends React.Component {
           return this.setState({ error: true })
         }
         else {
+          this.setState({error: false})
           browserHistory.push('/home');
         }
       });

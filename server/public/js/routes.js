@@ -8,6 +8,7 @@ import AnalyticsPage from './containers/AnalyticsPage.js';
 import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
+import AccountPage from './containers/AccountPage';
 // import HomePage from './containers/HomePage.js';
 
 function redirectToLogin(nextState, replace) {
@@ -66,7 +67,8 @@ const routes = {
     },
     {
       path: '/playlist',
-      component: Playlist
+      component: Playlist,
+      onEnter: redirectToLogin
     },
     {
       path: '/movie/:id',
@@ -87,9 +89,11 @@ const routes = {
       onEnter: getMovieById
     },
     {
-      path: '/myplaylist',
-      component: Playlist
+      path: '/account',
+      component: AccountPage,
+      onEnter: redirectToLogin
     },
+
     //match any other routes - redirect to home page
     {
       path: '/*',

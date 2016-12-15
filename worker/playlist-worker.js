@@ -38,9 +38,6 @@ redisConnection.on('create-playlist:*', (data, channel) => {
 
 //ADD MOVIE TO PLAYLIST WORKER (and to movie & history collections), also update playlist cache entry
 redisConnection.on('add-movie-playlist:*', (data, channel) => {
-
-    console.log("Received in worker");
-    console.log(data);
     let messageId = data.requestId;
     let movieId = data.movieId;
     let userId = data.userId;
@@ -93,16 +90,9 @@ redisConnection.on('add-movie-playlist:*', (data, channel) => {
                         //insert movie into playlist collection
                         var newList = playlistData.addMovieToPlaylist(userPlaylist._id, movieId, title, overview, movieInfo.poster_path);
                         newList.then((addedMovie) => {
-                            console.log("movie added to playlist");
-                            console.log(movieInfo);
-                            //add to history table
-                            //    historyData.addHistory(userId, movieId, movieInfo.genre, movieInfo.rated, movieInfo.keywords, movieInfo.releaseDate).then((data) => {
                             redisConnection.emit(`added-movie:${messageId}`, addedMovie);
-                            //  });
-
                         }).catch((error) => {
                             redisConnection.emit(`added-movie-failed:${messageId}`, error);
-                            //          });
                         });
                     }).catch((error) => {
                         redisConnection.emit(`added-movie-failed:${messageId}`, error);
@@ -186,67 +176,7 @@ redisConnection.on('remove-movie-playlist:*', (data, channel) => {
         });
 });
 
-//ADD/UPDATE REVIEW TO MOVIE IN PLAYLIST (and also to movie collection)
-redisConnection.on('add-review:*', (data, channel) => {
-    let messageId = data.requestId;
-    let userId = data.userId;
-    let movieId = data.movieId;
-    let reviewData = data.reviewData;
-    //get user information
-    let fullyComposePlaylist = playlistData
-        .getPlaylistByUserId(userId)
-        .then((playlistInfo) => {
-            //check if review exists
-            let movies = playlistInfo.playlistMovies;
-            var currentMovie = movies.filter(function (e) { return e._id === movieId });
-            if (currentMovie[0].review) { //review already exists
-                //update process
-                reviewData._id = currentMovie[0].review._id;
-                var updateReview = playlistData.updateMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
-                updateReview.then((movieInfo) => {
-                    redisConnection.emit(`added-review:${messageId}`, movieInfo);
-                }).catch(error => {
-                    redisConnection.emit(`added-review-failed:${messageId}`, error);
-                });
-            }
-            else { //new review
-                var postReview = playlistData.addMovieReviewToPlaylistAndMovie(playlistInfo._id, movieId, reviewData);
-                postReview.then((reviewInfo) => {
-                    redisConnection.emit(`added-review:${messageId}`, reviewInfo);
-                }).catch(error => {
-                    redisConnection.emit(`added-review-failed:${messageId}`, error);
-                });
-            }
 
-        }).catch(error => {
-            redisConnection.emit(`added-review-failed:${messageId}`, error);
-        });
-});
-
-//REMOVE REVIEW FROM MOVIE IN PLAYLIST (and also to movie collection)
-redisConnection.on('remove-review:*', (data, channel) => {
-    let messageId = data.requestId;
-    let userId = data.userId;
-    let movieId = data.movieId;
-    let reviewId = data.reviewId;
-
-    let fullyComposePlaylist = playlistData
-        .getPlaylistByUserId(userId)
-        .then((playlistInfo) => {
-            let removeReview = playlistData.removeReviewFromPlaylist(playlistInfo._id, reviewId);
-            removeReview.then((result) => {
-                //remove corresponding review from movies collection
-                movieData.removeReviewByReviewId(movieId, reviewId).then((movie) => {
-                    redisConnection.emit(`removed-review:${messageId}`, movie);
-                }).catch(error => {
-                    redisConnection.emit(`removed-review-failed:${messageId}`, error);
-                });
-
-            }).catch(error => {
-                redisConnection.emit(`removed-review-failed:${messageId}`, error);
-            });
-        });
-});
 
 //UPDATE PLAYLIST TITLE
 redisConnection.on('update-playlist-title:*', (data, channel) => {

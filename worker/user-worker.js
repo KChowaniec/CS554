@@ -38,25 +38,17 @@ redisConnection.on('register-user:*', (data, channel) => {
     let verifyUsername = userData.checkUserExist(username);
     verifyUsername.then((result) => {
         if (result == false) {
-            let verifyPasswords = userData.checkPasswordsMatch(password, confirmedPassword);
-            // let verify = userData.registrationVerification(password, confirmedPassword, username, email);
-            verifyPasswords.then(() => {
-                let fullyComposeUser = userData
-                    .addUsersAndPlaylist(title, user)
-                    .then((newUser) => {
-                        //cache user by userid
-                        let addEntry = client.setAsync(newUser.user_id, JSON.stringify(user));
-                        addEntry.then(() => {
-                            redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
-                        })
-                    }).catch(error => {
-                        redisConnection.emit(`user-registered-failed:${messageId}`, error);
-                    });
-            }).catch(() => {
-                let error = {};
-                error.confirm = "Confirmed password doesn't match original password entered";
-                redisConnection.emit(`user-registered-failed:${messageId}`, error);
-            });
+            let fullyComposeUser = userData
+                .addUsersAndPlaylist(title, user)
+                .then((newUser) => {
+                    //cache user by userid
+                    let addEntry = client.setAsync(newUser.user_id, JSON.stringify(user));
+                    addEntry.then(() => {
+                        redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
+                    })
+                }).catch(error => {
+                    redisConnection.emit(`user-registered-failed:${messageId}`, error);
+                });
         }
         else {
             let error = {};
@@ -132,7 +124,6 @@ redisConnection.on('get-user:*', (data, channel) => {
     let entryExists = client.getAsync(userId);
     entryExists.then((userInfo) => {
         if (userInfo) { //retrieve cached data
-            console.log(userInfo);
             redisConnection.emit(`user-retrieved:${messageId}`, JSON.parse(userInfo));
         }
         else { //retrieve from db
@@ -165,7 +156,7 @@ redisConnection.on('login-user:*', (data, channel) => {
     });
 });
 
-//USER PREFERENCES WORKER  -->get from cache?
+//USER PREFERENCES WORKER  
 redisConnection.on('get-preferences:*', (data, channel) => {
     let messageId = data.requestId;
     let userId = data.userId;
