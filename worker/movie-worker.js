@@ -106,7 +106,6 @@ redisConnection.on('get-reviews:*', (data, channel) => {
     let fullyComposeMovie = apiData
         .getMovieReviews(movieId)
         .then((movies) => {
-            console.log(movies);
             redisConnection.emit(`reviews-retrieved:${messageId}`,movies);
         }).catch(error => {
             console.log(error);
