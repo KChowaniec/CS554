@@ -13,6 +13,7 @@ class LoginPage extends React.Component {
 
     // set the initial component state
     this.state = {
+      errors: {},
       error: false,
       user: {
         username: '',
@@ -36,52 +37,28 @@ class LoginPage extends React.Component {
     // create a string for an HTTP body message
     const username = encodeURIComponent(this.state.user.username);
     const password = encodeURIComponent(this.state.user.password);
+    let errors = {};
+    if (!username) {
+      errors.username = "This field is required";
+    }
+    if (!password) {
+      errors.password = "This field is required";
+    }
+    if (!jQuery.isEmptyObject(errors)) {
+      return this.setState({ errors })
+    }
+    else {
+      auth.login(username, password, (loggedIn) => {
+        if (!loggedIn) {
+          return this.setState({ error: true })
 
-    auth.login(username, password, (loggedIn) => {
-      if (!loggedIn) {
-        return this.setState({ error: true })
+        }
+        else {
+          browserHistory.push('/home');
+        }
 
-      }
-      else {
-        browserHistory.push('/home');
-      }
-
-      //const { location } = this.props
-
-      // if (location.state && location.state.nextPathname) {
-      //   this.history.replaceState(null, location.state.nextPathname)
-      // } else {
-      //   this.history.replaceState(null, '/')
-      // }
-    });
-
-    // var requestConfig = {
-    //   method: "POST",
-    //   url: "/user/login",
-    //   contentType: 'application/json',
-    //   data: JSON.stringify({
-    //     username: username,
-    //     password: password,
-    //   })
-    // };
-    // let reactThis = this;
-    // $.ajax(requestConfig).then((responseMessage) => {
-    //   if (responseMessage.success) {
-    //     reactThis.setState({
-    //       errors: {},
-    //       loggedIn: true
-    //     });
-    //     browserHistory.push('/home'); //redirect to home page upon successful registration
-    //   }
-    //   else {
-    //     const errors = responseMessage.errors ? responseMessage.errors : {};
-    //     errors.summary = responseMessage.message;
-    //     console.log("login failed");
-    //     reactThis.setState({
-    //       errors
-    //     });
-    //   }
-    // });
+      });
+    }
   }
 
   /**
@@ -108,6 +85,7 @@ class LoginPage extends React.Component {
         onSubmit={this.processForm}
         onChange={this.changeUser}
         error={this.state.error}
+        errors={this.state.errors}
         user={this.state.user}
         />
     );

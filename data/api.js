@@ -41,8 +41,10 @@ var exportedMethods = {
                     movie.poster_path = parsed.poster_path;
 
                     var keywordVal = [];
-                    for (var i = 0; i < parsed.keywords.keywords.length; i++) {
-                        keywordVal.push(parsed.keywords.keywords[i].name);
+                    if (parsed.keywords != undefined) {
+                        for (var i = 0; i < parsed.keywords.keywords.length; i++) {
+                            keywordVal.push(parsed.keywords.keywords[i].name);
+                        }
                     }
                     movie.keywords = keywordVal;
 

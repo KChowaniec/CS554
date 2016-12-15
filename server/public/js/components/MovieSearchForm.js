@@ -3,8 +3,7 @@ import { Link } from 'react-router';
 import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-// import Search from 'material-ui/svg-icons/search';
-// import Save from 'material-ui/svg-icons/save';
+
 
 const MovieSearchForm = ({
     onSubmit,

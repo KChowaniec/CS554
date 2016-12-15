@@ -51,6 +51,7 @@ module.exports = {
     return !!localStorage.token
   },
 
+
   onChange: function () { }
 }
 
@@ -117,6 +118,7 @@ function registerRequest(username, password, confirm, email, name, cb) {
       cb({
         authenticated: false
       })
+      return responseMessage.errors;
     }
   });
 }

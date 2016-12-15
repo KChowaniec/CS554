@@ -251,6 +251,12 @@ var exportedMethods = {
                 }
             });
         });
+    },
+
+    checkPasswordsMatch(password, confirmedPassword) {
+        return new Promise((resolve, reject) => {
+            if (password != confirmedPassword) { reject("Entered password and confirmed password must match") };
+        });
     }
 }
 

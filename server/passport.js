@@ -1,6 +1,5 @@
 const userCollection = require("../data");
 userData = userCollection.users;
-var xss = require('xss');
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var passport = require('passport')
     , LocalStrategy = require('passport-local').Strategy;
@@ -25,8 +24,8 @@ module.exports = function (passport) {
     passport.use(new LocalStrategy({ passReqToCallback: true },
         function (req, username, password, done) {
             process.nextTick(function () {
-                userData.getUserByUsername(xss(username)).then((user) => {
-                    if (!userData.verifyLogin(xss(password), user.password)) {
+                userData.getUserByUsername(username).then((user) => {
+                    if (!userData.verifyLogin(password, user.password)) {
                         return done(null, false, { message: 'Invalid login.' });
                     }
                     var token = jwt.sign(user, 'secretkey');
@@ -38,5 +37,4 @@ module.exports = function (passport) {
             });
         }
     ));
-
 }

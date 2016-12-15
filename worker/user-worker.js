@@ -35,25 +35,35 @@ redisConnection.on('register-user:*', (data, channel) => {
         email: email
     };
     let title = "My Playlist";
-    console.log(confirmedPassword);
-    let verify = userData.registrationVerification(password, confirmedPassword, username, email);
-    verify.then(() => {
-        let fullyComposeUser = userData
-            .addUsersAndPlaylist(title, user)
-            .then((newUser) => {
-                //cache user by userid
-                console.log(newUser);
-                let addEntry = client.setAsync(newUser.user_id, JSON.stringify(user));
-                addEntry.then(() => {
-                    redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
-                }).catch(error => {
-                    redisConnection.emit(`user-registered-failed:${messageId}`, error);
-                });
-            }).catch(error => {
+    let verifyUsername = userData.checkUserExist(username);
+    verifyUsername.then((result) => {
+        if (result == false) {
+            let verifyPasswords = userData.checkPasswordsMatch(password, confirmedPassword);
+            // let verify = userData.registrationVerification(password, confirmedPassword, username, email);
+            verifyPasswords.then(() => {
+                let fullyComposeUser = userData
+                    .addUsersAndPlaylist(title, user)
+                    .then((newUser) => {
+                        //cache user by userid
+                        let addEntry = client.setAsync(newUser.user_id, JSON.stringify(user));
+                        addEntry.then(() => {
+                            redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
+                        })
+                    }).catch(error => {
+                        redisConnection.emit(`user-registered-failed:${messageId}`, error);
+                    });
+            }).catch(() => {
+                let error = {};
+                error.confirm = "Confirmed password doesn't match original password entered";
                 redisConnection.emit(`user-registered-failed:${messageId}`, error);
             });
+        }
+        else {
+            let error = {};
+            error.username = "Username already exists";
+            redisConnection.emit(`user-registered-failed:${messageId}`, error);
+        }
     }).catch((error) => {
-        console.log(error);
         redisConnection.emit(`user-registered-failed:${messageId}`, error);
     });
 });

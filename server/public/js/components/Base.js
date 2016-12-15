@@ -31,7 +31,7 @@ const Base = React.createClass({
             {this.state.loggedIn ? (
               <div>
                 <Link to="/account">My Account</Link>
-                <Link to="/playlist">My Playlist</Link>
+                <Link to="/myplaylist">My Playlist</Link>
                 <Link to="/analytics">Movie Analytics</Link>
                 <Link to="/logout">Log out</Link>
               </div>
@@ -52,9 +52,5 @@ const Base = React.createClass({
   }
 
 })
-
-Base.propTypes = {
-  children: PropTypes.object.isRequired
-};
 
 export default Base;

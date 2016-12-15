@@ -9,6 +9,7 @@ const LoginForm = ({
   onSubmit,
   onChange,
   error,
+  errors,
   user
 }) => (
     <Card className="container">
@@ -21,7 +22,7 @@ const LoginForm = ({
           <TextField
             floatingLabelText="Username"
             name="username"
-            errorText={error.username}
+            errorText={errors.username}
             onChange={onChange}
             value={user.username}
             />
@@ -33,7 +34,7 @@ const LoginForm = ({
             type="password"
             name="password"
             onChange={onChange}
-            errorText={error.password}
+            errorText={errors.password}
             value={user.password}
             />
         </div>
@@ -51,6 +52,7 @@ LoginForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   error: PropTypes.bool.isRequired,
+  errors: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 };
 

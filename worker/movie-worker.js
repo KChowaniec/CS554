@@ -37,13 +37,13 @@ redisConnection.on('get-details:*', (data, channel) => {
     let entryExists = client.getAsync(movieId);
     entryExists.then((movieInfo) => {
         if (movieInfo) { //retrieve cached data
-            redisConnection.emit(`details-retrieved:${messageId}`, unflatten(movieInfo));
+            redisConnection.emit(`details-retrieved:${messageId}`,JSON.parse(movieInfo) );
         }
         else { //retrieve from db
             let fullyComposeMovie = apiData
                 .getMovieDetails(movieId)
                 .then((details) => {
-                    let cacheMovie = client.setAsync(movieId, flat(details));
+                    let cacheMovie = client.setAsync(movieId,JSON.stringify(details));
                     cacheMovie.then(() => {
                         redisConnection.emit(`details-retrieved:${messageId}`, details);
                     }).catch(error => {

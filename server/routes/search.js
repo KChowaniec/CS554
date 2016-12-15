@@ -325,5 +325,4 @@ router.get("/theaters/:movieId", (req, res) => {
     // });
 });
 
-
 module.exports = router;

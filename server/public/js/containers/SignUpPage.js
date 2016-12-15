@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import SignUpForm from '../components/SignUpForm.js';
 import { browserHistory } from 'react-router';
+import auth from '../utils/auth.js';
+
 class SignUpPage extends React.Component {
 
   /**
@@ -11,7 +13,8 @@ class SignUpPage extends React.Component {
 
     // set the initial component state
     this.state = {
-      errors: false,
+      error: false,
+      errors: {},
       user: {
         username: '',
         name: '',
@@ -50,54 +53,42 @@ class SignUpPage extends React.Component {
     event.preventDefault();
 
     // create a string for an HTTP body message
-    const username = encodeURIComponent(this.state.user.username);
-    const name = encodeURIComponent(this.state.user.name);
-    const email = encodeURIComponent(this.state.user.email);
-    const password = encodeURIComponent(this.state.user.password);
-    const confirm = encodeURIComponent(this.state.user.confirm);
-
-    auth.register(username, password, confirm, email, name, (loggedIn) => {
-      console.log(loggedIn);
-      if (!loggedIn) {
-        return this.setState({ errors: true })
-      }
-      else {
-        browserHistory.push('/home');
-      }
-    });
+    const username = this.state.user.username;
+    const name = this.state.user.name;
+    const email = this.state.user.email;
+    const password = this.state.user.password;
+    const confirm = this.state.user.confirm;
+    let errors = {};
+    if (!username) {
+      errors.username = "This field is required";
+    }
+    if (!name) {
+      errors.name = "This field is required";
+    }
+    if (!email) {
+      errors.email = "This field is required";
+    }
+    if (!password) {
+      errors.password = "This field is required";
+    }
+    if (!confirm) {
+      errors.confirm = "This field is required";
+    }
+    if (!jQuery.isEmptyObject(errors)) {
+      return this.setState({ errors })
+    }
+    else {
+      auth.register(username, password, confirm, email, name, (loggedIn) => {
+        if (!loggedIn) {
+          return this.setState({ error: true })
+        }
+        else {
+          browserHistory.push('/home');
+        }
+      });
+    }
   }
 
-  // var requestConfig = {
-  //   method: "POST",
-  //   url: "/user/register",
-  //   contentType: 'application/json',
-  //   data: JSON.stringify({
-  //     username: username,
-  //     password: password,
-  //     name: name,
-  //     email: email,
-  //     confirm: confirm
-  //   })
-  // };
-  // let reactThis = this;
-  // $.ajax(requestConfig).then((responseMessage) => {
-  //   if (responseMessage.success) {
-  //     reactThis.setState({
-  //       errors: {}
-  //     });
-  //     browserHistory.push('/home'); //redirect to home page upon successful registration
-  //   }
-  //   else {
-  //     console.log("error");
-  //     const errors = responseMessage.errors ? responseMessage.errors : {};
-  //     errors.summary = responseMessage.message;
-
-  //     reactThis.setState({
-  //       errors
-  //     });
-  //   }
-  // });
-  //   }
 
   // Render the component.
   render() {
@@ -106,6 +97,7 @@ class SignUpPage extends React.Component {
         onSubmit={this.processForm}
         onChange={this.changeUser}
         errors={this.state.errors}
+        error={this.state.error}
         user={this.state.user}
         />
     );
