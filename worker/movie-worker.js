@@ -113,4 +113,3 @@ redisConnection.on('get-reviews:*', (data, channel) => {
             redisConnection.emit(`reviews-retrieved-failed:${messageId}`, error);
         });
 });
-
