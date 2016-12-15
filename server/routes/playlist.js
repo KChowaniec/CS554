@@ -29,21 +29,29 @@ router.get("/", (req, res) => {
         if (playlist) {
             var viewed = [];
             var unviewed = [];
-            for (var i = 0; i < playlist.playlistMovies.length; i++) {
-                if (playlist.playlistMovies[i].viewed == true) {
-                    viewed.push(playlist.playlistMovies[i]);
+            let playlist_movies = []
+            if(playlist && playlist.playlistMovies){
+                for (var i = 0; i < playlist.playlistMovies.length; i++) {
+                    if (playlist.playlistMovies[i].viewed == true) {
+                        viewed.push(playlist.playlistMovies[i]);
+                    }
+                    else {
+                        unviewed.push(playlist.playlistMovies[i]);
+                    }
                 }
-                else {
-                    unviewed.push(playlist.playlistMovies[i]);
-                }
+                playlist_movies = playlist.playlistMovies;
             }
-            res.render("playlist/page", {
-                playlist: playlist,
-                movies: playlist.playlistMovies,
-                viewed: viewed,
-                unviewed: unviewed,
-                partial: "playlist-script"
-            });
+            
+            // res.render("playlist/page", {
+            //     playlist: playlist,
+            //     movies: playlist.playlistMovies,
+            //     viewed: viewed,
+            //     unviewed: unviewed,
+            //     partial: "playlist-script"
+            // });
+            res.json({ movies: playlist_movies,
+                       viewed: viewed,
+                       unviewed: unviewed  });
         }
         redisConnection.off(`playlist-retrieved:${messageId}`);
         redisConnection.off(`playlist-retrieved-failed:${messageId}`);

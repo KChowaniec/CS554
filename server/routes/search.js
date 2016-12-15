@@ -14,21 +14,21 @@ var url = require('url');
 var xss = require('xss');
 const uuid = require("node-uuid");
 
-router.get("/", (req, res) => {
-    //render search form and user preferences (if any)
-    res.render("search/form", {
-        partial: "populate-preferences-script"
-    });
-});
+// router.get("/", (req, res) => {
+//     //render search form and user preferences (if any)
+//     res.render("search/form", {
+//         partial: "populate-preferences-script"
+//     });
+// });
 
 router.get("/preferences", (req, res) => {
     //get user preferences (if any)
-    let userId = req.session.userId;
-    let redisConnection = req
+    var userId = req.session.userId;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`preferences-retrieved:${messageId}`, (preferences, channel) => {
@@ -67,16 +67,21 @@ router.get("/preferences", (req, res) => {
 });
 
 //post search criteria
-router.post("/", (req, res) => {
-    let title = req.body.title;
-    let parseActors = req.body.parseActors;
-    let parseGenre = req.body.parseGenre;
-    let parseCrew = req.body.parseCrew;
-    let rating = req.body.rating;
-    let evaluation = req.body.evaluation;
-    let year = req.body.releaseYear;
-    let parseWords = req.body.parseWords;
-    let queryData = {
+router.get("/", (req, res) => {
+    
+    var title = req.query.title ? req.query.title : "";
+    
+    //console.log('Body : ' + JSON.stringify(req.body));
+    console.log('Title : ' + title);
+
+    var parseActors = req.body.actor;
+    var parseGenre = req.body.genre;
+    var parseCrew = req.body.crew;
+    var rating = req.body.rating;
+    var evaluation = req.body.evaluation;
+    var year = req.body.releaseYear;
+    var parseWords = req.body.parseWords;
+    var queryData = {
         title: title,
         actors: parseActors,
         genre: parseGenre,
@@ -86,14 +91,15 @@ router.post("/", (req, res) => {
         year: year,
         keywords: parseWords
     };
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`query-created:${messageId}`, (queryString, channel) => {
+        //console.log('@get search query : query-created ');
         if (queryString) {
             res.json({ success: true, query: queryString });
         }
@@ -108,8 +114,8 @@ router.post("/", (req, res) => {
     });
 
     redisConnection.on(`query-created-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
+        //console.log('@get search query : query-created-failed ');
+        res.status(500)
             .json({ success: false, error: error });
         redisConnection.off(`query-created:${messageId}`);
         redisConnection.off(`query-created-failed:${messageId}`);
@@ -124,7 +130,7 @@ router.post("/", (req, res) => {
             .status(500)
             .json({ error: "Timeout error" })
     }, 5000);
-
+    //console.log('Redirecting to create-query @ search module fir message with id : ' + messageId);
     redisConnection.emit(`create-query:${messageId}`, {
         requestId: messageId,
         query: queryData,
@@ -133,30 +139,52 @@ router.post("/", (req, res) => {
 });
 
 //call search methods using criteria passed in
-router.get("/results/:pageId", (req, res) => {
-    let page = req.params.pageId;
-    let queryData = (url.parse(xss(req.url), true).query);
-    let queryString = "";
-    let title;
-    //determine search criteria string
-    Object.keys(queryData).forEach(function (key, index) {
-        if (key == "title") {
-            title = queryData[key];
-        }
-        else {
-            queryString = queryString + "&" + key + "=" + queryData[key];
-        }
-    });
-    let redisConnection = req
+router.get("/results/:pageId*", (req, res) => {
+    //console.log('------------- @/results/:pageId -------------');
+
+    var page = req.params.pageId;
+    //console.log('page id : ' + page);
+    var queryString = "";
+    var title = req.query.title? req.query.title : "";
+    //console.log('title in Query String : ' + req.query.title);
+    if(req.query.title){
+        queryString = req.query.title ? ("title=" + req.query.title) : "";
+        //console.log('Query String : ' + queryString);
+    }else{
+
+    }
+    
+
+
+    // var queryData = (url.parse(xss(req.url), true).query);
+    // console.log('Query String : ' + JSON.stringify(queryData));
+    
+     
+    // //determine search criteria string
+    // Object.keys(queryData).forEach(function (key, index) {
+    //     if (key == "title") {
+    //         title = queryData[key];
+    //     }
+    //     else {
+    //         queryString = queryString + "&" + key + "=" + queryData[key];
+    //     }
+    // });
+
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`movies-retrieved:${messageId}`, (results, channel) => {
+        
+        // console.log('@movies-retrieved with results : ' + results.movielist);
+
         if (results) {
-            res.render("results/movielist", { pages: results.pages, movies: results.movielist, total: results.total, partial: "results-script" });
+
+            // res.render("results/movielist", { pages: results.pages, movies: results.movielist, total: results.total, partial: "results-script" });
+            res.json({ success : true , movies :  results.movielist});
         }
 
         redisConnection.off(`movies-retrieved:${messageId}`);
@@ -195,12 +223,12 @@ router.get("/results/:pageId", (req, res) => {
 
 //get keywords
 router.get("/keywords", (req, res) => {
-    let keyword = req.query.value;
-    let redisConnection = req
+    var keyword = req.query.value;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`keyword-retrieved:${messageId}`, (result, channel) => {
         if (result) {
@@ -241,12 +269,12 @@ router.get("/keywords", (req, res) => {
 
 //get person
 router.get("/person", (req, res) => {
-    let person = req.query.value;
-    let redisConnection = req
+    var person = req.query.value;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`person-retrieved:${messageId}`, (result, channel) => {
         if (result) {

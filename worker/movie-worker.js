@@ -26,24 +26,24 @@ redisConnection.on('add-movie:*', (data, channel) => {
 
 //GET ALL REVIEWS FOR MOVIE WORKER
 redisConnection.on('get-reviews:*', (data, channel) => {
-    let messageId = data.requestId;
+    var messageId = data.requestId;
 
 });
 
 //GET MOVIE DETAILS WORKER
 redisConnection.on('get-details:*', (data, channel) => {
-    let messageId = data.requestId;
-    let movieId = data.movieId;
-    let entryExists = client.getAsync(movieId);
+    var messageId = data.requestId;
+    var movieId = data.movieId;
+    var entryExists = client.getAsync(movieId);
     entryExists.then((movieInfo) => {
         if (movieInfo) { //retrieve cached data
             redisConnection.emit(`details-retrieved:${messageId}`, unflatten(movieInfo));
         }
         else { //retrieve from db
-            let fullyComposeMovie = apiData
+            var fullyComposeMovie = apiData
                 .getMovieDetails(movieId)
                 .then((details) => {
-                    let cacheMovie = client.setAsync(movieId, flat(details));
+                    var cacheMovie = client.setAsync(movieId, flat(details));
                     cacheMovie.then(() => {
                         redisConnection.emit(`details-retrieved:${messageId}`, details);
                     }).catch(error => {
@@ -58,9 +58,9 @@ redisConnection.on('get-details:*', (data, channel) => {
 
 //GET MOVIE RECOMMENDATIONS WORKER
 redisConnection.on('get-recommendations:*', (data, channel) => {
-    let messageId = data.requestId;
-    let movieId = data.movieId;
-            let fullyComposeMovie = apiData
+    var messageId = data.requestId;
+    var movieId = data.movieId;
+            var fullyComposeMovie = apiData
                 .getMovieRecommendations(movieId)
                 .then((movies) => {
                         redisConnection.emit(`recommendations-retrieved:${messageId}`,movies);
@@ -76,7 +76,7 @@ redisConnection.on('delete-movie:*', (data, channel) => {
 
 //GET REVIEW WORKER
 redisConnection.on('get-review:*', (data, channel) => {
-    let messageId = data.requestId;
+    var messageId = data.requestId;
 
 });
 

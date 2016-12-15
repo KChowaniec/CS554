@@ -3,7 +3,7 @@ const userRoutes = require("./user-worker");
 const movieRoutes = require("./movie-worker");
 const searchRoutes = require("./search-worker");
 
-let constructorMethod = (app) => {
+var constructorMethod = (app) => {
     app.use("/playlist", recipeRoutes);
     app.use("/user", userRoutes);
     app.use("/movie", movieRoutes);
