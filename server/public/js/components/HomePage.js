@@ -354,8 +354,4 @@ var playlist_fake = [{
       vote_average: 8.3
     }] 
 
-
-
-
-
 export default HomePage;

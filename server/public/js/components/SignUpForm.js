@@ -8,15 +8,15 @@ import TextField from 'material-ui/TextField';
 const SignUpForm = ({
   onSubmit,
   onChange,
+  error,
   errors,
-  loggedIn,
   user,
 }) => (
     <Card className="container">
       <form action="/" onSubmit={onSubmit}>
         <h2 className="card-heading">Sign Up</h2>
 
-        {errors.summary && <p className="error-message">{errors.summary}</p>}
+        {error && <p className="error-message">Please correct the errors</p>}
         <div className="field-line">
           <TextField
             floatingLabelText="Username"
@@ -81,9 +81,9 @@ const SignUpForm = ({
 SignUpForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  error: PropTypes.bool.isRequired,
   errors: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
-  loggedIn: PropTypes.bool.isRequired
 };
 
 export default SignUpForm;

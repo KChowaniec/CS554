@@ -133,6 +133,15 @@ var exportedMethods = {
         });
     },
 
+    getAllReviews(movieId) {
+        return movie().then((movieCollection) => {
+            return movieCollection.find({ _id: movieId }).then((movieObj) => {
+                return movieObj.allReviews;
+            }).catch((error) => {
+                return { error: error };
+            });
+        });
+    },
 
     getReviewByReviewId(mid, rid) {     //get the review from the movie by providing the specified movie id and the review id
         return movie().then((movieCollection) => {

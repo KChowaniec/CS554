@@ -13,8 +13,7 @@ router.get('/', function (req, res) {
                         resByDecade: allRes,
                         resTopFifteen : allRes2,
                         resByGenre : allRes3,
-                        resTopRev : allRes4,
-                        partial: "jquery-detail-scripts"
+                        resTopRev : allRes4
                     });
                 })
             })

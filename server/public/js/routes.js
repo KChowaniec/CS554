@@ -1,20 +1,43 @@
 import Base from './components/Base.js';
 import HomePage from './components/HomePage.js';
+import Playlist from './components/Playlist.js';
+import MovieDetailsPage from './containers/MovieDetailPage.js';
 import LoginPage from './containers/LoginPage.js';
 import SignUpPage from './containers/SignUpPage.js';
+import AnalyticsPage from './containers/AnalyticsPage.js';
 import Logout from './components/Logout.js';
-//import HomePage from './containers/HomePage.js';
+import { browserHistory } from 'react-router';
+import auth from './utils/auth.js';
+import AccountPage from './containers/AccountPage';
+// import HomePage from './containers/HomePage.js';
 
-//check if user has logged in
-// function requireAuth(nextState, replace) {
-//  // console.log(SignUpPage.props);
-//   if (!(SignUpPage.loggedIn && LoginPage.loggedIn)) {
-//     replace({
-//       pathname: '/',
-//       state: { nextPathname: nextState.location.pathname }
-//     })
-//   }
-// }
+function redirectToLogin(nextState, replace) {
+  if (!auth.loggedIn()) {
+    replace('/login')
+  }
+}
+
+function getAnalytics(nextState, replace) {
+  var requestConfig = {
+    method: "GET",
+    url: "/analytics",
+    contentType: 'application/json'
+  };
+  $.ajax(requestConfig).then((responseMessage) => {
+    window.location.reload();
+  });
+}
+
+function getMovieById(nextState, replace) {
+  var requestConfig = {
+    method: "GET",
+    url: "/detail/5",
+    contentType: 'application/json'
+  };
+  $.ajax(requestConfig).then((responseMessage) => {
+    window.location.reload();
+  });
+}
 
 const routes = {
   // base component (wrapper for the whole application).
@@ -23,7 +46,8 @@ const routes = {
 
     {
       path: '/',
-      component: LoginPage
+      component: HomePage,
+      onEnter: redirectToLogin
     },
 
     {
@@ -39,15 +63,42 @@ const routes = {
     {
       path: '/home',
       component: HomePage,
+      onEnter: redirectToLogin
+    },
+    {
+      path: '/playlist',
+      component: Playlist,
+      onEnter: redirectToLogin
+    },
+    {
+      path: '/movie/:id',
+      component: MovieDetailsPage,
+      onEnter: redirectToLogin
     },
     {
       path: '/logout',
       component: Logout
     },
-    //match any other routes - redirect to login page
+    {
+      path: '/analytics',
+      component: AnalyticsPage,
+      onEnter: getAnalytics
+    },
+    {
+      path: '/detailm',
+      onEnter: getMovieById
+    },
+    {
+      path: '/account',
+      component: AccountPage,
+      onEnter: redirectToLogin
+    },
+
+    //match any other routes - redirect to home page
     {
       path: '/*',
-      component: LoginPage
+      component: HomePage,
+      onEnter: redirectToLogin
     }
 
   ]

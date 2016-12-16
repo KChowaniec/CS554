@@ -20,7 +20,6 @@ const redisConnection = new NRP(config); // This is the NRP client
 
 //QUERY STRING FOR MOVIE API WORKER
 redisConnection.on('create-query:*', (data, channel) => {
-    
     var messageId = data.requestId;
     //console.log('received message @create-query with message id : ' + messageId);
     var query = data.query;

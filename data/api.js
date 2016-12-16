@@ -30,7 +30,7 @@ var exportedMethods = {
                 response.on('end', function () {
                     var parsed = JSON.parse(body);
                     var movie = {};
-                   // movie._id = uuid.v4();//save the origin id and our own id
+                    // movie._id = uuid.v4();//save the origin id and our own id
                     movie._id = movieId;
                     movie.title = parsed.title;
                     movie.description = parsed.overview;
@@ -41,39 +41,49 @@ var exportedMethods = {
                     movie.poster_path = parsed.poster_path;
 
                     var keywordVal = [];
-                    for (var i = 0; i < parsed.keywords.keywords.length; i++) {
-                        keywordVal.push(parsed.keywords.keywords[i].name);
+                    if (parsed.keywords != undefined) {
+                        for (var i = 0; i < parsed.keywords.keywords.length; i++) {
+                            keywordVal.push(parsed.keywords.keywords[i].name);
+                        }
                     }
                     movie.keywords = keywordVal;
 
                     var genreVal = [];
-                    for (var i = 0; i < parsed.genres.length; i++) {
-                        genreVal.push(parsed.genres[i].name);
+                    if (parsed.genres) {
+                        for (var i = 0; i < parsed.genres.length; i++) {
+                            genreVal.push(parsed.genres[i].name);
+                        }
                     }
                     movie.genre = genreVal;
                     movie.runtime = parsed.runtime;
 
                     var castVal = [];
-                    for (var i = 0; i < parsed.credits.cast.length; i++) {
-                        castVal.push(parsed.credits.cast[i].name);
+                    if (parsed.credits && parsed.credits.cast) {
+                        for (var i = 0; i < parsed.credits.cast.length; i++) {
+                            castVal.push(parsed.credits.cast[i].name);
+                        }
                     }
                     movie.cast = castVal;
 
                     var director = "";
                     var crewVal = [];
-                    for (var i = 0; i < parsed.credits.crew.length; i++) {
-                        if (parsed.credits.crew[i].job == "Director") {
-                            director = parsed.credits.crew[i].name;
+                    if (parsed.credits && parsed.credits.crew) {
+                        for (var i = 0; i < parsed.credits.crew.length; i++) {
+                            if (parsed.credits.crew[i].job == "Director") {
+                                director = parsed.credits.crew[i].name;
+                            }
+                            crewVal.push(parsed.credits.crew[i].name);
                         }
-                        crewVal.push(parsed.credits.crew[i].name);
                     }
                     movie.crew = crewVal;
                     movie.director = director;
 
                     var rating = "";
-                    for (var i = 0; i < parsed.release_dates.results.length; i++) {
-                        if (parsed.release_dates.results[i].iso_3166_1 == "US") {
-                            rating = parsed.release_dates.results[i].release_dates[0].certification;
+                    if (parsed.release_dates && parsed.release_dates.results) {
+                        for (var i = 0; i < parsed.release_dates.results.length; i++) {
+                            if (parsed.release_dates.results[i].iso_3166_1 == "US") {
+                                rating = parsed.release_dates.results[i].release_dates[0].certification;
+                            }
                         }
                     }
                     movie.rated = rating;
