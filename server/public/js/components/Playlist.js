@@ -6,6 +6,11 @@ import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 import axios from 'axios';
 import { browserHistory } from 'react-router';
+import GetApp from 'material-ui/svg-icons/action/get-app'; // for exporting
+import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser'; // for Import
+import FlatButton from 'material-ui/FlatButton';
+
+
 
 class Playlist extends React.Component {
 
@@ -26,11 +31,22 @@ class Playlist extends React.Component {
                     overflowX: 'auto',
                 },
                 titleStyle: {
-                    color: 'rgb(0, 188, 212)',
+                    color: 'rgb(0, 0, 0)',
+                    fontWeight: 'bold'
                 },
                 imageStyle: {
-                    height: 300,
-                    width: 200,
+                    height: '200px',
+                    width: '200px',
+                },
+                imageInput: {
+                    cursor: 'pointer',
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    width: '100%',
+                    opacity: 0,
                 },
             },
             tilesData: [],
@@ -62,7 +78,7 @@ class Playlist extends React.Component {
                 //console.log(res)
             });
         //console.log("Delete Item Clicked : " + index + " - Movie ID : " + this.state.tilesData[index]._id);
-        
+
         // code to delete item from array
         /*var newArr = this.state.tilesData.filter(function (itm, i) {
             return i !== index;
@@ -72,22 +88,49 @@ class Playlist extends React.Component {
 
     render() {
         return (
-            <div style={this.state.styles.root}>
-                <GridList className="container" style={this.state.styles.gridList} cols={2.2}>
-                    {this.state.tilesData.map((tile, i) => (
-                        <GridTile
-                            key={i}
-                            title={tile.title}
-                            actionIcon={<IconButton onClick={this.deleteItem.bind(this, i)}><DeleteForever color="rgb(0, 188, 212)" /></IconButton>}
-                            titleStyle={this.state.styles.titleStyle}
-                            titleBackground="linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
+            <div>
+                {this.state.tilesData.length > 0 ? (
+                    <Card className="container">
+                        <CardTitle title="My Playlist" />
+                        <FlatButton label="Import"
+                            labelPosition="before"
+                            icon={<OpenInBrowser />}
                             >
-                            <img style={this.state.styles.imageStyle} onClick={this.itemClicked.bind(this, tile._id)} src={"https://image.tmdb.org/t/p/w200_and_h300_bestv2/" + tile.image} />
+                            <input type="file" style={this.state.styles.imageInput} />
+                        </FlatButton>
+                        <FlatButton label="Export"
+                            href="/playlist/download"
+                            labelPosition="before"
+                            icon={<GetApp />}
+                            >
+                        </FlatButton>
+                        <br /><br />
+                        <div style={this.state.styles.root}>
+                            <GridList style={this.state.styles.gridList} cols={2.2}>
+                                {this.state.tilesData.map((tile, i) => (
+                                    <GridTile
+                                        key={i}
+                                        title={tile.title}
+                                        actionIcon={<IconButton onClick={this.deleteItem.bind(this, i)}><DeleteForever color="rgb(0, 0, 0)" /></IconButton>}
+                                        titleStyle={this.state.styles.titleStyle}
+                                        titleBackground="linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)"
+                                        >
+                                        <img className="grid-img" style={this.state.styles.imageStyle} onClick={this.itemClicked.bind(this, tile._id)}
+                                            src={tile.image === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.image} />
 
-                        </GridTile>
-                    ))}
-                </GridList>
+                                    </GridTile>
+                                ))}
+                            </GridList>
+                        </div>
+                        <br /><br />
+                    </Card>
+                ) : (
+                        <Card className="container">
+                            <CardTitle title="My Playlist" subtitle="No Movies in your playlist" />
+                        </Card>
+                    )}
             </div>
+
         );
     }
 
