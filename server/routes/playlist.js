@@ -18,24 +18,27 @@ const uuid = require("node-uuid");
 //GET PLAYLIST
 router.get("/", (req, res) => {
     //get playlist information
-    let userId = req.session.userId;
+    console.log('getting all playlist');
+    var userId = req.session.userId;
     // REMOVE IT
     // if(userId === undefined){
     //     userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
     // }
 
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`playlist-retrieved:${messageId}`, (playlist, channel) => {
         redisConnection.off(`playlist-retrieved:${messageId}`);
         redisConnection.off(`playlist-retrieved-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+        console.log('response from get all playlist ');
         if (playlist) {
+            console.log('Playlist : ' + playlist);
             var viewed = [];
             var unviewed = [];
             if (playlist.playlistMovies) {
@@ -52,6 +55,8 @@ router.get("/", (req, res) => {
                 playlist.playlistMovies = [];
             }
             res.json(playlist.playlistMovies);
+        }else{
+            res.json([]);
         }
     });
 
@@ -84,12 +89,12 @@ router.get("/", (req, res) => {
 //CLEAR PLAYLIST
 router.delete("/:playlistId", (req, res) => {
     //method to clear out playlist
-    let playlistId = req.params.playlistId
-    let redisConnection = req
+    var playlistId = req.params.playlistId
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`playlist-cleared:${messageId}`, (playlist, channel) => {
@@ -136,14 +141,14 @@ router.delete("/:playlistId", (req, res) => {
 
 //CHECK-OFF MOVIE FROM PLAYLIST
 router.put("/movie/:movieId", (req, res) => {
-    let movieId = req.params.movieId;
-    let userId = req.session.userId;
+    var movieId = req.params.movieId;
+    var userId = req.session.userId;
 
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`checked-off:${messageId}`, (result, channel) => {
@@ -190,13 +195,13 @@ router.put("/movie/:movieId", (req, res) => {
 //UPDATE PLAYLIST TITLE
 router.put("/title/:playlistId", (req, res) => {
     //method to clear out playlist
-    let newTitle = xss(req.body.title);
-    let playlistId = req.params.playlistId
-    let redisConnection = req
+    var newTitle = xss(req.body.title);
+    var playlistId = req.params.playlistId
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`title-updated:${messageId}`, (result, channel) => {
@@ -246,8 +251,8 @@ router.put("/title/:playlistId", (req, res) => {
 
 //REMOVE MOVIE FROM PLAYLIST
 router.delete("/movie/:movieId", (req, res) => {
-    let movieId = req.params.movieId;
-    let userId = req.session.userId;
+    var movieId = req.params.movieId;
+    var userId = req.session.userId;
     console.log("Delete from playlist route: " + movieId);
     console.log("User Id : " + userId);
 
@@ -255,11 +260,11 @@ router.delete("/movie/:movieId", (req, res) => {
     // if(userId === undefined){
     //     userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
     // }
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`removed-movie:${messageId}`, (result, channel) => {
@@ -303,20 +308,20 @@ router.delete("/movie/:movieId", (req, res) => {
 //ADD MOVIE TO PLAYLIST
 router.post("/:movieId", (req, res) => {
     console.log("in add movie to playlist");
-    let movieId = req.params.movieId;
+    var movieId = req.params.movieId;
     console.log("Movie ID - " + movieId);
     //Hardcoded the UserID to add movie to playlist using POSTMAN
-    let userId = req.session.userId;
+    var userId = req.session.userId;
     // Remove it
     // if(userId === undefined){
     //     userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
     // }
     console.log("User ID - " + req.session.userId);
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`added-movie:${messageId}`, (result, channel) => {

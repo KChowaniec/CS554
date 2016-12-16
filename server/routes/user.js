@@ -46,12 +46,12 @@ router.get('/user/authorized', function (req, res) {
 
 //get all users
 router.get('/users', function (req, res) {
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
 
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`users-retrieved:${messageId}`, (retrievedUsers, channel) => {
         redisConnection.off(`users-retrieved:${messageId}`);
@@ -88,13 +88,13 @@ router.get('/users', function (req, res) {
 
 //LOG OUT
 router.get('/logout', function (req, res) {
-    let userId = req.session.userId;
-    let sessionData = req.session;
-    let redisConnection = req
+    var userId = req.session.userId;
+    var sessionData = req.session;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`logged-out:${messageId}`, (deletedUser, channel) => {
@@ -136,17 +136,17 @@ router.get('/logout', function (req, res) {
 
 //post user registration
 router.post('/user/register', function (req, res) {
-    let username = xss(req.body.username);
-    let password = xss(req.body.password);
-    let confirmedPassword = xss(req.body.confirm);
-    let name = xss(req.body.name);
-    let email = xss(req.body.email);
-    let redisConnection = req
+    var username = xss(req.body.username);
+    var password = xss(req.body.password);
+    var confirmedPassword = xss(req.body.confirm);
+    var name = xss(req.body.name);
+    var email = xss(req.body.email);
+    var redisConnection = req
         .app
         .get("redis");
 
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`user-registered:${messageId}`, (registeredUserId, channel) => {
 
@@ -194,12 +194,12 @@ router.post('/user/register', function (req, res) {
 //get user information
 router.get('/user', function (req, res) {
 
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let userId = req.session.userId;
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var userId = req.session.userId;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`user-retrieved:${messageId}`, (retrievedUser, channel) => {
 
@@ -240,14 +240,14 @@ router.get('/user', function (req, res) {
 
 //update user
 router.put('/user', function (req, res) {
-    let userId = req.session.userId;
-    let newData = xss(req.body);
-    let redisConnection = req
+    var userId = req.session.userId;
+    var newData = xss(req.body);
+    var redisConnection = req
         .app
         .get("redis");
 
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`user-updated:${messageId}`, (updatedUser, channel) => {
@@ -294,15 +294,15 @@ router.post('/user/login', function (req, res, next) {
             });
         }
         else {
-            let redisConnection = req
+            var redisConnection = req
                 .app
                 .get("redis");
-            let messageId = uuid.v4();
-            let killswitchTimeoutId = undefined;
+            var messageId = uuid.v4();
+            var killswitchTimeoutId = undefined;
             //add data to session object
             req.session.token = user.token;
             req.session.userId = user._id;
-            let sessionData = req.session;
+            var sessionData = req.session;
 
             redisConnection.on(`logged-in:${messageId}`, (sessionData, channel) => {
                 redisConnection.off(`logged-in:${messageId}`);
