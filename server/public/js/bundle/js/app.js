@@ -34700,21 +34700,22 @@
 	  },
 
 	  loggedIn: function loggedIn() {
-	    var requestConfig = {
-	      method: "GET",
-	      url: "/user/authorized",
-	      contentType: 'application/json'
-	    };
-	    console.log(localStorage.token);
-	    $.ajax(requestConfig).then(function (response) {
-	      console.log(response);
-	      if (response.authorized && localStorage.token) {
-	        return true;
-	      } else {
-	        return false;
-	      }
-	    });
-	    //return !!localStorage.token
+	    // var requestConfig = {
+	    //   method: "GET",
+	    //   url: "/user/authorized",
+	    //   contentType: 'application/json'
+	    // };
+	    // console.log(localStorage.token);
+	    // $.ajax(requestConfig).then((response) => {
+	    //   console.log(response);
+	    //   if (response.authorized && localStorage.token) {
+	    //     return true;
+	    //   }
+	    //   else {
+	    //     return false;
+	    //   }
+	    // });
+	    return !!localStorage.token;
 	  },
 
 	  onChange: function onChange() {}
@@ -34774,7 +34775,6 @@
 	  };
 	  $.ajax(requestConfig).then(function (responseMessage) {
 	    if (responseMessage.success) {
-	      console.log(resposeMessage.token);
 	      cb({
 	        authenticated: true,
 	        token: responseMessage.token
@@ -48266,17 +48266,18 @@
 	  displayName: 'Logout',
 	  componentDidMount: function componentDidMount() {
 	    _auth2.default.logout();
-	    var requestConfig = {
-	      method: "GET",
-	      url: "/logout",
-	      contentType: 'application/json'
-	    };
-	    var react = this;
-	    $.ajax(requestConfig).then(function (responseMessage) {
-	      if (responseMessage.success) {
-	        react.browserHistory.push('/');
-	      }
-	    });
+	    _reactRouter.browserHistory.push('/');
+	    // var requestConfig = {
+	    //   method: "GET",
+	    //   url: "/logout",
+	    //   contentType: 'application/json'
+	    // };
+	    // let react = this;
+	    // $.ajax(requestConfig).then((responseMessage) => {
+	    //   if (responseMessage.success) {
+	    //     react.browserHistory.push('/login');
+	    //   }
+	    // });
 	  },
 	  render: function render() {
 	    return _react2.default.createElement(

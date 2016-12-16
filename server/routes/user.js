@@ -148,15 +148,17 @@ router.post('/user/register', function (req, res) {
     var messageId = uuid.v4();
     var killswitchTimeoutId = undefined;
 
-    redisConnection.on(`user-registered:${messageId}`, (registeredUserId, channel) => {
+    redisConnection.on(`user-registered:${messageId}`, (registeredUser, channel) => {
 
         redisConnection.off(`user-registered:${messageId}`);
         redisConnection.off(`user-registered-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        if (registeredUserId) {
-            req.session.userId = registeredUserId;
-            return res.json({ success: true });
+        if (registeredUser) {
+            req.session.userId = registeredUser._id;
+            req.session.name = registeredUser.name;
+            req.session.token = jwt.sign(registeredUser, 'secretkey');
+            return res.json({ success: true, token: req.session.token });
         }
     });
 
@@ -302,8 +304,8 @@ router.post('/user/login', function (req, res, next) {
             //add data to session object
             req.session.token = user.token;
             req.session.userId = user._id;
+            req.session.name = user.profile.name;
             var sessionData = req.session;
-
             redisConnection.on(`logged-in:${messageId}`, (sessionData, channel) => {
                 redisConnection.off(`logged-in:${messageId}`);
                 redisConnection.off(`login-failed:${messageId}`);

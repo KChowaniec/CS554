@@ -50,22 +50,22 @@ module.exports = {
   },
 
   loggedIn: function () {
-    var requestConfig = {
-      method: "GET",
-      url: "/user/authorized",
-      contentType: 'application/json'
-    };
-    console.log(localStorage.token);
-    $.ajax(requestConfig).then((response) => {
-      console.log(response);
-      if (response.authorized && localStorage.token) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    });
-    //return !!localStorage.token
+    // var requestConfig = {
+    //   method: "GET",
+    //   url: "/user/authorized",
+    //   contentType: 'application/json'
+    // };
+    // console.log(localStorage.token);
+    // $.ajax(requestConfig).then((response) => {
+    //   console.log(response);
+    //   if (response.authorized && localStorage.token) {
+    //     return true;
+    //   }
+    //   else {
+    //     return false;
+    //   }
+    // });
+    return !!localStorage.token
   },
 
 
@@ -127,7 +127,6 @@ function registerRequest(username, password, confirm, email, name, cb) {
   };
   $.ajax(requestConfig).then((responseMessage) => {
     if (responseMessage.success) {
-      console.log(resposeMessage.token);
       cb({
         authenticated: true,
         token: responseMessage.token

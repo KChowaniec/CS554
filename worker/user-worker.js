@@ -44,7 +44,8 @@ redisConnection.on('register-user:*', (data, channel) => {
                     //cache user by userid
                     var addEntry = client.setAsync(newUser.user_id, JSON.stringify(user));
                     addEntry.then(() => {
-                        redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
+                        user._id = newUser.user_id;
+                        redisConnection.emit(`user-registered:${messageId}`, user);
                     })
                 }).catch(error => {
                     redisConnection.emit(`user-registered-failed:${messageId}`, error);
