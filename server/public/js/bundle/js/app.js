@@ -34448,6 +34448,10 @@
 
 	var _AccountPage2 = _interopRequireDefault(_AccountPage);
 
+	var _axios = __webpack_require__(462);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// import HomePage from './containers/HomePage.js';
@@ -34696,19 +34700,21 @@
 	  },
 
 	  loggedIn: function loggedIn() {
-	    //   if (localStorage.token) {
-	    //   jwt.verify(token, 'secretkey', function (err, decoded) {
-	    //     if (err) {
-	    //       return false;
-	    //     } else {
-	    //       return true;
-	    //     }
-	    //   });
-	    // }
-	    // else {
-	    //   return false;
-	    // }
-	    return !!localStorage.token;
+	    var requestConfig = {
+	      method: "GET",
+	      url: "/user/authorized",
+	      contentType: 'application/json'
+	    };
+	    console.log(localStorage.token);
+	    $.ajax(requestConfig).then(function (response) {
+	      console.log(response);
+	      if (response.authorized && localStorage.token) {
+	        return true;
+	      } else {
+	        return false;
+	      }
+	    });
+	    //return !!localStorage.token
 	  },
 
 	  onChange: function onChange() {}
@@ -34768,6 +34774,7 @@
 	  };
 	  $.ajax(requestConfig).then(function (responseMessage) {
 	    if (responseMessage.success) {
+	      console.log(resposeMessage.token);
 	      cb({
 	        authenticated: true,
 	        token: responseMessage.token
@@ -34775,8 +34782,9 @@
 	    } else {
 	      cb({
 	        authenticated: false
+
 	      });
-	      return responseMessage.errors;
+	      //return responseMessage.errors;
 	    }
 	  });
 	}
@@ -34798,11 +34806,8 @@
 	var _react2 = _interopRequireDefault(_react);
 
 	var _Card = __webpack_require__(393);
-<<<<<<< HEAD
 
 	var _reactRouter = __webpack_require__(334);
-=======
->>>>>>> 284a1b3ce4c6067d6fb66b3d17b64be18fc892c7
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -45617,20 +45622,24 @@
 	        password: ''
 	      }
 	    };
-
 	    _this.processForm = _this.processForm.bind(_this);
 	    _this.changeUser = _this.changeUser.bind(_this);
 	    return _this;
 	  }
 
-	  /**
-	   * Process the form.
-	   *
-	   * @param {object} event - the JavaScript event object
-	   */
-
-
 	  _createClass(LoginPage, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      _auth2.default.logout();
+	    }
+
+	    /**
+	     * Process the form.
+	     *
+	     * @param {object} event - the JavaScript event object
+	     */
+
+	  }, {
 	    key: 'processForm',
 	    value: function processForm(event) {
 	      var _this2 = this;
@@ -48138,7 +48147,17 @@
 	  displayName: 'Logout',
 	  componentDidMount: function componentDidMount() {
 	    _auth2.default.logout();
-	    _reactRouter.browserHistory.push('/');
+	    var requestConfig = {
+	      method: "GET",
+	      url: "/logout",
+	      contentType: 'application/json'
+	    };
+	    var react = this;
+	    $.ajax(requestConfig).then(function (responseMessage) {
+	      if (responseMessage.success) {
+	        react.browserHistory.push('/');
+	      }
+	    });
 	  },
 	  render: function render() {
 	    return _react2.default.createElement(

@@ -17,6 +17,33 @@ var passport = require('passport');
 const uuid = require("node-uuid");
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
+
+router.get('/user/authorized', function (req, res) {
+    // check header parameters for token
+    var token = req.session.token;
+    // decode token
+    if (token) {
+        // verifies secret
+        jwt.verify(token, 'secretkey', function (err, decoded) {
+            if (err) {
+                return res.json({ authorized: false });
+            } else {
+                //make sure token exists in session
+                if (req.session && req.session.token === token) {
+                    return res.json({ authorized: true });
+                }
+                else {
+                    return res.json({ authorized: false });
+                }
+            }
+        });
+
+    } else {
+        // if there is no token
+        return res.json({ authorized: false });
+    }
+});
+
 //get all users
 router.get('/users', function (req, res) {
     let redisConnection = req

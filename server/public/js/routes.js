@@ -9,11 +9,13 @@ import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
 import AccountPage from './containers/AccountPage';
+import axios from 'axios';
+
 // import HomePage from './containers/HomePage.js';
 
 function redirectToLogin(nextState, replace) {
   if (!auth.loggedIn()) {
-    replace('/login')
+    replace('/login');
   }
 }
 

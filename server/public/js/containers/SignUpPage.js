@@ -91,7 +91,7 @@ class SignUpPage extends React.Component {
         }
       });
     }
-  }
+  } 
 
 
   // Render the component.
