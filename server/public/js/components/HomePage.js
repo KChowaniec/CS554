@@ -65,22 +65,6 @@ class SearchBar extends React.Component {
         }
     }
     additem(index){
-        // var _url = "/playlist/" + id;
-        // var add_movie = {
-        //     url: _url,
-        //     method: "POST",
-        //     contentType: "application/json"
-        // };
-        // $.ajax(add_movie).then(function(response){
-        //     if(response.success){
-        //         alert("Success : Movie added.");
-        //     }else{
-        //         alert("error : " + err);
-        //     }
-        // },function(err){
-        //     alert("error : " + err);
-        // });
-        // --------------------------------------------------------------
         if (!this.state.data[index].isAdded) {
             console.log("Add Movie Clicked "+this.state.data[index].id);
             var react_component = this;
@@ -203,6 +187,7 @@ class SearchBar extends React.Component {
             contentType: "application/json; charset=utf-8"
 
         };
+
         $.ajax(get_playlist).then(function(res){
             myplayList = res;            
         },function(err){
@@ -210,6 +195,7 @@ class SearchBar extends React.Component {
         });
         var params = {
             title : this.state.parameters.movie
+
         };
         console.log('Getting query search : ' + JSON.stringify(params));
         var _url = "/search?";
@@ -237,20 +223,10 @@ class SearchBar extends React.Component {
                     
                     
                     var newArr = res.movies;
-                    //console.log(' *************************************** ');
-                    //console.log(' movies list before filter');
-                    //console.log(JSON.stringify(newArr));
                     newArr = react_com.applyfilter(myplayList, newArr);
-                    //console.log("My Playlist : "+ JSON.stringify(myplayList));
-                    //console.log("Search Result : "+ JSON.stringify(newArr));
-                    //console.log(' movies list after filter');
                     console.log(newArr);
-                    //console.log(' *************************************** ');
-                    //console.log('Data size : ' + newArr.length);
                     var page = parseInt(res.page);
                     var totalPages = parseInt(res.total);
-                    //console.log('Current page index : ' + page);
-                    
                     if ((totalPages - page) > 0) {
                         react_com.setState({ currentPage: page });
                         newArr.push({
@@ -259,8 +235,6 @@ class SearchBar extends React.Component {
                             title: "Load More"
                         });
                     }
-                    //console.log('Data size : ' + newArr.length);
-                    //console.log(newArr);
                     react_com.setState({
                         data : newArr
                     });
@@ -318,6 +292,13 @@ class SearchBar extends React.Component {
                             <input type="text" 
                             className="form-control"
                             placeholder="Genre" value={this.state.parameters.genre} 
+                                onChange={this.handleGenreChange} />
+                        </div>
+                        <div className="form-group">
+                            <label>Keywords :</label> 
+                            <input type="text" 
+                            className="form-control"
+                            placeholder="Keywords" value={this.state.parameters.keywords} 
                                 onChange={this.handleGenreChange} />
                         </div>
                         <div className="form-group"> 
