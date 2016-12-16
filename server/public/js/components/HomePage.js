@@ -1,68 +1,13 @@
 import React from 'react';
 import { Card, CardTitle } from 'material-ui/Card';
 import { browserHistory, Router, Route, Link, withRouter } from 'react-router'
-
-
-
-class Banner extends React.Component {
-    constructor(){
-        super();
-        this.state = {
-            item : {}
-        };
-    }
-    
-    render() {
-        const banner_style = {
-            maxWidth: '20%',
-            flexGrow : '1'
-        };
-
-        return (
-            <div className="col-md-3">
-            <div className="ca-hover">                   
-                <div className="carouselAvatar av4">
-                  <div className="carouselImg">
-                    <img  src={this.props.item.avatar} alt = {this.props.item.avatar} />
-                  </div>
-                </div>
-                <div className="carouselContent">
-                    <h3>{this.props.item.original_title}</h3>
-                    <p>{this.props.item.overview}</p>
-                </div>
-                <div className="overlay"></div>
-            </div>
-            </div>
-        )
-    }
-}
-
-class Banners extends React.Component {
-    constructor(){
-        super();
-        this.state = {
-            playlist : []
-        };
-    }
-    changeplaylist(_playlist){
-      console.log('In changeplaylist');
-      console.log('New Playlist : ' + JSON.stringify(_playlist));
-        this.setState({playlist : _playlist});
-    }
-    render() {
-        //const playlist = [];
-        return ( 
-            
-            <div className ="container carousel flexcontainer">
-                <div className="row">
-                    {this.props.playlist.map(function(item_element) {
-                        return <Banner item={item_element}/>;
-                    })}
-                </div>
-            </div>
-        );
-    }
-}
+import { GridList, GridTile } from 'material-ui/GridList';
+import IconButton from 'material-ui/IconButton';
+import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
+import axios from 'axios';
+import PlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
+import PlaylistAddCheck from 'material-ui/svg-icons/av/playlist-add-check';
 
 class SearchBar extends React.Component {
     
@@ -73,18 +18,93 @@ class SearchBar extends React.Component {
         this.state = {
             errors: {},
             data :[],
+            styles: {
+
+                titleStyle: {
+                    color: 'rgb(0, 0, 0)',
+                    fontWeight: 'bold'
+                },
+                root: {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-around',
+                },
+                gridList: {
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                },
+              imageStyle: {
+                    height: '200px',
+                    width: '200px',
+                }
+            },
             parameters: {
                 movie: '',
                 actor: '',
                 director:'',
                 genre:''
-            }
+            },
+            currentPage: 1
         };
+        
         this.handleMovieNameChange = this.handleMovieNameChange.bind(this);
         this.handleActorChange = this.handleActorChange.bind(this);
         this.handleDirectorChange = this.handleDirectorChange.bind(this);
         this.handleGenreChange = this.handleGenreChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    itemClicked(id) {
+        console.log("itemClicked Clicked");
+        if (id !== "next") {
+            console.log("Item Clicked: " + id);
+            browserHistory.push('/movie/' + id);
+        } else{
+            console.log("Next Clicked");
+            this.getQueryStr_Movies();
+        }
+    }
+    additem(index){
+        // var _url = "/playlist/" + id;
+        // var add_movie = {
+        //     url: _url,
+        //     method: "POST",
+        //     contentType: "application/json"
+        // };
+        // $.ajax(add_movie).then(function(response){
+        //     if(response.success){
+        //         alert("Success : Movie added.");
+        //     }else{
+        //         alert("error : " + err);
+        //     }
+        // },function(err){
+        //     alert("error : " + err);
+        // });
+        // --------------------------------------------------------------
+        if (!this.state.data[index].isAdded) {
+            console.log("Add Movie Clicked "+this.state.data[index].id);
+            var react_component = this;
+            var movie_index = index;
+            
+            axios.post('/playlist/' + this.state.data[index].id)
+                .then(res => {
+                    if (res.data.success === true) {
+                        console.log("Movie Added");
+                         //[movie_index].isAdded = true;
+                         var arr_search = react_component.state.data;
+                         arr_search[movie_index].isAdded = true;
+                          react_component.setState({
+                              data : arr_search
+                          });
+                        alert("Success : Movie added.");
+                    }else{
+                        console.log("Movie NOT Added");
+                        alert("There was some problem in adding movie to the playlist.");
+                    }
+                });
+        }else{
+            alert("Movie Already Added");
+        }
     }
 
     handleMovieNameChange(event) {
@@ -135,25 +155,59 @@ class SearchBar extends React.Component {
         this.setState({parameters});
     }
 
-    applyfilter(playlist){
-        var parameters = this.state.parameters;
-        var filtered_datasource = [];
-        if(parameters.movie){
+    applyfilter(playlist, searchResult){
+        
+        var ids = [];
+        var filter_indexes = [];
+        
+        console.log('Playlist Ids : ' + ids);
+        var index = 0;
+        var isFound = false;
+        
+        console.log('Pre Filter');
+        searchResult.forEach(function(element) {
+            //if(element.title == "300")
+                console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
+        }, this);
 
-            playlist.forEach(function(movie) {
-                if(toString(movie.original_title).toLowerCase() == toString(parameters.movie).toLowerCase())
-                    filtered_datasource.push(movie);
+        var counter = 0;
+        searchResult.forEach(function(search_item) {
+            //console.log('id : ' + element.id + 'is in ids array @ : ' + ids.indexOf(element.id));
+            playlist.forEach(function(pl_item) {
+                console.log('Search Item id : ' + search_item.id + " is compared with pl item id : " + pl_item._id + ' and the result is : ' + search_item.id == pl_item._id );
+                if(search_item.id == pl_item._id)
+                    filter_indexes.push(counter);
             }, this);
-            
-        }else{
+            counter++;
+        }, this);
 
-        }
-        return filtered_datasource;
+        filter_indexes.forEach(function(index) {
+            searchResult[index].isAdded = true; 
+        }, this);
+
+        //console.log('filtered Indexes : ' + filter_indexes);
+        console.log('Post Filter');
+        searchResult.forEach(function(element) {
+            //if(element.title == "300")
+                console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
+        }, this);
+        return searchResult;
     }
 
-    handleSubmit(event) {
+    
+    getQueryStr_Movies(){
+        var myplayList = [];
+        var get_playlist = {
+            url : "/playlist",
+            method : "GET",
+            contentType: "application/json; charset=utf-8"
 
-        event.preventDefault();
+        };
+        $.ajax(get_playlist).then(function(res){
+            myplayList = res;            
+        },function(err){
+            console.log("error while getting user playlist : " + JSON.stringify(err));
+        });
         var params = {
             title : this.state.parameters.movie
         };
@@ -168,22 +222,47 @@ class SearchBar extends React.Component {
         };
         var react_com = this;
         $.ajax(getQueryStr).then(function(response){
-            console.log(' ************* Query String  ************** ');
-            
+            //console.log(' ************* Query String  ************** ');
             
             if(response.success){
-                var qry_str = "/search/results/1?" + response.query;
-                console.log(qry_str);
+                var qry_str = "/search/results/"+ react_com.state.currentPage + "?" + response.query;
+                //console.log(qry_str);
                 var getSearch_result = {
                     url : qry_str,
                     method :"GET",
                     contentType : "application/json"
                 };
                 $.ajax(getSearch_result).then(function(res){
-                    console.log('Movies : ' + JSON.stringify(res));
+                    //console.log('Movies : ' + JSON.stringify(res));
                     
+                    
+                    var newArr = res.movies;
+                    //console.log(' *************************************** ');
+                    //console.log(' movies list before filter');
+                    //console.log(JSON.stringify(newArr));
+                    newArr = react_com.applyfilter(myplayList, newArr);
+                    //console.log("My Playlist : "+ JSON.stringify(myplayList));
+                    //console.log("Search Result : "+ JSON.stringify(newArr));
+                    //console.log(' movies list after filter');
+                    console.log(newArr);
+                    //console.log(' *************************************** ');
+                    //console.log('Data size : ' + newArr.length);
+                    var page = parseInt(res.page);
+                    var totalPages = parseInt(res.total);
+                    //console.log('Current page index : ' + page);
+                    
+                    if ((totalPages - page) > 0) {
+                        react_com.setState({ currentPage: page });
+                        newArr.push({
+                            id: "next",
+                            poster_path: "/public/images/next.png",
+                            title: "Load More"
+                        });
+                    }
+                    //console.log('Data size : ' + newArr.length);
+                    //console.log(newArr);
                     react_com.setState({
-                        data : res.movies
+                        data : newArr
                     });
                 },function(err2){
                     console.log('Error  : ' + JSON.stringify(err2));    
@@ -194,38 +273,14 @@ class SearchBar extends React.Component {
             
         },function(err){
             console.log('Error : ' + JSON.stringify(err));
-        })
-        /*
-        
-        var query_str = {
-            movie : this.state.parameters.movie,
-            actor : this.state.parameters.actor,
-            director : this.state.parameters.director,
-            genre : this.state.parameters.genre
-        };
-        var get_myPL = {
-            url: "/results/0",
-            method: "GET",
-            contentType: "application/json"
+        });
+    }
 
-        };
-        var react_comp = this;
-        $.ajax(get_myPL).then(function(response) {
-        console.log("handleSubmit : " + JSON.stringify(response));
-            //console.log('User Info : ' + JSON.stringify(response));
-            var data = response;
-            console.log("Playlist from Server : " + data);
-            
-            // following has to be uncommented 
-            //this.setState({ data : data });
-            this.setState({data : playlist_fake});
-        },function(err){
-        console.log("handleSubmit : " + err);
-        console.log("error : " + err);
-        react_comp.setState({
-            data : []
-            });
-        });*/
+    handleSubmit(event) {   
+
+        event.preventDefault();
+        this.getQueryStr_Movies();
+        
     }
     
     
@@ -235,45 +290,62 @@ class SearchBar extends React.Component {
         return (
             <div>
                 <div className="container">
-                    <form 
-                      onSubmit={this.handleSubmit} id="search" >
-                        <div class="form-group">
+                    <form onSubmit={this.handleSubmit} id="search" >
+                        <div className="form-group">
                             <label>Movie :</label>
                             <input
-                                class="form-control"
+                                className="form-control"
                                 type="text" 
                                 placeholder="Movie" value={this.state.parameters.movie} 
                                 onChange={this.handleMovieNameChange} />
                         </div>
-                        <div class="form-group">
+                        <div className="form-group">
                             <label>Actor :</label> 
                             <input type="text" 
-                            class="form-control"
+                            className="form-control"
                             placeholder="Actor" value={this.state.parameters.actor} 
                                 onChange={this.handleActorChange}/>
                         </div>
-                        <div class="form-group">
+                        <div className="form-group">
                             <label>Director :</label> 
                             <input type="text" 
-                            class="form-control"
+                            className="form-control"
                             placeholder="Director" value={this.state.parameters.director} 
                                 onChange={this.handleDirectorChange} />
                         </div>
-                        <div class="form-group">
+                        <div className="form-group">
                             <label>Genre :</label> 
                             <input type="text" 
-                            class="form-control"
+                            className="form-control"
                             placeholder="Genre" value={this.state.parameters.genre} 
                                 onChange={this.handleGenreChange} />
                         </div>
-                        <div class="form-group"> 
+                        <div className="form-group"> 
                             <input type="submit" placeholder="Search" />
                         </div>
                         
                     </form>
                 </div>
                 <div>
-                    <Banners playlist={this.state.data}/>
+                    <div style={this.state.styles.root}>
+                        <GridList className="container" style={this.state.styles.gridList} cols={2.2}>
+                            {this.state.data.map((tile, i) => (
+                                <GridTile
+                                    key={i}
+                                    title={tile.title}
+                                    actionIcon={tile.id === "next"?null : <IconButton onClick={this.additem.bind(this, i)}>{tile.isAdded ? (<PlaylistAddCheck color="rgb(0, 0, 0)" />) : (<PlaylistAdd color="rgb(0, 0, 0)" />)}</IconButton>}
+                                    titleStyle={this.state.styles.titleStyle}
+                                    titleBackground="linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)"
+                                    >
+                                    <img style={this.state.styles.imageStyle} 
+                                        onClick={this.itemClicked.bind(this, tile.id)} 
+                                        src={tile.id == "next" ? tile.poster_path : (
+                                                            tile.poster_path === null?"/public/images/movie-icon.png":"https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path
+                                                            )} />
+                                </GridTile>
+                            ))}
+                        </GridList>
+                    </div>
                 </div>
             </div>
         );
@@ -313,45 +385,7 @@ const HomePage =  withRouter(React.createClass({
     //}
   }
 }
+
 ));
-
-
-var playlist_fake = [{
-      poster_path: "/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg",
-      adult: false,
-      overview: "Framed in the 1940s for the double murder of his wife and her lover, upstanding banker Andy Dufresne begins a new life at the Shawshank prison, where he puts his accounting skills to work for an amoral warden. During his long stretch in prison, Dufresne comes to be admired by the other inmates -- including an older prisoner named Red -- for his integrity and unquenchable sense of hope.",
-      "release_date": "1994-09-10",
-      genre_ids: [
-        18,
-        80
-      ],
-      id: 278,
-      original_title: "The Shawshank Redemption",
-      original_language: "en",
-      title: "The Shawshank Redemption",
-      backdrop_path: "/xBKGJQsAIeweesB79KC89FpBrVr.jpg",
-      popularity: 8.301492,
-      vote_count: 5636,
-      video: false,
-      vote_average: 8.4
-    },{
-      poster_path: "/jLRllZsubY8UWpeMyDLVXdRyEWi.jpg",
-      adult: false,
-      overview: "The short centers on a young sandpiper, the eponymous Piper, who is afraid of the water. She meets a young hermit crab who \"teaches her the way of the waves\".",
-      "release_date": "2016-06-16",
-      genre_ids: [
-        10751,
-        16
-      ],
-      id: 399106,
-      original_title: "Piper",
-      original_language: "en",
-      title: "Piper",
-      backdrop_path: "/w1WqcS6hT0PUWC3adG37NSUOGX5.jpg",
-      popularity: 3.233301,
-      vote_count: 118,
-      video: false,
-      vote_average: 8.3
-    }] 
 
 export default HomePage;

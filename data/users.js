@@ -129,7 +129,7 @@ var exportedMethods = {
             return userCollection.insertOne(obj).then((userObj) => {
                 return obj;
             }).then(obj => {
-                let userId = obj._id;
+                var userId = obj._id;
                 return playlist.addPlaylist(title, userId).then((playlistObj) => {
                     return playlistObj;
                 });
