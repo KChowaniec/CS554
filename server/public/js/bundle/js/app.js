@@ -34798,8 +34798,11 @@
 	var _react2 = _interopRequireDefault(_react);
 
 	var _Card = __webpack_require__(393);
+<<<<<<< HEAD
 
 	var _reactRouter = __webpack_require__(334);
+=======
+>>>>>>> 284a1b3ce4c6067d6fb66b3d17b64be18fc892c7
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43972,7 +43975,8 @@
 	      error: false,
 	      movie: {},
 	      recs: [],
-	      reviews: []
+	      reviews: [],
+	      internalReviews: []
 	    };
 	    return _this;
 	  }
@@ -43991,6 +43995,10 @@
 	      _axios2.default.get('/movies/reviews/' + this.props.params.id).then(function (res) {
 	        _this2.setState({ reviews: res.data.results });
 	      });
+	      _axios2.default.get('/movies/allreviews/' + this.props.params.id).then(function (res) {
+	        debugger;
+	        _this2.setState({ internalReviews: res.data });
+	      });
 	    }
 	  }, {
 	    key: 'render',
@@ -43999,7 +44007,8 @@
 	        error: this.state.error,
 	        movie: this.state.movie,
 	        recs: this.state.recs,
-	        reviews: this.state.reviews
+	        reviews: this.state.reviews,
+	        intreviews: this.state.internalReviews
 	      });
 	    }
 	  }]);
@@ -44016,7 +44025,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -44056,111 +44065,143 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var Movie = function (_React$Component) {
-	  _inherits(Movie, _React$Component);
+	    _inherits(Movie, _React$Component);
 
-	  function Movie() {
-	    _classCallCheck(this, Movie);
+	    function Movie() {
+	        _classCallCheck(this, Movie);
 
-	    return _possibleConstructorReturn(this, (Movie.__proto__ || Object.getPrototypeOf(Movie)).apply(this, arguments));
-	  }
-
-	  _createClass(Movie, [{
-	    key: 'render',
-	    value: function render() {
-	      var styles = {
-	        root: {
-	          display: 'flex',
-	          flexWrap: 'wrap',
-	          justifyContent: 'space-around'
-	        },
-	        gridList: {
-	          display: 'flex',
-	          flexWrap: 'nowrap',
-	          overflowX: 'auto'
-	        },
-	        titleStyle: {
-	          color: 'rgb(0, 188, 212)'
-	        }
-	      };
-	      var recsTiles = this.props.recs.map(function (rec, i) {
-	        return _react2.default.createElement(
-	          _GridList.GridTile,
-	          {
-	            key: rec.id,
-	            title: rec.title,
-	            actionIcon: _react2.default.createElement(
-	              _IconButton2.default,
-	              null,
-	              _react2.default.createElement(_starBorder2.default, { color: 'rgb(0, 188, 212)' })
-	            ),
-	            titleStyle: styles.titleStyle,
-	            titleBackground: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)'
-	          },
-	          _react2.default.createElement(
-	            'a',
-	            { href: '/movie/' + rec.id },
-	            _react2.default.createElement('img', { src: 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + rec.poster_path, style: { width: '180px' } })
-	          )
-	        );
-	      });
-	      var revs = this.props.reviews.map(function (rec, i) {
-	        return _react2.default.createElement(_List.ListItem, {
-	          key: rec.id,
-	          primaryText: rec.author,
-	          secondaryText: rec.content,
-	          secondaryTextLines: 2
-	        });
-	      });
-	      return _react2.default.createElement(
-	        _Card.Card,
-	        { style: { width: '70%', margin: '0 auto', color: '#1976d2' } },
-	        _react2.default.createElement(_Card.CardHeader, { title: this.props.movie.title, subtitle: this.props.movie.releaseDate, titleColor: '#00bcd4', titleStyle: { fontSize: '30px', fontWeight: 'bold' } }),
-	        _react2.default.createElement(
-	          _Card.CardMedia,
-	          null,
-	          _react2.default.createElement('img', { src: 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + this.props.movie.poster_path })
-	        ),
-	        _react2.default.createElement(
-	          _Card.CardText,
-	          null,
-	          _react2.default.createElement(
-	            'h1',
-	            null,
-	            'Overview'
-	          ),
-	          _react2.default.createElement('br', null),
-	          this.props.movie.description,
-	          _react2.default.createElement('br', null),
-	          _react2.default.createElement('br', null),
-	          'If you loved ',
-	          this.props.movie.title,
-	          ', you would like these:',
-	          _react2.default.createElement('br', null),
-	          _react2.default.createElement(
-	            'div',
-	            { style: styles.root },
-	            _react2.default.createElement(
-	              _GridList.GridList,
-	              { style: styles.gridList, cols: 2.2 },
-	              recsTiles
-	            )
-	          ),
-	          _react2.default.createElement(
-	            _List.List,
-	            null,
-	            _react2.default.createElement(
-	              _Subheader2.default,
-	              null,
-	              'Moview Reviews'
-	            ),
-	            revs
-	          )
-	        )
-	      );
+	        return _possibleConstructorReturn(this, (Movie.__proto__ || Object.getPrototypeOf(Movie)).apply(this, arguments));
 	    }
-	  }]);
 
-	  return Movie;
+	    _createClass(Movie, [{
+	        key: 'render',
+	        value: function render() {
+	            var styles = {
+	                root: {
+	                    display: 'flex',
+	                    flexWrap: 'wrap',
+	                    justifyContent: 'space-around'
+	                },
+	                gridList: {
+	                    display: 'flex',
+	                    flexWrap: 'nowrap',
+	                    overflowX: 'auto'
+	                },
+	                titleStyle: {
+	                    color: 'rgb(0, 188, 212)'
+	                }
+	            };
+	            var recsTiles = this.props.recs.map(function (rec, i) {
+	                return _react2.default.createElement(
+	                    _GridList.GridTile,
+	                    {
+	                        key: rec.id,
+	                        title: rec.title,
+	                        actionIcon: _react2.default.createElement(
+	                            _IconButton2.default,
+	                            null,
+	                            _react2.default.createElement(_starBorder2.default, { color: 'rgb(0, 188, 212)' })
+	                        ),
+	                        titleStyle: styles.titleStyle,
+	                        titleBackground: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)'
+	                    },
+	                    _react2.default.createElement(
+	                        'a',
+	                        { href: '/movie/' + rec.id },
+	                        _react2.default.createElement('img', { src: 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + rec.poster_path, style: { width: '180px' } })
+	                    )
+	                );
+	            });
+	            var revs = "";
+	            if (this.props.reviews && this.props.reviews.length > 0) {
+	                revs = this.props.reviews.map(function (rec, i) {
+	                    return _react2.default.createElement(_List.ListItem, {
+	                        key: rec.id,
+	                        primaryText: rec.author,
+	                        secondaryText: rec.content,
+	                        secondaryTextLines: 2
+	                    });
+	                });
+	            }
+	            var intrevs = "";
+	            if (this.props.intreviews && this.props.intreviews.length > 0) {
+	                intrevs = this.props.intreviews.map(function (rec, i) {
+	                    return _react2.default.createElement(_List.ListItem, {
+	                        key: rec.id,
+	                        primaryText: rec.author,
+	                        secondaryText: rec.content,
+	                        secondaryTextLines: 2
+	                    });
+	                });
+	            }
+	            return _react2.default.createElement(
+	                _Card.Card,
+	                { style: { width: '70%', margin: '0 auto', color: '#1976d2' } },
+	                _react2.default.createElement(_Card.CardHeader, { title: this.props.movie.title, subtitle: this.props.movie.releaseDate, titleColor: '#00bcd4', titleStyle: { fontSize: '30px', fontWeight: 'bold' } }),
+	                _react2.default.createElement(
+	                    _Card.CardText,
+	                    null,
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { float: 'left', maxWidth: '300px' } },
+	                        _react2.default.createElement('img', { src: 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + this.props.movie.poster_path, style: { maxWidth: '300px' } })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { float: 'left', maxWidth: '500px', marginLeft: '10px' } },
+	                        _react2.default.createElement(
+	                            'h2',
+	                            null,
+	                            'Overview'
+	                        ),
+	                        this.props.movie.description
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { clear: 'both', paddingTop: '10px' } },
+	                        _react2.default.createElement(
+	                            'h4',
+	                            null,
+	                            'If you loved ',
+	                            this.props.movie.title,
+	                            ', you would like these:'
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { style: styles.root },
+	                            _react2.default.createElement(
+	                                _GridList.GridList,
+	                                { style: styles.gridList, cols: 2.2 },
+	                                recsTiles
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            _List.List,
+	                            null,
+	                            intrevs != "" && _react2.default.createElement(
+	                                'h3',
+	                                null,
+	                                'Internal Reviews'
+	                            ),
+	                            intrevs
+	                        ),
+	                        _react2.default.createElement(
+	                            _List.List,
+	                            null,
+	                            revs != "" && _react2.default.createElement(
+	                                'h3',
+	                                null,
+	                                'Movie Reviews From MovieDB.com'
+	                            ),
+	                            revs
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Movie;
 	}(_react2.default.Component);
 
 	exports.default = Movie;

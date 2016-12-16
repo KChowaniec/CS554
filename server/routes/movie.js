@@ -138,7 +138,7 @@ router.get('/reviews/:id', function (req, res) {
 });
 
 //ADD REVIEW TO MOVIE
-router.post("/reviews/:movieId", (req, res) => {
+router.post("/reviews/add/:movieId", (req, res) => {
     let movieId = req.params.movieId;
 	let reviewData = xss(req.body);
     let userId = req.session.userId;
@@ -250,7 +250,7 @@ router.get('/allreviews/:id', function (req, res) {
 
 		clearTimeout(killswitchTimeoutId);
 		if (reviews) {
-			return res.json({success: true, reviews: reviews});
+			return res.json(reviews);
 		}
 	});
 
