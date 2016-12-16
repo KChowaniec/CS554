@@ -17,12 +17,12 @@ const uuid = require("node-uuid");
 
 router.get("/preferences", (req, res) => {
     //get user preferences (if any)
-    let userId = req.session.userId;
-    let redisConnection = req
+    var userId = req.session.userId;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`preferences-retrieved:${messageId}`, (preferences, channel) => {
@@ -186,7 +186,13 @@ router.get("/results/:pageId*", (req, res) => {
         if (results) {
 
             // res.render("results/movielist", { pages: results.pages, movies: results.movielist, total: results.total, partial: "results-script" });
-            return res.json({ success: true, movies: results.movielist });
+            return res.json(
+                    { 
+                        success: true, 
+                        page: results.pages, 
+                        movies: results.movielist, 
+                        total: results.total 
+                    });
         }
     });
 
@@ -221,12 +227,12 @@ router.get("/results/:pageId*", (req, res) => {
 
 //get keywords
 router.get("/keywords", (req, res) => {
-    let keyword = xss(req.query.value);
-    let redisConnection = req
+    var keyword = xss(req.query.value);
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`keyword-retrieved:${messageId}`, (result, channel) => {
 
@@ -270,12 +276,12 @@ router.get("/keywords", (req, res) => {
 
 //get person
 router.get("/person", (req, res) => {
-    let person = xss(req.query.value);
-    let redisConnection = req
+    var person = xss(req.query.value);
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`person-retrieved:${messageId}`, (result, channel) => {
         redisConnection.off(`person-retrieved:${messageId}`);

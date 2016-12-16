@@ -58,7 +58,7 @@ class SignUpPage extends React.Component {
     const email = this.state.user.email;
     const password = this.state.user.password;
     const confirm = this.state.user.confirm;
-    let errors = {};
+    var errors = {};
     if (!username) {
       errors.username = "This field is required";
     }

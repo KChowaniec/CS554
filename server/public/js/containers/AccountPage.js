@@ -40,7 +40,7 @@ class AccountPage extends React.Component {
         const password = this.state.user.password;
         const confirm = this.state.user.confirm;
 
-        let errors = {};
+        var errors = {};
         if (!email) {
             errors.username = "This field is required";
         }
