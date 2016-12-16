@@ -50,7 +50,7 @@ var exportedMethods = {
     this.setLocation(location);
     theatersAtLocation = this.getTheatersForLocation();
     //console.log(theaters);
-    let theatersShowingMovie = [];
+    var theatersShowingMovie = [];
     for(var i =0; i < theatersAtLocation.length; i++){
       if(theatersAtLocation[i].movies.contains(movieName)){
         theatersShowingMovie.push(theatersAtLocation[i]);

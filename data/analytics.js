@@ -70,7 +70,7 @@ var exportedMethods = {
                     return;
                 }
                 else {
-                    let data = JSON.parse(contents);
+                    var data = JSON.parse(contents);
                     return analytics().then((statCollection) => {
                         return statCollection.insert(data).then(function (result) {
                             resolve(result);

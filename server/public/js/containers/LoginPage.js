@@ -37,7 +37,7 @@ class LoginPage extends React.Component {
     // create a string for an HTTP body message
     const username = this.state.user.username;
     const password = this.state.user.password;
-    let errors = {};
+    var errors = {};
     if (!username) {
       errors.username = "This field is required";
     }

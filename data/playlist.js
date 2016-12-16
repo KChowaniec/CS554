@@ -380,7 +380,7 @@ var exportedMethods = {
                     return;
                 }
                 else {
-                    let data = JSON.parse(contents);
+                    var data = JSON.parse(contents);
                     //insert/update playlist object into collection
                     //upsert: true ensures new document is added if it doesn't exist already
                     return Playlist().then((playlistCollection) => {

@@ -67,3 +67,7 @@ a:hover {
   padding: 0 16px;
   color: green;
 }
+
+.grid-img:hover{
+  cursor: pointer;
+}
