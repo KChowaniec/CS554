@@ -9,22 +9,25 @@ import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
 import AccountPage from './containers/AccountPage';
+import axios from 'axios';
 // import HomePage from './containers/HomePage.js';
 
 function redirectToLogin(nextState, replace) {
-  if (!auth.loggedIn()) {
-    replace('/login')
-  }
+  axios.get('/user/authorized').then(res => {
+    let data = res.data;
+    if (!data.authorized || !auth.loggedIn()) {
+      browserHistory.push('/login');
+    }
+  });
+}
+
+function replaceWithHome(nextState, replace) {
+  replace('/home')
 }
 
 function getAnalytics(nextState, replace) {
-  var requestConfig = {
-    method: "GET",
-    url: "/analytics",
-    contentType: 'application/json'
-  };
-  $.ajax(requestConfig).then((responseMessage) => {
-    window.location.reload();
+  axios.get('/analytics').then(res => {
+    // replace('/');
   });
 }
 
@@ -46,8 +49,7 @@ const routes = {
 
     {
       path: '/',
-      component: HomePage,
-      onEnter: redirectToLogin
+      onEnter: replaceWithHome
     },
 
     {
@@ -81,7 +83,7 @@ const routes = {
     },
     {
       path: '/analytics',
-      component: AnalyticsPage,
+      // component: AnalyticsPage,
       onEnter: getAnalytics
     },
     {
@@ -97,8 +99,7 @@ const routes = {
     //match any other routes - redirect to home page
     {
       path: '/*',
-      component: HomePage,
-      onEnter: redirectToLogin
+      onEnter: replaceWithHome
     }
 
   ]

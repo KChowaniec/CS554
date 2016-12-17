@@ -43,6 +43,18 @@ var exportedMethods = {
             });
         });
     },
+
+    saveUserPreferences(userId, preferences) {
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: userId }, { $set: preferences }).then(function () {
+                return userId;
+            }).then(id => {
+                return this.getUserById(id);
+            }).catch((error) => {
+                return error;
+            });
+        });
+    },
     //verify password is correct
     verifyLogin(password, hashedPwd) {
         if (!password) throw ("A password must be provided");
@@ -126,13 +138,15 @@ var exportedMethods = {
             }
         };
         return Users().then((userCollection) => {
-            return userCollection.insertOne(obj).then((userObj) => {
+            return userCollection.insertOne(obj).then((newObj) => {
                 return obj;
             }).then(obj => {
                 var userId = obj._id;
                 return playlist.addPlaylist(title, userId).then((playlistObj) => {
                     return playlistObj;
-                });
+                }).then(playObj => {
+                    return obj;
+                })
             });
         });
     },
@@ -151,8 +165,18 @@ var exportedMethods = {
 
     //update user
     updateUserById(id, obj) {
+        let newData = {};
+        if (obj.password) {
+            newData.password = passwordHash.generate(obj.password);
+        }
+        if (obj.email) {
+            newData['profile.email'] = obj.email;
+        }
+        let updateCommand = {
+            $set: newData
+        };
         return Users().then((userCollection) => {
-            return userCollection.update({ _id: id }, { $set: obj }).then(function () {
+            return userCollection.update({ _id: id }, updateCommand).then(function () {
                 return id;
             });
         }).then(id => {

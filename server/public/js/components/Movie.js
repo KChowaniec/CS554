@@ -6,8 +6,71 @@ import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
+import RaisedButton from 'material-ui/RaisedButton';
+import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
+import TextField from 'material-ui/TextField';
+import axios from 'axios';
 
 class Movie extends React.Component {
+     
+    constructor(props) {
+    super(props);
+    this.state = {
+        open: false,
+        intreviews : []
+    };
+    this.addMovie = this.addMovie.bind(this);
+    this.addReview = this.addReview.bind(this);
+    this.handleTouchTap = this.handleTouchTap.bind(this);
+    this.handleRequestClose = this.handleRequestClose.bind(this);
+  }
+
+    handleTouchTap(event){
+        event.preventDefault();
+
+        this.setState({
+          open: true,
+          anchorEl: event.currentTarget
+        });
+    };
+
+    handleRequestClose(){
+        this.setState({
+          open: false,
+        });
+      };
+
+    addMovie () {
+        axios.get('/playlist/addmovie/' + this.props.movie._id)
+          .then(res => {
+            if (res.data.success)
+            {
+                alert("Movie has been successfully added to your playlist!");
+            }
+            else{
+                alert(res.data.error);
+            }
+        });
+    }
+    
+    addReview () {
+        axios.post('/movies/reviews/add/',{movieId:this.props.movie._id,review:document.getElementById("review").value})
+            .then(res => {
+                if (res.data.success)
+                {
+                    alert("Your review has been added!");
+                    var idtmp = new Date();
+                    this.props.intreviews.push({id:idtmp.getTime(),name:decodeURI(res.data.result.name),comment:document.getElementById("review").value})
+                    this.setState({intreviews:this.props.intreviews});
+                }
+                else{
+                    alert(res.data.error);
+                }
+                this.setState({
+                  open: false
+                });
+            });    
+    }
         
     render() {
         const styles = {
@@ -57,16 +120,18 @@ class Movie extends React.Component {
                 return (
                     <ListItem
                       key={rec.id}
-                      primaryText={rec.author}
-                      secondaryText={rec.content}
+                      primaryText={decodeURI(rec.name)}
+                      secondaryText={rec.comment}
                       secondaryTextLines={2}
                     />
                 );
             });
         }
+        
+        
         return (
                 <Card style={{width:'70%',margin: '0 auto',color:'#1976d2'}}>
-                    <CardHeader title={this.props.movie.title} subtitle={this.props.movie.releaseDate} titleColor="#00bcd4" titleStyle={{fontSize:'30px',fontWeight:'bold'}}/>
+                    <CardHeader title={this.props.movie.title} subtitle={this.props.movie.releaseDate} titleColor="#00bcd4" titleStyle={{fontSize:'30px',fontWeight:'bold'}} children={<a href="#" onClick={() => this.addMovie()}><RaisedButton label="Add To Playlist" primary={true} style={{float:'right'}} /></a>} />
                     <CardText>
                         <div style={{float:'left',maxWidth:'300px'}}>
 
@@ -74,7 +139,25 @@ class Movie extends React.Component {
                         </div>
                         <div style={{float:'left',maxWidth:'500px',marginLeft:'10px'}}>
                             <h2>Overview</h2>
-                            {this.props.movie.description}
+                            {this.props.movie.description}<br/>
+                            <br/>
+                            <RaisedButton label="Write Review" primary={true} onTouchTap={this.handleTouchTap} />
+                            <Popover
+                              open={this.state.open}
+                              anchorEl={this.state.anchorEl}
+                              anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                              targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                              onRequestClose={this.handleRequestClose}
+                              animation={PopoverAnimationVertical}
+                            >
+                                <TextField
+                                  multiLine={true}
+                                  rows={6}
+                                  rowsMax={6}
+                                  id="review"
+                               />
+                                <a href="#" onClick={() => this.addReview()}><RaisedButton label="Submit" primary={true} /></a>
+                            </Popover>
                         </div>
                         <div style={{clear:'both',paddingTop:'10px'}}>
                             <h4>If you loved {this.props.movie.title}, you would like these:</h4>

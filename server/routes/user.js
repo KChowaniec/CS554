@@ -17,6 +17,33 @@ var passport = require('passport');
 const uuid = require("node-uuid");
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
+
+router.get('/user/authorized', function (req, res) {
+    // check header parameters for token
+    var token = req.session.token;
+    // decode token
+    if (token) {
+        // verifies secret
+        jwt.verify(token, 'secretkey', function (err, decoded) {
+            if (err) {
+                return res.json({ authorized: false });
+            } else {
+                //make sure token exists in session
+                if (req.session && req.session.token === token) {
+                    return res.json({ authorized: true });
+                }
+                else {
+                    return res.json({ authorized: false });
+                }
+            }
+        });
+
+    } else {
+        // if there is no token
+        return res.json({ authorized: false });
+    }
+});
+
 //get all users
 router.get('/users', function (req, res) {
     var redisConnection = req
@@ -121,15 +148,17 @@ router.post('/user/register', function (req, res) {
     var messageId = uuid.v4();
     var killswitchTimeoutId = undefined;
 
-    redisConnection.on(`user-registered:${messageId}`, (registeredUserId, channel) => {
+    redisConnection.on(`user-registered:${messageId}`, (registeredUser, channel) => {
 
         redisConnection.off(`user-registered:${messageId}`);
         redisConnection.off(`user-registered-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        if (registeredUserId) {
-            req.session.userId = registeredUserId;
-            return res.json({ success: true });
+        if (registeredUser) {
+            req.session.userId = registeredUser._id;
+            req.session.name = registeredUser.profile.name;
+            req.session.token = jwt.sign(registeredUser, 'secretkey');
+            return res.json({ success: true, token: req.session.token });
         }
     });
 
@@ -215,6 +244,8 @@ router.get('/user', function (req, res) {
 router.put('/user', function (req, res) {
     var userId = req.session.userId;
     var newData = xss(req.body);
+    let email = xss(req.body.email);
+    let password = xss(req.body.password);
     var redisConnection = req
         .app
         .get("redis");
@@ -252,7 +283,8 @@ router.put('/user', function (req, res) {
 
     redisConnection.emit(`update-user:${messageId}`, {
         requestId: messageId,
-        update: newData,
+        email: email,
+        password: password,
         userId: userId
     });
 });
@@ -275,8 +307,8 @@ router.post('/user/login', function (req, res, next) {
             //add data to session object
             req.session.token = user.token;
             req.session.userId = user._id;
+            req.session.name = user.profile.name;
             var sessionData = req.session;
-
             redisConnection.on(`logged-in:${messageId}`, (sessionData, channel) => {
                 redisConnection.off(`logged-in:${messageId}`);
                 redisConnection.off(`login-failed:${messageId}`);

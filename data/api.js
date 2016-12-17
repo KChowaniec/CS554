@@ -30,7 +30,6 @@ var exportedMethods = {
                 response.on('end', function () {
                     var parsed = JSON.parse(body);
                     var movie = {};
-                    // movie._id = uuid.v4();//save the origin id and our own id
                     movie._id = movieId;
                     movie.title = parsed.title;
                     movie.description = parsed.overview;
@@ -87,7 +86,6 @@ var exportedMethods = {
                         }
                     }
                     movie.rated = rating;
-
                     fulfill(movie);
                 });
             });

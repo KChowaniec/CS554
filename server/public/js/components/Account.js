@@ -16,7 +16,7 @@ const Account = ({
             <form action="/" onSubmit={onSubmit}>
                 <h2 className="card-heading">Change Account Settings</h2>
 
-                {error && <p className="error-message">Please correct the errors</p>}
+                {error && <p className="error-message">{errors.message}</p>}
                 {success && <p className="success-message">Account has been updated successfully</p>}
                 <div className="field-line">
                     <TextField
@@ -30,7 +30,7 @@ const Account = ({
 
                 <div className="field-line">
                     <TextField
-                        floatingLabelText="Password"
+                        floatingLabelText="New Password"
                         type="password"
                         name="password"
                         onChange={onChange}

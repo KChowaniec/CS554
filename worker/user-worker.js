@@ -34,6 +34,7 @@ redisConnection.on('register-user:*', (data, channel) => {
         name: name,
         email: email
     };
+    
     var title = "My Playlist";
     var verifyUsername = userData.checkUserExist(username);
     verifyUsername.then((result) => {
@@ -42,9 +43,10 @@ redisConnection.on('register-user:*', (data, channel) => {
                 .addUsersAndPlaylist(title, user)
                 .then((newUser) => {
                     //cache user by userid
-                    var addEntry = client.setAsync(newUser.user_id, JSON.stringify(user));
+                    var addEntry = client.setAsync(newUser._id, JSON.stringify(newUser));
                     addEntry.then(() => {
-                        redisConnection.emit(`user-registered:${messageId}`, newUser.user_id);
+                        //user._id = newUser.user_id;
+                        redisConnection.emit(`user-registered:${messageId}`, newUser);
                     })
                 }).catch(error => {
                     redisConnection.emit(`user-registered-failed:${messageId}`, error);
@@ -63,8 +65,17 @@ redisConnection.on('register-user:*', (data, channel) => {
 //UPDATE USER WORKER
 redisConnection.on('update-user:*', (data, channel) => {
     var messageId = data.requestId;
-    var newData = data.update;
+    // var newData = data.update;
+    var email = data.email;
+    var password = data.password;
     var userId = data.userId;
+    let newData = {};
+    if (email) {
+        newData.email = email;
+    }
+    if (password) {
+        newData.password = password;
+    }
     //update user information - also update cache entry (if exists)
     var fullyComposeUser = userData
         .updateUserById(userId, newData)
@@ -167,5 +178,20 @@ redisConnection.on('get-preferences:*', (data, channel) => {
             redisConnection.emit(`preferences-retrieved:${messageId}`, preferences);
         }).catch((error) => {
             redisConnection.emit(`preferences-retrieved-failed:${messageId}`, error);
+        });
+});
+
+//SAVE USER PREFERENCES WORKER  
+redisConnection.on('save-preferences:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let preferences = data.preferences;
+    //get preferences 
+    let fullyComposeUser = userData
+        .saveUserPreferences(userId, preferences)
+        .then((user) => {
+            redisConnection.emit(`preferences-saved:${messageId}`, user);
+        }).catch((error) => {
+            redisConnection.emit(`preferences-saved-failed:${messageId}`, error);
         });
 });
