@@ -127,7 +127,7 @@ var exportedMethods = {
             return movieCollection.update({ _id: parseInt(id) }, { $set:{"id":parseInt(id)} ,$addToSet: { "allReviews": obj } }, {upsert:true}).then(function () {
                 return id;
             }).then(id => {
-                return this.getMovieById(id);
+                return obj;
             }).catch((error) => {
                 return { error: error };
             });
