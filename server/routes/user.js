@@ -156,7 +156,7 @@ router.post('/user/register', function (req, res) {
         clearTimeout(killswitchTimeoutId);
         if (registeredUser) {
             req.session.userId = registeredUser._id;
-            req.session.name = registeredUser.name;
+            req.session.name = registeredUser.profile.name;
             req.session.token = jwt.sign(registeredUser, 'secretkey');
             return res.json({ success: true, token: req.session.token });
         }
@@ -244,6 +244,8 @@ router.get('/user', function (req, res) {
 router.put('/user', function (req, res) {
     var userId = req.session.userId;
     var newData = xss(req.body);
+    let email = xss(req.body.email);
+    let password = xss(req.body.password);
     var redisConnection = req
         .app
         .get("redis");
@@ -281,7 +283,8 @@ router.put('/user', function (req, res) {
 
     redisConnection.emit(`update-user:${messageId}`, {
         requestId: messageId,
-        update: newData,
+        email: email,
+        password: password,
         userId: userId
     });
 });

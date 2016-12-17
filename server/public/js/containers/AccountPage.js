@@ -32,7 +32,6 @@ class AccountPage extends React.Component {
             .then(res => {
                 let userInfo = {};
                 let data = JSON.parse(res.data.user);
-                console.log(data);
                 userInfo.email = data.profile.email;
                 userInfo.password = '';
                 userInfo.confirm = '';
@@ -49,7 +48,6 @@ class AccountPage extends React.Component {
         // prevent default action. in this case, action is the form submission event
         event.preventDefault();
 
-        // create a string for an HTTP body message
         const email = this.state.user.email;
         const password = this.state.user.password;
         const confirm = this.state.user.confirm;
@@ -70,30 +68,29 @@ class AccountPage extends React.Component {
         }
 
         else {
-            let newData = {};
-            if (email) {
-                newData.email = email;
-            }
-            if (password) {
-                newData.password = password;
-            }
-            if (confirm) {
-                newData.confirm = confirm;
-            }
-            console.log(newData);
             //change account information
             var requestConfig = {
                 method: "PUT",
                 url: "/user",
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    newData: newData
+                    email: email,
+                    password: password
                 })
             };
             let reactThis = this;
             $.ajax(requestConfig).then((responseMessage) => {
                 if (responseMessage.success) {
-                    return reactThis.setState({ success: true, user: responseMessage.user })
+                    if (responseMessage.user.profile.email) {
+                        let newInfo = {};
+                        newInfo.email = responseMessage.user.profile.email;
+                        newInfo.password = '';
+                        newInfo.confirm = '';
+                        return reactThis.setState({ success: true, user: newInfo })
+                    }
+                    else {
+                        return reactThis.setState({ success: true })
+                    }
                 } else {
                     let errors = {};
                     errors.message = "An error occurred";

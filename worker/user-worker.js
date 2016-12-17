@@ -34,6 +34,7 @@ redisConnection.on('register-user:*', (data, channel) => {
         name: name,
         email: email
     };
+    
     var title = "My Playlist";
     var verifyUsername = userData.checkUserExist(username);
     verifyUsername.then((result) => {
@@ -42,10 +43,10 @@ redisConnection.on('register-user:*', (data, channel) => {
                 .addUsersAndPlaylist(title, user)
                 .then((newUser) => {
                     //cache user by userid
-                    var addEntry = client.setAsync(newUser.user_id, JSON.stringify(user));
+                    var addEntry = client.setAsync(newUser._id, JSON.stringify(newUser));
                     addEntry.then(() => {
-                        user._id = newUser.user_id;
-                        redisConnection.emit(`user-registered:${messageId}`, user);
+                        //user._id = newUser.user_id;
+                        redisConnection.emit(`user-registered:${messageId}`, newUser);
                     })
                 }).catch(error => {
                     redisConnection.emit(`user-registered-failed:${messageId}`, error);
@@ -64,9 +65,17 @@ redisConnection.on('register-user:*', (data, channel) => {
 //UPDATE USER WORKER
 redisConnection.on('update-user:*', (data, channel) => {
     var messageId = data.requestId;
-    var newData = data.update;
+    // var newData = data.update;
+    var email = data.email;
+    var password = data.password;
     var userId = data.userId;
-    console.log(newData);
+    let newData = {};
+    if (email) {
+        newData.email = email;
+    }
+    if (password) {
+        newData.password = password;
+    }
     //update user information - also update cache entry (if exists)
     var fullyComposeUser = userData
         .updateUserById(userId, newData)
