@@ -1,14 +1,104 @@
 import React from 'react';
-import { Card, CardTitle } from 'material-ui/Card';
+import { Card, CardTitle, CardText } from 'material-ui/Card';
 import { browserHistory, Router, Route, Link, withRouter } from 'react-router'
 import { GridList, GridTile } from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 import axios from 'axios';
+import RaisedButton from 'material-ui/RaisedButton';
 import PlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 import PlaylistAddCheck from 'material-ui/svg-icons/av/playlist-add-check';
+import AutoComplete from 'material-ui/AutoComplete';
 import TextField from 'material-ui/TextField';
+
+const genres = [
+    {
+        textKey: 'Action',
+        valueKey: 28
+    },
+    {
+        textKey:'Adventure',
+        valueKey: 12
+    },
+    {
+        textKey:'Animation',
+        valueKey: 16
+    },
+    {
+        textKey:'Comedy',
+        valueKey: 35
+    },
+    {
+        textKey:'Crime',
+        valueKey: 80
+    },
+    {
+        textKey:'Documentary',
+        valueKey: 99
+    },
+    {
+        textKey:'Drama',
+        valueKey: 18
+    },
+    {
+        textKey:'Family',
+        valueKey: 10751
+    },
+    {
+        textKey:'Fantasy',
+        valueKey: 14
+    },
+    {
+        textKey:'Foreign',
+        valueKey: 10769
+    },
+    {
+        textKey:'History',
+        valueKey: 36
+    },
+    {
+        textKey:'Horror',
+        valueKey: 27
+    },
+    {
+        textKey:'Music',
+        valueKey: 10402
+    },
+    {
+        textKey:'Mystery',
+        valueKey: 9648
+    },
+    {
+        textKey:'Romance',
+        valueKey: 10749
+    },
+    {
+        textKey:'Science Fiction',
+        valueKey: 878
+    },
+    {
+        textKey:'TV Movie',
+        valueKey: 10770
+    },
+    {
+        textKey:'Thriller',
+        valueKey: 53
+    },
+    {
+        textKey:'War',
+        valueKey: 10752
+    },
+    {
+        textKey:'Western',
+        valueKey: 37
+    }
+];
+
+const dataSourceConfig = {
+  text: 'textKey',
+  value: 'valueKey',
+};
 
 class SearchBar extends React.Component {
     
@@ -293,17 +383,18 @@ class SearchBar extends React.Component {
                             <TextField 
                                 type="text" 
                                 name="director"
-                                floatingLabelText="Director"
+                                floatingLabelText="Crew"
                                 value={this.state.parameters.director} 
                                 onChange={this.handleDirectorChange} />
                         </div>
                         <div className="field-line">
-                            <TextField 
-                                type="text" 
-                                name="genre"
-                                floatingLabelText="Genre" 
-                                value={this.state.parameters.genre} 
-                                onChange={this.handleGenreChange} />
+                                                   <AutoComplete
+                                floatingLabelText="Genres"
+                                filter={AutoComplete.fuzzyFilter}
+                                openOnFocus={true}
+                                dataSource={genres}
+                                dataSourceConfig={dataSourceConfig}
+                        />
                         </div>
                         <div className="field-line"> 
                             <TextField 
@@ -314,7 +405,8 @@ class SearchBar extends React.Component {
                                 onChange={this.handleGenreChange} />
                         </div>
                         <div className="button-line">
-                            <input type="submit" placeholder="Search" />
+                           <RaisedButton type="submit" label="Submit" primary />
+                            <CardText>Save preferences? <RaisedButton type="button" label="Save" secondary /></CardText>
                         </div>
                         
                     </form>

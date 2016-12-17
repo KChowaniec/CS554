@@ -66,6 +66,7 @@ redisConnection.on('update-user:*', (data, channel) => {
     var messageId = data.requestId;
     var newData = data.update;
     var userId = data.userId;
+    console.log(newData);
     //update user information - also update cache entry (if exists)
     var fullyComposeUser = userData
         .updateUserById(userId, newData)
@@ -168,5 +169,20 @@ redisConnection.on('get-preferences:*', (data, channel) => {
             redisConnection.emit(`preferences-retrieved:${messageId}`, preferences);
         }).catch((error) => {
             redisConnection.emit(`preferences-retrieved-failed:${messageId}`, error);
+        });
+});
+
+//SAVE USER PREFERENCES WORKER  
+redisConnection.on('save-preferences:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let preferences = data.preferences;
+    //get preferences 
+    let fullyComposeUser = userData
+        .saveUserPreferences(userId, preferences)
+        .then((user) => {
+            redisConnection.emit(`preferences-saved:${messageId}`, user);
+        }).catch((error) => {
+            redisConnection.emit(`preferences-saved-failed:${messageId}`, error);
         });
 });
