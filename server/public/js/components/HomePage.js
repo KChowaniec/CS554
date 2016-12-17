@@ -383,7 +383,7 @@ class SearchBar extends React.Component {
                             <TextField 
                                 type="text" 
                                 name="director"
-                                floatingLabelText="Director"
+                                floatingLabelText="Crew"
                                 value={this.state.parameters.director} 
                                 onChange={this.handleDirectorChange} />
                         </div>

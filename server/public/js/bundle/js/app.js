@@ -34414,7 +34414,7 @@
 
 	var _HomePage2 = _interopRequireDefault(_HomePage);
 
-	var _Playlist = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/Playlist.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _Playlist = __webpack_require__(488);
 
 	var _Playlist2 = _interopRequireDefault(_Playlist);
 
@@ -35240,7 +35240,7 @@
 	                            _react2.default.createElement(_TextField2.default, {
 	                                type: 'text',
 	                                name: 'director',
-	                                floatingLabelText: 'Director',
+	                                floatingLabelText: 'Crew',
 	                                value: this.state.parameters.director,
 	                                onChange: this.handleDirectorChange })
 	                        ),
@@ -43966,7 +43966,171 @@
 	exports.default = AvPlaylistAddCheck;
 
 /***/ },
-/* 488 */,
+/* 488 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Card = __webpack_require__(393);
+
+	var _GridList = __webpack_require__(455);
+
+	var _IconButton = __webpack_require__(421);
+
+	var _IconButton2 = _interopRequireDefault(_IconButton);
+
+	var _starBorder = __webpack_require__(459);
+
+	var _starBorder2 = _interopRequireDefault(_starBorder);
+
+	var _deleteForever = __webpack_require__(460);
+
+	var _deleteForever2 = _interopRequireDefault(_deleteForever);
+
+	var _axios = __webpack_require__(461);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	var _reactRouter = __webpack_require__(334);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Playlist = function (_React$Component) {
+	    _inherits(Playlist, _React$Component);
+
+	    function Playlist(props) {
+	        _classCallCheck(this, Playlist);
+
+	        // set the initial component state
+	        var _this = _possibleConstructorReturn(this, (Playlist.__proto__ || Object.getPrototypeOf(Playlist)).call(this, props));
+
+	        _this.state = {
+	            styles: {
+	                root: {
+	                    display: 'flex',
+	                    flexWrap: 'wrap',
+	                    justifyContent: 'space-around'
+	                },
+	                gridList: {
+	                    display: 'flex',
+	                    flexWrap: 'nowrap',
+	                    overflowX: 'auto'
+	                },
+	                titleStyle: {
+	                    color: 'rgb(0, 0, 0)',
+	                    fontWeight: 'bold'
+	                },
+	                imageStyle: {
+	                    height: '200px',
+	                    width: '200px'
+	                }
+	            },
+	            tilesData: []
+	        };
+	        return _this;
+	    }
+
+	    _createClass(Playlist, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var _this2 = this;
+
+	            _axios2.default.get('/playlist').then(function (res) {
+	                _this2.setState({ tilesData: res.data });
+	                //console.log(res)
+	            });
+	        }
+	    }, {
+	        key: 'itemClicked',
+	        value: function itemClicked(id) {
+	            console.log("Item Clicked: " + id);
+	            _reactRouter.browserHistory.push('/movie/' + id);
+	        }
+	    }, {
+	        key: 'deleteItem',
+	        value: function deleteItem(index) {
+	            var _this3 = this;
+
+	            _axios2.default.delete('/playlist/movie/' + this.state.tilesData[index]._id).then(function (res) {
+	                if (res.data.success === true) {
+	                    return _axios2.default.get('/playlist');
+	                }
+	            }).then(function (res) {
+	                _this3.setState({ tilesData: res.data });
+	                //console.log(res)
+	            });
+	            //console.log("Delete Item Clicked : " + index + " - Movie ID : " + this.state.tilesData[index]._id);
+
+	            // code to delete item from array
+	            /*var newArr = this.state.tilesData.filter(function (itm, i) {
+	                return i !== index;
+	            });
+	            this.setState({ tilesData: newArr });*/
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this4 = this;
+
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                this.state.tilesData.length > 0 ? _react2.default.createElement(
+	                    'div',
+	                    { style: this.state.styles.root },
+	                    _react2.default.createElement(
+	                        _GridList.GridList,
+	                        { className: 'container', style: this.state.styles.gridList, cols: 2.2 },
+	                        this.state.tilesData.map(function (tile, i) {
+	                            return _react2.default.createElement(
+	                                _GridList.GridTile,
+	                                {
+	                                    key: i,
+	                                    title: tile.title,
+	                                    actionIcon: _react2.default.createElement(
+	                                        _IconButton2.default,
+	                                        { onClick: _this4.deleteItem.bind(_this4, i) },
+	                                        _react2.default.createElement(_deleteForever2.default, { color: 'rgb(0, 0, 0)' })
+	                                    ),
+	                                    titleStyle: _this4.state.styles.titleStyle,
+	                                    titleBackground: 'linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)'
+	                                },
+	                                _react2.default.createElement('img', { className: 'grid-img', style: _this4.state.styles.imageStyle, onClick: _this4.itemClicked.bind(_this4, tile._id),
+	                                    src: tile.image === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.image })
+	                            );
+	                        })
+	                    )
+	                ) : _react2.default.createElement(
+	                    _Card.Card,
+	                    { className: 'container' },
+	                    _react2.default.createElement(_Card.CardTitle, { title: 'My Playlist', subtitle: 'No Movies in your playlist' })
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Playlist;
+	}(_react2.default.Component);
+
+	exports.default = Playlist;
+
+/***/ },
 /* 489 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -44032,7 +44196,6 @@
 	        _this2.setState({ reviews: res.data.results });
 	      });
 	      _axios2.default.get('/movies/allreviews/' + this.props.params.id).then(function (res) {
-	        debugger;
 	        _this2.setState({ internalReviews: res.data });
 	      });
 	    }
@@ -44092,6 +44255,22 @@
 
 	var _Subheader2 = _interopRequireDefault(_Subheader);
 
+	var _RaisedButton = __webpack_require__(504);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _Popover = __webpack_require__(536);
+
+	var _Popover2 = _interopRequireDefault(_Popover);
+
+	var _TextField = __webpack_require__(506);
+
+	var _TextField2 = _interopRequireDefault(_TextField);
+
+	var _axios = __webpack_require__(461);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -44103,15 +44282,74 @@
 	var Movie = function (_React$Component) {
 	    _inherits(Movie, _React$Component);
 
-	    function Movie() {
+	    function Movie(props) {
 	        _classCallCheck(this, Movie);
 
-	        return _possibleConstructorReturn(this, (Movie.__proto__ || Object.getPrototypeOf(Movie)).apply(this, arguments));
+	        var _this = _possibleConstructorReturn(this, (Movie.__proto__ || Object.getPrototypeOf(Movie)).call(this, props));
+
+	        _this.state = {
+	            open: false,
+	            intreviews: []
+	        };
+	        _this.addMovie = _this.addMovie.bind(_this);
+	        _this.addReview = _this.addReview.bind(_this);
+	        _this.handleTouchTap = _this.handleTouchTap.bind(_this);
+	        _this.handleRequestClose = _this.handleRequestClose.bind(_this);
+	        return _this;
 	    }
 
 	    _createClass(Movie, [{
+	        key: 'handleTouchTap',
+	        value: function handleTouchTap(event) {
+	            event.preventDefault();
+
+	            this.setState({
+	                open: true,
+	                anchorEl: event.currentTarget
+	            });
+	        }
+	    }, {
+	        key: 'handleRequestClose',
+	        value: function handleRequestClose() {
+	            this.setState({
+	                open: false
+	            });
+	        }
+	    }, {
+	        key: 'addMovie',
+	        value: function addMovie() {
+	            _axios2.default.get('/playlist/addmovie/' + this.props.movie._id).then(function (res) {
+	                if (res.data.success) {
+	                    alert("Movie has been successfully added to your playlist!");
+	                } else {
+	                    alert(res.data.error);
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'addReview',
+	        value: function addReview() {
+	            var _this2 = this;
+
+	            _axios2.default.post('/movies/reviews/add/', { movieId: this.props.movie._id, review: document.getElementById("review").value }).then(function (res) {
+	                if (res.data.success) {
+	                    alert("Your review has been added!");
+	                    var idtmp = new Date();
+	                    _this2.props.intreviews.push({ id: idtmp.getTime(), name: 'Karel', comment: document.getElementById("review").value });
+	                    _this2.setState({ intreviews: _this2.props.intreviews });
+	                } else {
+	                    alert(res.data.error);
+	                }
+	                _this2.setState({
+	                    open: false
+	                });
+	            });
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this3 = this;
+
 	            var styles = {
 	                root: {
 	                    display: 'flex',
@@ -44164,16 +44402,23 @@
 	                intrevs = this.props.intreviews.map(function (rec, i) {
 	                    return _react2.default.createElement(_List.ListItem, {
 	                        key: rec.id,
-	                        primaryText: rec.author,
-	                        secondaryText: rec.content,
+	                        primaryText: rec.name,
+	                        secondaryText: rec.comment,
 	                        secondaryTextLines: 2
 	                    });
 	                });
 	            }
+
 	            return _react2.default.createElement(
 	                _Card.Card,
 	                { style: { width: '70%', margin: '0 auto', color: '#1976d2' } },
-	                _react2.default.createElement(_Card.CardHeader, { title: this.props.movie.title, subtitle: this.props.movie.releaseDate, titleColor: '#00bcd4', titleStyle: { fontSize: '30px', fontWeight: 'bold' } }),
+	                _react2.default.createElement(_Card.CardHeader, { title: this.props.movie.title, subtitle: this.props.movie.releaseDate, titleColor: '#00bcd4', titleStyle: { fontSize: '30px', fontWeight: 'bold' }, children: _react2.default.createElement(
+	                        'a',
+	                        { href: '#', onClick: function onClick() {
+	                                return _this3.addMovie();
+	                            } },
+	                        _react2.default.createElement(_RaisedButton2.default, { label: 'Add To Playlist', primary: true, style: { float: 'right' } })
+	                    ) }),
 	                _react2.default.createElement(
 	                    _Card.CardText,
 	                    null,
@@ -44190,7 +44435,34 @@
 	                            null,
 	                            'Overview'
 	                        ),
-	                        this.props.movie.description
+	                        this.props.movie.description,
+	                        _react2.default.createElement('br', null),
+	                        _react2.default.createElement('br', null),
+	                        _react2.default.createElement(_RaisedButton2.default, { label: 'Write Review', primary: true, onTouchTap: this.handleTouchTap }),
+	                        _react2.default.createElement(
+	                            _Popover2.default,
+	                            {
+	                                open: this.state.open,
+	                                anchorEl: this.state.anchorEl,
+	                                anchorOrigin: { horizontal: 'left', vertical: 'bottom' },
+	                                targetOrigin: { horizontal: 'left', vertical: 'top' },
+	                                onRequestClose: this.handleRequestClose,
+	                                animation: _Popover.PopoverAnimationVertical
+	                            },
+	                            _react2.default.createElement(_TextField2.default, {
+	                                multiLine: true,
+	                                rows: 6,
+	                                rowsMax: 6,
+	                                id: 'review'
+	                            }),
+	                            _react2.default.createElement(
+	                                'a',
+	                                { href: '#', onClick: function onClick() {
+	                                        return _this3.addReview();
+	                                    } },
+	                                _react2.default.createElement(_RaisedButton2.default, { label: 'Submit', primary: true })
+	                            )
+	                        )
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -51778,6 +52050,180 @@
 	NavigationCheck.muiName = 'SvgIcon';
 
 	exports.default = NavigationCheck;
+
+/***/ },
+/* 536 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = exports.PopoverAnimationVertical = exports.Popover = undefined;
+
+	var _Popover2 = __webpack_require__(531);
+
+	var _Popover3 = _interopRequireDefault(_Popover2);
+
+	var _PopoverAnimationVertical2 = __webpack_require__(537);
+
+	var _PopoverAnimationVertical3 = _interopRequireDefault(_PopoverAnimationVertical2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.Popover = _Popover3.default;
+	exports.PopoverAnimationVertical = _PopoverAnimationVertical3.default;
+	exports.default = _Popover3.default;
+
+/***/ },
+/* 537 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(318);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(316);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(321);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(325);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(326);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(401);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Paper = __webpack_require__(402);
+
+	var _Paper2 = _interopRequireDefault(_Paper);
+
+	var _transitions = __webpack_require__(405);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _propTypes = __webpack_require__(404);
+
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context, state) {
+	  var targetOrigin = props.targetOrigin;
+	  var open = state.open;
+	  var muiTheme = context.muiTheme;
+
+	  var horizontal = targetOrigin.horizontal.replace('middle', 'vertical');
+
+	  return {
+	    root: {
+	      position: 'fixed',
+	      zIndex: muiTheme.zIndex.popover,
+	      opacity: open ? 1 : 0,
+	      transform: open ? 'scaleY(1)' : 'scaleY(0)',
+	      transformOrigin: horizontal + ' ' + targetOrigin.vertical,
+	      transition: _transitions2.default.easeOut('450ms', ['transform', 'opacity']),
+	      maxHeight: '100%'
+	    }
+	  };
+	}
+
+	var PopoverAnimationVertical = function (_Component) {
+	  (0, _inherits3.default)(PopoverAnimationVertical, _Component);
+
+	  function PopoverAnimationVertical() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, PopoverAnimationVertical);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = PopoverAnimationVertical.__proto__ || (0, _getPrototypeOf2.default)(PopoverAnimationVertical)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      open: false
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(PopoverAnimationVertical, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.setState({ open: true }); // eslint-disable-line react/no-did-mount-set-state
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.setState({
+	        open: nextProps.open
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          className = _props.className,
+	          style = _props.style,
+	          zDepth = _props.zDepth;
+
+
+	      var styles = getStyles(this.props, this.context, this.state);
+
+	      return _react2.default.createElement(
+	        _Paper2.default,
+	        {
+	          style: (0, _simpleAssign2.default)(styles.root, style),
+	          zDepth: zDepth,
+	          className: className
+	        },
+	        this.props.children
+	      );
+	    }
+	  }]);
+	  return PopoverAnimationVertical;
+	}(_react.Component);
+
+	PopoverAnimationVertical.defaultProps = {
+	  style: {},
+	  zDepth: 1
+	};
+	PopoverAnimationVertical.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? PopoverAnimationVertical.propTypes = {
+	  children: _react.PropTypes.node,
+	  className: _react.PropTypes.string,
+	  open: _react.PropTypes.bool.isRequired,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  targetOrigin: _propTypes2.default.origin.isRequired,
+	  zDepth: _propTypes2.default.zDepth
+	} : void 0;
+	exports.default = PopoverAnimationVertical;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }
 /******/ ]);

@@ -62,17 +62,14 @@ redisConnection.on('remove-review:*', (data, channel) => {
 
 //GET MOVIE DETAILS WORKER
 redisConnection.on('get-details:*', (data, channel) => {
-    console.log("in movie details");
     let messageId = data.requestId;
     let movieId = data.movieId;
-    console.log(movieId);
     let entryExists = client.getAsync(movieId);
     entryExists.then((movieInfo) => {
         if (movieInfo) { //retrieve cached data
             redisConnection.emit(`details-retrieved:${messageId}`, JSON.parse(movieInfo));
         }
         else { //retrieve from db
-            console.log("getting from db");
             let fullyComposeMovie = apiData
                 .getMovieDetails(movieId)
                 .then((details) => {

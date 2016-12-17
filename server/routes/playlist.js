@@ -61,15 +61,15 @@ router.get("/", (req, res) => {
                     }
                 }
             }
+            else {
+                playlist.playlistMovies = [];
+            }
 
             var file = __dirname + '/../public/json/playlist_file.json';
             jsonfile.writeFile(file, playlist.playlistMovies, { spaces: 2 }, function (err) {
                 console.log("Data Written to file");
             })
 
-            else {
-                playlist.playlistMovies = [];
-            }
 
             res.json(playlist.playlistMovies);
         }else{
