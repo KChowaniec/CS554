@@ -60,7 +60,7 @@ class Movie extends React.Component {
                 {
                     alert("Your review has been added!");
                     var idtmp = new Date();
-                    this.props.intreviews.push({id:idtmp.getTime(),name:'Karel',comment:document.getElementById("review").value})
+                    this.props.intreviews.push({id:idtmp.getTime(),name:decodeURI(res.data.result.name),comment:document.getElementById("review").value})
                     this.setState({intreviews:this.props.intreviews});
                 }
                 else{
@@ -120,7 +120,7 @@ class Movie extends React.Component {
                 return (
                     <ListItem
                       key={rec.id}
-                      primaryText={rec.name}
+                      primaryText={decodeURI(rec.name)}
                       secondaryText={rec.comment}
                       secondaryTextLines={2}
                     />
