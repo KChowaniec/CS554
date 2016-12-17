@@ -21,6 +21,7 @@ var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 router.get('/user/authorized', function (req, res) {
     // check header parameters for token
     var token = req.session.token;
+    console.log(token);
     // decode token
     if (token) {
         // verifies secret
@@ -29,7 +30,7 @@ router.get('/user/authorized', function (req, res) {
                 return res.json({ authorized: false });
             } else {
                 //make sure token exists in session
-                if (req.session && req.session.token === token) {
+                if (req.session) {
                     return res.json({ authorized: true });
                 }
                 else {

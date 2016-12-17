@@ -34648,11 +34648,13 @@
 
 /***/ },
 /* 391 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	// var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+	var loggedIn = false;
+	var axios = __webpack_require__(461);
 
 	module.exports = {
 	  login: function login(username, password, cb) {
@@ -34707,13 +34709,30 @@
 	    this.onChange(false);
 	  },
 
+	  setLogin: function setLogin() {
+	    loggedIn = true;
+	  },
+	  unsetLogin: function unsetLogin() {
+	    loggedIn: false;
+	  },
+
+
 	  loggedIn: function loggedIn() {
-	    // var requestConfig = {
-	    //   method: "GET",
-	    //   url: "/user/authorized",
-	    //   contentType: 'application/json'
-	    // };
-	    // console.log(localStorage.token);
+	    return !!localStorage.token;
+	    //  axios.get('/user/authorized').then(res => {
+	    //   //  let data = JSON.parse(res.data);
+	    //    let data = res.data;
+	    //    console.log(data.authorized);
+	    //   //    console.log(localStorage.token);
+	    //      if(data.authorized && localStorage.token){
+	    //        return true;
+	    //      }
+	    //      else{
+	    //        return false;
+	    //      }
+	    //   //  return !!localStorage.token
+	    // });
+
 	    // $.ajax(requestConfig).then((response) => {
 	    //   console.log(response);
 	    //   if (response.authorized && localStorage.token) {
@@ -34723,7 +34742,7 @@
 	    //     return false;
 	    //   }
 	    // });
-	    return !!localStorage.token;
+	    //return !!localStorage.token
 	  },
 
 	  onChange: function onChange() {}

@@ -1,4 +1,6 @@
 // var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+var loggedIn = false;
+var axios = require('axios');
 
 module.exports = {
   login(username, password, cb) {
@@ -49,13 +51,30 @@ module.exports = {
     this.onChange(false)
   },
 
+  setLogin() {
+    loggedIn = true;
+  },
+
+  unsetLogin(){
+    loggedIn: false;
+  },
+
   loggedIn: function () {
-    // var requestConfig = {
-    //   method: "GET",
-    //   url: "/user/authorized",
-    //   contentType: 'application/json'
-    // };
-    // console.log(localStorage.token);
+    return !!localStorage.token
+    //  axios.get('/user/authorized').then(res => {
+    //   //  let data = JSON.parse(res.data);
+    //    let data = res.data;
+    //    console.log(data.authorized);
+  //   //    console.log(localStorage.token);
+  //      if(data.authorized && localStorage.token){
+  //        return true;
+  //      }
+  //      else{
+  //        return false;
+  //      }
+  //   //  return !!localStorage.token
+  // });
+   
     // $.ajax(requestConfig).then((response) => {
     //   console.log(response);
     //   if (response.authorized && localStorage.token) {
@@ -65,7 +84,7 @@ module.exports = {
     //     return false;
     //   }
     // });
-    return !!localStorage.token
+    //return !!localStorage.token
   },
 
 
@@ -140,3 +159,4 @@ function registerRequest(username, password, confirm, email, name, cb) {
     }
   });
 }
+

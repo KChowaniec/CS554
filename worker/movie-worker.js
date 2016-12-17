@@ -22,12 +22,12 @@ const redisConnection = new NRP(config); // This is the NRP client
 
 //GET ALL REVIEWS FOR MOVIE WORKER
 redisConnection.on('get-all-reviews:*', (data, channel) => {
-    var messageId = data.requestId;
-    var movieId = data.movieId;
+    let messageId = data.requestId;
+    let movieId = data.movieId;
     //get all reviews
-    var fullyComposeMovie = movieData.getAllReviews(movieId).then((reviews) => {
-        redisConnection.emit(`all-reviews-retrieved:${messageId}`, reviews);
-    }).catch(error => {
+    let fullyComposeMovie = movieData.getAllReviews(movieId).then((reviews) => {
+            redisConnection.emit(`all-reviews-retrieved:${messageId}`, reviews);
+         }).catch(error => {
         redisConnection.emit(`all-reviews-retrieved-failed:${messageId}`, error);
     });
 });
@@ -35,12 +35,12 @@ redisConnection.on('get-all-reviews:*', (data, channel) => {
 
 //ADD REVIEW TO MOVIE
 redisConnection.on('add-review:*', (data, channel) => {
-    var messageId = data.requestId;
-    var userId = data.userId;
-    var movieId = data.movieId;
-    var reviewData = data.reviewData;
-    reviewData.date = new Date();
-    var postReview = movieData.addReviewToMovie(movieId, userId, reviewData.rating, reviewData.date, reviewData.comment);
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let movieId = data.movieId;
+    let reviewData = data.reviewData;
+    let commentdate = new Date();
+    var postReview = movieData.addReviewToMovie(movieId, userId,commentdate, reviewData);
     postReview.then((movieInfo) => {
         redisConnection.emit(`added-review:${messageId}`, movieInfo);
     }).catch(error => {
@@ -50,13 +50,13 @@ redisConnection.on('add-review:*', (data, channel) => {
 
 //REMOVE REVIEW FROM MOVIE 
 redisConnection.on('remove-review:*', (data, channel) => {
-    var messageId = data.requestId;
-    var movieId = data.movieId;
-    var reviewId = data.reviewId;
-    var removeReview = movieData.removeReviewByReviewId(movieId, reviewId).then((movie) => {
-        redisConnection.emit(`removed-review:${messageId}`, movie);
-    }).catch(error => {
-        redisConnection.emit(`removed-review-failed:${messageId}`, error);
+    let messageId = data.requestId;
+    let movieId = data.movieId;
+    let reviewId = data.reviewId;
+    let removeReview = movieData.removeReviewByReviewId(movieId, reviewId).then((movie) => {
+            redisConnection.emit(`removed-review:${messageId}`, movie);
+        }).catch(error => {
+            redisConnection.emit(`removed-review-failed:${messageId}`, error);
     });
 });
 
@@ -73,8 +73,7 @@ redisConnection.on('get-details:*', (data, channel) => {
             let fullyComposeMovie = apiData
                 .getMovieDetails(movieId)
                 .then((details) => {
-                    console.log(details);
-                    let cacheMovie = client.setAsync(movieId, JSON.stringify(details));
+                    let cacheMovie = client.setAsync(movieId,JSON.stringify(details));
                     cacheMovie.then(() => {
                         redisConnection.emit(`details-retrieved:${messageId}`, details);
                     }).catch(error => {
@@ -88,9 +87,9 @@ redisConnection.on('get-details:*', (data, channel) => {
 });
 
 redisConnection.on('get-recommendations:*', (data, channel) => {
-    var movieId = data.movieId;
-    var messageId = data.requestId;
-    var fullyComposeMovie = apiData
+    let movieId = data.movieId;
+    let messageId = data.requestId;
+    let fullyComposeMovie = apiData
         .getMovieRecommendations(movieId)
         .then((movies) => {
             redisConnection.emit(`recommendations-retrieved:${messageId}`, movies);
@@ -102,9 +101,9 @@ redisConnection.on('get-recommendations:*', (data, channel) => {
 
 //GET REVIEWS FROM API
 redisConnection.on('get-reviews:*', (data, channel) => {
-    var movieId = data.movieId;
-    var messageId = data.requestId;
-    var fullyComposeMovie = apiData
+    let movieId = data.movieId;
+    let messageId = data.requestId;
+    let fullyComposeMovie = apiData
         .getMovieReviews(movieId)
         .then((movies) => {
             redisConnection.emit(`reviews-retrieved:${messageId}`, movies);
