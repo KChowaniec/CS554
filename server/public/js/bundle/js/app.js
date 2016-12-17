@@ -34457,18 +34457,13 @@
 	// import HomePage from './containers/HomePage.js';
 
 	function redirectToLogin(nextState, replace) {
-	  //   return axios.get('/user/authorized').then(res => {
-	  //      let data = res.data;
-	  //      console.log(data.authorized);
-	  //      console.log(auth.loggedIn());
-	  //      if(!data.authorized ||!auth.loggedIn()) {
-	  //        console.log("should redirect");
-	  //        replace('/login')
-	  //      }
-	  // });
-	  if (!_auth2.default.loggedIn()) {
-	    replace('/login');
-	  }
+	  var reacThis = this;
+	  _axios2.default.get('/user/authorized').then(function (res) {
+	    var data = res.data;
+	    if (!data.authorized || !_auth2.default.loggedIn()) {
+	      _reactRouter.browserHistory.push('/login');
+	    }
+	  });
 	}
 
 	function replaceWithHome(nextState, replace) {
@@ -34530,6 +34525,12 @@
 	    path: '/account',
 	    component: _AccountPage2.default,
 	    onEnter: redirectToLogin
+	  },
+
+	  //match any other routes - redirect to home page
+	  {
+	    path: '/*',
+	    onEnter: replaceWithHome
 	  }]
 	};
 
