@@ -142,7 +142,7 @@ router.get('/reviews/:id', function (req, res) {
 router.post("/reviews/add/", (req, res) => {
     let movieId = req.body.movieId;
 	let reviewData = xss(req.body.review);
-    let userId = req.session.userId;
+    let userId = req.session.name;
     let redisConnection = req
         .app
         .get("redis");
