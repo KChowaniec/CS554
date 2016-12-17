@@ -1,11 +1,12 @@
 import React from 'react';
-import { Card, CardTitle } from 'material-ui/Card';
+import { Card, CardTitle, CardText } from 'material-ui/Card';
 import { browserHistory, Router, Route, Link, withRouter } from 'react-router'
 import { GridList, GridTile } from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 import axios from 'axios';
+import RaisedButton from 'material-ui/RaisedButton';
 import PlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 import PlaylistAddCheck from 'material-ui/svg-icons/av/playlist-add-check';
 import AutoComplete from 'material-ui/AutoComplete';
@@ -404,7 +405,8 @@ class SearchBar extends React.Component {
                                 onChange={this.handleGenreChange} />
                         </div>
                         <div className="button-line">
-                            <input type="submit" placeholder="Search" />
+                           <RaisedButton type="submit" label="Submit" primary />
+                            <CardText>Save preferences? <RaisedButton type="button" label="Save" secondary /></CardText>
                         </div>
                         
                     </form>

@@ -34414,7 +34414,7 @@
 
 	var _HomePage2 = _interopRequireDefault(_HomePage);
 
-	var _Playlist = __webpack_require__(488);
+	var _Playlist = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/Playlist.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 	var _Playlist2 = _interopRequireDefault(_Playlist);
 
@@ -34834,6 +34834,10 @@
 	var _axios = __webpack_require__(461);
 
 	var _axios2 = _interopRequireDefault(_axios);
+
+	var _RaisedButton = __webpack_require__(504);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
 	var _playlistAdd = __webpack_require__(486);
 
@@ -35264,7 +35268,13 @@
 	                        _react2.default.createElement(
 	                            'div',
 	                            { className: 'button-line' },
-	                            _react2.default.createElement('input', { type: 'submit', placeholder: 'Search' })
+	                            _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Submit', primary: true }),
+	                            _react2.default.createElement(
+	                                _Card.CardText,
+	                                null,
+	                                'Save preferences? ',
+	                                _react2.default.createElement(_RaisedButton2.default, { type: 'button', label: 'Save', secondary: true })
+	                            )
 	                        )
 	                    )
 	                ),
@@ -43956,171 +43966,7 @@
 	exports.default = AvPlaylistAddCheck;
 
 /***/ },
-/* 488 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _Card = __webpack_require__(393);
-
-	var _GridList = __webpack_require__(455);
-
-	var _IconButton = __webpack_require__(421);
-
-	var _IconButton2 = _interopRequireDefault(_IconButton);
-
-	var _starBorder = __webpack_require__(459);
-
-	var _starBorder2 = _interopRequireDefault(_starBorder);
-
-	var _deleteForever = __webpack_require__(460);
-
-	var _deleteForever2 = _interopRequireDefault(_deleteForever);
-
-	var _axios = __webpack_require__(461);
-
-	var _axios2 = _interopRequireDefault(_axios);
-
-	var _reactRouter = __webpack_require__(334);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Playlist = function (_React$Component) {
-	    _inherits(Playlist, _React$Component);
-
-	    function Playlist(props) {
-	        _classCallCheck(this, Playlist);
-
-	        // set the initial component state
-	        var _this = _possibleConstructorReturn(this, (Playlist.__proto__ || Object.getPrototypeOf(Playlist)).call(this, props));
-
-	        _this.state = {
-	            styles: {
-	                root: {
-	                    display: 'flex',
-	                    flexWrap: 'wrap',
-	                    justifyContent: 'space-around'
-	                },
-	                gridList: {
-	                    display: 'flex',
-	                    flexWrap: 'nowrap',
-	                    overflowX: 'auto'
-	                },
-	                titleStyle: {
-	                    color: 'rgb(0, 0, 0)',
-	                    fontWeight: 'bold'
-	                },
-	                imageStyle: {
-	                    height: '200px',
-	                    width: '200px'
-	                }
-	            },
-	            tilesData: []
-	        };
-	        return _this;
-	    }
-
-	    _createClass(Playlist, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            var _this2 = this;
-
-	            _axios2.default.get('/playlist').then(function (res) {
-	                _this2.setState({ tilesData: res.data });
-	                //console.log(res)
-	            });
-	        }
-	    }, {
-	        key: 'itemClicked',
-	        value: function itemClicked(id) {
-	            console.log("Item Clicked: " + id);
-	            _reactRouter.browserHistory.push('/movie/' + id);
-	        }
-	    }, {
-	        key: 'deleteItem',
-	        value: function deleteItem(index) {
-	            var _this3 = this;
-
-	            _axios2.default.delete('/playlist/movie/' + this.state.tilesData[index]._id).then(function (res) {
-	                if (res.data.success === true) {
-	                    return _axios2.default.get('/playlist');
-	                }
-	            }).then(function (res) {
-	                _this3.setState({ tilesData: res.data });
-	                //console.log(res)
-	            });
-	            //console.log("Delete Item Clicked : " + index + " - Movie ID : " + this.state.tilesData[index]._id);
-
-	            // code to delete item from array
-	            /*var newArr = this.state.tilesData.filter(function (itm, i) {
-	                return i !== index;
-	            });
-	            this.setState({ tilesData: newArr });*/
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this4 = this;
-
-	            return _react2.default.createElement(
-	                'div',
-	                null,
-	                this.state.tilesData.length > 0 ? _react2.default.createElement(
-	                    'div',
-	                    { style: this.state.styles.root },
-	                    _react2.default.createElement(
-	                        _GridList.GridList,
-	                        { className: 'container', style: this.state.styles.gridList, cols: 2.2 },
-	                        this.state.tilesData.map(function (tile, i) {
-	                            return _react2.default.createElement(
-	                                _GridList.GridTile,
-	                                {
-	                                    key: i,
-	                                    title: tile.title,
-	                                    actionIcon: _react2.default.createElement(
-	                                        _IconButton2.default,
-	                                        { onClick: _this4.deleteItem.bind(_this4, i) },
-	                                        _react2.default.createElement(_deleteForever2.default, { color: 'rgb(0, 0, 0)' })
-	                                    ),
-	                                    titleStyle: _this4.state.styles.titleStyle,
-	                                    titleBackground: 'linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)'
-	                                },
-	                                _react2.default.createElement('img', { className: 'grid-img', style: _this4.state.styles.imageStyle, onClick: _this4.itemClicked.bind(_this4, tile._id),
-	                                    src: tile.image === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.image })
-	                            );
-	                        })
-	                    )
-	                ) : _react2.default.createElement(
-	                    _Card.Card,
-	                    { className: 'container' },
-	                    _react2.default.createElement(_Card.CardTitle, { title: 'My Playlist', subtitle: 'No Movies in your playlist' })
-	                )
-	            );
-	        }
-	    }]);
-
-	    return Playlist;
-	}(_react2.default.Component);
-
-	exports.default = Playlist;
-
-/***/ },
+/* 488 */,
 /* 489 */
 /***/ function(module, exports, __webpack_require__) {
 
