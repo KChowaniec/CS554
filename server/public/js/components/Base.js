@@ -53,8 +53,4 @@ const Base = React.createClass({
 
 })
 
-Base.propTypes = {
-  children: PropTypes.object.isRequired
-};
-
 export default Base;

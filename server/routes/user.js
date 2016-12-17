@@ -17,49 +17,41 @@ var passport = require('passport');
 const uuid = require("node-uuid");
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
-// router.get("/user/authorized", function (req, res) {
-//     var token = req.session.token;
-//     // decode token
-//     if (token) {
-//         // verifies secret
-//         jwt.verify(token, 'secretkey', function (err, decoded) {
-//             if (err) {
-//                 return res.status(500).json({
-//                     success: false
-//                 });
-//             } else {
-//                 //make sure token exists in session
-//                 if (req.session && req.session.token === token) {
-//                     return res.status(200).json({
-//                         success: true
-//                     });
-//                 }
-//                 else {
-//                     return res.status(500).json({
-//                         success: false
-//                     });
-//                 }
-//             }
-//         });
 
-//     } else {
-//         // if there is no token
-//         console.log("no token");
-//         return res.status(500).json({
-//             success: false
-//         });
-//     }
-// });
+router.get('/user/authorized', function (req, res) {
+    // check header parameters for token
+    var token = req.session.token;
+    // decode token
+    if (token) {
+        // verifies secret
+        jwt.verify(token, 'secretkey', function (err, decoded) {
+            if (err) {
+                return res.json({ authorized: false });
+            } else {
+                //make sure token exists in session
+                if (req.session && req.session.token === token) {
+                    return res.json({ authorized: true });
+                }
+                else {
+                    return res.json({ authorized: false });
+                }
+            }
+        });
 
+    } else {
+        // if there is no token
+        return res.json({ authorized: false });
+    }
+});
 
 //get all users
 router.get('/users', function (req, res) {
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
 
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`users-retrieved:${messageId}`, (retrievedUsers, channel) => {
         redisConnection.off(`users-retrieved:${messageId}`);
@@ -67,7 +59,7 @@ router.get('/users', function (req, res) {
 
         clearTimeout(killswitchTimeoutId);
 
-        res.status(200).send(retrievedusers);
+        return res.json({ success: true, users: retrievedusers });
     });
 
     redisConnection.on(`users-retrieved-failed:${messageId}`, (error, channel) => {
@@ -75,7 +67,10 @@ router.get('/users', function (req, res) {
         redisConnection.off(`users-retrieved-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        res.status(500).json(error);
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -93,13 +88,13 @@ router.get('/users', function (req, res) {
 
 //LOG OUT
 router.get('/logout', function (req, res) {
-    let userId = req.session.userId;
-    let sessionData = req.session;
-    let redisConnection = req
+    var userId = req.session.userId;
+    var sessionData = req.session;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`logged-out:${messageId}`, (deletedUser, channel) => {
@@ -109,6 +104,7 @@ router.get('/logout', function (req, res) {
         clearTimeout(killswitchTimeoutId);
         if (deletedUser) {
             req.session.destroy();
+            return res.json({ success: true });
         }
     });
 
@@ -117,9 +113,10 @@ router.get('/logout', function (req, res) {
         redisConnection.off(`logout-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        res
-            .status(500)
-            .json(error);
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -139,27 +136,29 @@ router.get('/logout', function (req, res) {
 
 //post user registration
 router.post('/user/register', function (req, res) {
-    let username = req.body.username;
-    let password = req.body.password;
-    let confirmedPassword = req.body.confirm;
-    let name = req.body.name;
-    let email = req.body.email;
-    let redisConnection = req
+    var username = xss(req.body.username);
+    var password = xss(req.body.password);
+    var confirmedPassword = xss(req.body.confirm);
+    var name = xss(req.body.name);
+    var email = xss(req.body.email);
+    var redisConnection = req
         .app
         .get("redis");
 
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
-    redisConnection.on(`user-registered:${messageId}`, (registeredUserId, channel) => {
+    redisConnection.on(`user-registered:${messageId}`, (registeredUser, channel) => {
 
         redisConnection.off(`user-registered:${messageId}`);
         redisConnection.off(`user-registered-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        if (registeredUserId) {
-            req.session.userId = registeredUserId;
-            res.status(200).json({ success: true });
+        if (registeredUser) {
+            req.session.userId = registeredUser._id;
+            req.session.name = registeredUser.name;
+            req.session.token = jwt.sign(registeredUser, 'secretkey');
+            return res.json({ success: true, token: req.session.token });
         }
     });
 
@@ -168,11 +167,8 @@ router.post('/user/register', function (req, res) {
         redisConnection.off(`user-registered-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        console.log("registration failed");
-        console.log(error);
-        return res.status(400).json({
+        return res.json({
             success: false,
-            message: error,
             errors: error
         });
 
@@ -200,12 +196,12 @@ router.post('/user/register', function (req, res) {
 //get user information
 router.get('/user', function (req, res) {
 
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let userId = req.session.userId;
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var userId = req.session.userId;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`user-retrieved:${messageId}`, (retrievedUser, channel) => {
 
@@ -213,6 +209,9 @@ router.get('/user', function (req, res) {
         redisConnection.off(`user-retrieved-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+        if (retrievedUser) {
+            return res.json({ success: true, user: JSON.stringify(retrievedUser) });
+        }
     });
 
     redisConnection.on(`user-retrieved-failed:${messageId}`, (error, channel) => {
@@ -220,9 +219,10 @@ router.get('/user', function (req, res) {
         redisConnection.off(`user-retrieved-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        res
-            .status(500)
-            .json(error);
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -241,15 +241,15 @@ router.get('/user', function (req, res) {
 
 
 //update user
-router.put('/users/:id', function (req, res) {
-    let userId = req.params.id;
-    let newData = req.body;
-    let redisConnection = req
+router.put('/user', function (req, res) {
+    var userId = req.session.userId;
+    var newData = xss(req.body);
+    var redisConnection = req
         .app
         .get("redis");
 
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`user-updated:${messageId}`, (updatedUser, channel) => {
@@ -257,7 +257,7 @@ router.put('/users/:id', function (req, res) {
         redisConnection.off(`user-updated-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        res.status(200).send(updatedUser);
+        return res.json({ success: true, user: updatedUser });
     });
 
     redisConnection.on(`user-updated-failed:${messageId}`, (error, channel) => {
@@ -265,9 +265,10 @@ router.put('/users/:id', function (req, res) {
         redisConnection.off(`user-updated-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        res
-            .status(500)
-            .json(error);
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -295,25 +296,23 @@ router.post('/user/login', function (req, res, next) {
             });
         }
         else {
-            let redisConnection = req
+            var redisConnection = req
                 .app
                 .get("redis");
-            let messageId = uuid.v4();
-            let killswitchTimeoutId = undefined;
+            var messageId = uuid.v4();
+            var killswitchTimeoutId = undefined;
             //add data to session object
             req.session.token = user.token;
             req.session.userId = user._id;
-            let sessionData = req.session;
-
-            console.log("In User Routes");
-            console.log("User Id From Session : " + req.session.userId);
+            req.session.name = user.profile.name;
+            var sessionData = req.session;
             redisConnection.on(`logged-in:${messageId}`, (sessionData, channel) => {
                 redisConnection.off(`logged-in:${messageId}`);
                 redisConnection.off(`login-failed:${messageId}`);
 
                 clearTimeout(killswitchTimeoutId);
                 if (sessionData) {
-                    return res.status(200).json({ success: true, token: sessionData.token });
+                    return res.json({ success: true, token: sessionData.token });
                 }
             });
 
@@ -322,7 +321,7 @@ router.post('/user/login', function (req, res, next) {
                 redisConnection.off(`login-failed:${messageId}`);
 
                 clearTimeout(killswitchTimeoutId);
-                return res.status(400).json({
+                return res.json({
                     success: false,
                     message: error,
                     errors: error
@@ -344,6 +343,46 @@ router.post('/user/login', function (req, res, next) {
         }
     })(req, res, next);
 });
+
+// //get user's password
+// router.get('/forgot/:username', function (req, res) {
+
+//     let redisConnection = req
+//         .app
+//         .get("redis");
+//     let username = req.params.username;
+//     let messageId = uuid.v4();
+//     let killswitchTimeoutId = undefined;
+
+//     redisConnection.on(`user-retrieved:${messageId}`, (retrievedUser, channel) => {
+
+//         redisConnection.off(`user-retrieved:${messageId}`);
+//         redisConnection.off(`user-retrieved-failed:${messageId}`);
+
+//         clearTimeout(killswitchTimeoutId);
+//     });
+
+//     redisConnection.on(`user-retrieved-failed:${messageId}`, (error, channel) => {
+//         redisConnection.off(`user-retrieved:${messageId}`);
+//         redisConnection.off(`user-retrieved-failed:${messageId}`);
+
+//         clearTimeout(killswitchTimeoutId);
+//         res.json(error);
+//     });
+
+//     killswitchTimeoutId = setTimeout(() => {
+//         redisConnection.off(`user-retrieved:${messageId}`);
+//         redisConnection.off(`user-retrieved-failed:${messageId}`);
+//         res
+//             .status(500)
+//             .json({ error: "Timeout error" })
+//     }, 5000);
+
+//     redisConnection.emit(`get-user:${messageId}`, {
+//         requestId: messageId,
+//         userId: userId
+//     });
+// });
 
 
 //post user update email
@@ -825,3 +864,4 @@ router.post('/user/login', function (req, res, next) {
 // });
 
 module.exports = router;
+

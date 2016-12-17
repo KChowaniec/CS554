@@ -20,9 +20,10 @@ const redisConnection = new NRP(config); // This is the NRP client
 
 //QUERY STRING FOR MOVIE API WORKER
 redisConnection.on('create-query:*', (data, channel) => {
-    let messageId = data.requestId;
-    let query = data.query;
-    let title = data.title;
+    var messageId = data.requestId;
+    console.log('received message @create-query with message id : ' + messageId);
+    var query = data.query;
+    var title = data.title;
     //helper functions
     var fn = function getId(name) {
         return new Promise((fulfill, reject) => {
@@ -61,7 +62,7 @@ redisConnection.on('create-query:*', (data, channel) => {
 
     //wait until all values are retrieved
     Promise.all([crewIds, actorIds, wordIds]).then(values => {
-        let crewList, actorList = [], keywordList = [];
+        var crewList, actorList = [], keywordList = [];
         if (values[0]) {
             crewList = values[0];
         }
@@ -74,13 +75,24 @@ redisConnection.on('create-query:*', (data, channel) => {
         }
         if (title) {
             //SEARCH BY MOVIE TITLE
-            let criteriaString = "title=" + title;
+            //console.log('emitting message @create-query with message id : ' + messageId);
+            var criteriaString = "title=" + title;
             redisConnection.emit(`query-created:${messageId}`, criteriaString);
         }
         else {
             //SEARCH BY CRITERIA
-            let criteriaString = formData.createQueryString(actorList, query.genre, crewList, query.rating, query.evaluation, query.year, keywordList);
-            redisConnection.emit(`query-created:${messageId}`, criteriaString);
+            try{
+                console.log('@ create-query : Search by criteria');
+
+                var criteriaString = formData.createQueryString(actorList, query.genre, crewList, query.rating, query.evaluation, query.year, keywordList);
+                
+                console.log('@ Criteria string : ' + criteriaString);
+                
+                redisConnection.emit(`query-created:${messageId}`, criteriaString);
+            }catch(e){
+                console.log('Error : ' + e );
+            }
+            
         }
     }).catch(error => {
         redisConnection.emit(`query-created-failed:${messageId}`, error);
@@ -89,18 +101,20 @@ redisConnection.on('create-query:*', (data, channel) => {
 
 //SEARCH MOVIES API WORKER
 redisConnection.on('search-movies:*', (data, channel) => {
-    let messageId = data.requestId;
-    let pageId = data.page;
-    let queryString = data.queryString;
-    let title = data.title;
+    console.log('in search worker function');
+    var messageId = data.requestId;
+    var pageId = data.page;
+    var queryString = data.queryString;
+    var title = data.title;
 
-    if (title !== undefined) { //search by title
-        let result = apiData.searchByTitle(title, pageId);
+    if (title !== undefined && title != "") { //search by title
+        console.log('Search by title');
+        var result = apiData.searchByTitle(title, pageId);
         result.then((movies) => {
-            let movielist = formData.formatReleaseDate(movies.results);
-            let total = movies.total_results;
-            let pages = movies.total_pages;
-            let movieObj = {
+            var movielist = formData.formatReleaseDate(movies.results);
+            var total = movies.total_results;
+            var pages = movies.total_pages;
+            var movieObj = {
                 movielist: movielist,
                 total: total,
                 pages: pages
@@ -111,18 +125,21 @@ redisConnection.on('search-movies:*', (data, channel) => {
         });
     }
     else { //search by criteria
-        let result = apiData.searchByCriteria(queryString, pageId);
+        console.log('Search by criteria');
+        var result = apiData.searchByCriteria(queryString, pageId);
         result.then((movies) => {
-            let pages = movies.total_pages;
-            let movielist = formData.formatReleaseDate(movies.results);
-            let total = movies.total_results;
-            let movieObj = {
+            var pages = movies.total_pages;
+            var movielist = formData.formatReleaseDate(movies.results);
+            var total = movies.total_results;
+            var movieObj = {
                 movielist: movielist,
                 total: total,
                 pages: pages
             };
+            console.log('Result : ' + movieObj);
             redisConnection.emit(`movies-retrieved:${messageId}`, movieObj);
         }).catch(error => {
+            console.log('Error : ' + error);
             redisConnection.emit(`movies-retrieved-failed:${messageId}`, error);
         });
     }
@@ -130,9 +147,9 @@ redisConnection.on('search-movies:*', (data, channel) => {
 
 //GET KEYWORD IDS API WORKER
 redisConnection.on('get-keyword:*', (data, channel) => {
-    let messageId = data.requestId;
-    let keywordName = data.keyword;
-    let fullyComposeSearch = apiData
+    var messageId = data.requestId;
+    var keywordName = data.keyword;
+    var fullyComposeSearch = apiData
         .searchKeywordsByName(keywordName)
         .then((keyId) => {
             redisConnection.emit(`keyword-retrieved:${messageId}`, keyId);
@@ -143,9 +160,9 @@ redisConnection.on('get-keyword:*', (data, channel) => {
 
 //GET PEOPLE IDS API WORKER
 redisConnection.on('get-person:*', (data, channel) => {
-    let messageId = data.requestId;
-    let personName = data.person;
-    let fullyComposeSearch = apiData
+    var messageId = data.requestId;
+    var personName = data.person;
+    var fullyComposeSearch = apiData
         .searchPersonByName(personName)
         .then((personId) => {
             redisConnection.emit(`person-retrieved:${messageId}`, personId);

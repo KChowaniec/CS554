@@ -1,3 +1,5 @@
+// var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+
 module.exports = {
   login(username, password, cb) {
     cb = arguments[arguments.length - 1]
@@ -48,8 +50,24 @@ module.exports = {
   },
 
   loggedIn: function () {
+    // var requestConfig = {
+    //   method: "GET",
+    //   url: "/user/authorized",
+    //   contentType: 'application/json'
+    // };
+    // console.log(localStorage.token);
+    // $.ajax(requestConfig).then((response) => {
+    //   console.log(response);
+    //   if (response.authorized && localStorage.token) {
+    //     return true;
+    //   }
+    //   else {
+    //     return false;
+    //   }
+    // });
     return !!localStorage.token
   },
+
 
   onChange: function () { }
 }
@@ -115,8 +133,10 @@ function registerRequest(username, password, confirm, email, name, cb) {
       })
     } else {
       cb({
-        authenticated: false
+        authenticated: false,
+
       })
+      //return responseMessage.errors;
     }
   });
 }

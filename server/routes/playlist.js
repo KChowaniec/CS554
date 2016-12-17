@@ -28,51 +28,64 @@ router.get('/download', function (req, res) {
 //GET PLAYLIST
 router.get("/", (req, res) => {
     //get playlist information
-    let userId = req.session.userId;
+    console.log('getting all playlist');
+    var userId = req.session.userId;
     // REMOVE IT
     // if(userId === undefined){
     //     userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
     // }
 
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`playlist-retrieved:${messageId}`, (playlist, channel) => {
-        if (playlist) {
+        redisConnection.off(`playlist-retrieved:${messageId}`);
+        redisConnection.off(`playlist-retrieved-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        //console.log('response from get all playlist ');
+        if (playlist && playlist.playlistMovies) {
+            //console.log('Playlist : ' + playlist);
             var viewed = [];
             var unviewed = [];
-            for (var i = 0; i < playlist.playlistMovies.length; i++) {
-                if (playlist.playlistMovies[i].viewed == true) {
-                    viewed.push(playlist.playlistMovies[i]);
-                }
-                else {
-                    unviewed.push(playlist.playlistMovies[i]);
+            if (playlist.playlistMovies) {
+                for (var i = 0; i < playlist.playlistMovies.length; i++) {
+                    if (playlist.playlistMovies[i].viewed == true) {
+                        viewed.push(playlist.playlistMovies[i]);
+                    }
+                    else {
+                        unviewed.push(playlist.playlistMovies[i]);
+                    }
                 }
             }
+
             var file = __dirname + '/../public/json/playlist_file.json';
             jsonfile.writeFile(file, playlist.playlistMovies, { spaces: 2 }, function (err) {
                 console.log("Data Written to file");
             })
 
-            res.json(playlist.playlistMovies);
-        }
-        redisConnection.off(`playlist-retrieved:${messageId}`);
-        redisConnection.off(`playlist-retrieved-failed:${messageId}`);
+            else {
+                playlist.playlistMovies = [];
+            }
 
-        clearTimeout(killswitchTimeoutId);
+            res.json(playlist.playlistMovies);
+        }else{
+            res.json([]);
+        }
     });
 
     redisConnection.on(`playlist-retrieved-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json(error);
         redisConnection.off(`playlist-retrieved:${messageId}`);
         redisConnection.off(`playlist-retrieved-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+           return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -93,35 +106,40 @@ router.get("/", (req, res) => {
 //CLEAR PLAYLIST
 router.delete("/:playlistId", (req, res) => {
     //method to clear out playlist
-    let playlistId = req.params.playlistId
-    let redisConnection = req
+    var playlistId = req.params.playlistId
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`playlist-cleared:${messageId}`, (playlist, channel) => {
-        if (playlist) {
-            res.json({ success: true });
-        }
-        else {
-            res.json({ success: false, error: error });
-        }
+
         redisConnection.off(`playlist-cleared:${messageId}`);
         redisConnection.off(`playlist-cleared-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+
+        if (playlist) {
+            return res.json({ success: true });
+        }
+        else {
+            return res.json({ success: false, error: error });
+        }
     });
 
     redisConnection.on(`playlist-cleared-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json({ success: false, error: error });
+
         redisConnection.off(`playlist-cleared:${messageId}`);
         redisConnection.off(`playlist-cleared-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -140,37 +158,40 @@ router.delete("/:playlistId", (req, res) => {
 
 //CHECK-OFF MOVIE FROM PLAYLIST
 router.put("/movie/:movieId", (req, res) => {
-    let movieId = req.params.movieId;
-    let userId = req.session.userId;
+    var movieId = req.params.movieId;
+    var userId = req.session.userId;
 
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`checked-off:${messageId}`, (result, channel) => {
+        redisConnection.off(`checked-off:${messageId}`);
+        redisConnection.off(`checked-off-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+
         if (result) {
             res.json({ success: true });
         }
         else {
             res.json({ success: false, error: error });
         }
-        redisConnection.off(`checked-off:${messageId}`);
-        redisConnection.off(`checked-off-failed:${messageId}`);
-
-        clearTimeout(killswitchTimeoutId);
     });
 
     redisConnection.on(`checked-off-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json({ success: false, error: error });
         redisConnection.off(`checked-off:${messageId}`);
         redisConnection.off(`checked-off-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -188,138 +209,44 @@ router.put("/movie/:movieId", (req, res) => {
     });
 });
 
-//ADD REVIEW TO MOVIE IN PLAYLIST
-router.post("/reviews/:movieId", (req, res) => {
-    let movieId = req.params.movieId;
-    let reviewData = req.body;
-    let userId = req.session.userId;
-
-    let redisConnection = req
-        .app
-        .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
-
-
-    redisConnection.on(`added-review:${messageId}`, (result, channel) => {
-        if (result) {
-            res.json({ success: true, result: xss(result) });
-        }
-
-        redisConnection.off(`added-review:${messageId}`);
-        redisConnection.off(`added-review-failed:${messageId}`);
-
-        clearTimeout(killswitchTimeoutId);
-    });
-
-    redisConnection.on(`added-review-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json({ success: false, error: error });
-        redisConnection.off(`added-review:${messageId}`);
-        redisConnection.off(`added-review-failed:${messageId}`);
-
-        clearTimeout(killswitchTimeoutId);
-    });
-
-    killswitchTimeoutId = setTimeout(() => {
-        redisConnection.off(`added-review:${messageId}`);
-        redisConnection.off(`added-review-failed:${messageId}`);
-        res
-            .status(500)
-            .json({ error: "Timeout error" })
-    }, 5000);
-
-    redisConnection.emit(`add-review:${messageId}`, {
-        requestId: messageId,
-        userId: userId,
-        movieId: movieId,
-        reviewData: reviewData
-    });
-});
-
-//REMOVE REVIEW FROM MOVIE IN PLAYLIST
-router.delete("/movie/:movieId/reviews/:reviewId", (req, res) => {
-    let reviewId = req.params.reviewId;
-    let movieId = req.params.movieId;
-    let userId = req.session.userId;
-
-    let redisConnection = req
-        .app
-        .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
-
-
-    redisConnection.on(`removed-review:${messageId}`, (result, channel) => {
-        if (result) {
-            res.json({ success: true, movie: movieId });
-        }
-        redisConnection.off(`removed-review:${messageId}`);
-        redisConnection.off(`removed-review-failed:${messageId}`);
-
-        clearTimeout(killswitchTimeoutId);
-    });
-
-    redisConnection.on(`removed-review-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json({ success: false, error: error });
-        redisConnection.off(`removed-review:${messageId}`);
-        redisConnection.off(`removed-review-failed:${messageId}`);
-
-        clearTimeout(killswitchTimeoutId);
-    });
-
-    killswitchTimeoutId = setTimeout(() => {
-        redisConnection.off(`removed-review:${messageId}`);
-        redisConnection.off(`removed-review-failed:${messageId}`);
-        res
-            .status(500)
-            .json({ error: "Timeout error" })
-    }, 5000);
-
-    redisConnection.emit(`remove-review:${messageId}`, {
-        requestId: messageId,
-        userId: userId,
-        movieId: movieId,
-        reviewId: reviewId
-    });
-});
-
 //UPDATE PLAYLIST TITLE
 router.put("/title/:playlistId", (req, res) => {
     //method to clear out playlist
-    let newTitle = req.body.title;
-    let playlistId = req.params.playlistId
-    let redisConnection = req
+    var newTitle = xss(req.body.title);
+    var playlistId = req.params.playlistId
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`title-updated:${messageId}`, (result, channel) => {
+
+        redisConnection.off(`title-updated:${messageId}`);
+        redisConnection.off(`title-updated-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+
         if (result) {
             res.json({ success: true });
         }
         else {
             res.json({ success: false, error: error });
         }
-        redisConnection.off(`title-updated:${messageId}`);
-        redisConnection.off(`title-updated-failed:${messageId}`);
-
-        clearTimeout(killswitchTimeoutId);
     });
 
     redisConnection.on(`title-updated-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json({ success: false, error: error });
+
         redisConnection.off(`title-updated:${messageId}`);
         redisConnection.off(`title-updated-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+
+        return res.json({
+            success: false,
+            errors: error
+        });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -338,6 +265,7 @@ router.put("/title/:playlistId", (req, res) => {
 });
 
 
+
 //REMOVE MOVIE FROM PLAYLIST
 router.delete("/movie/:movieId", (req, res) => {
     let movieId = req.params.movieId;
@@ -349,34 +277,34 @@ router.delete("/movie/:movieId", (req, res) => {
     // if(userId === undefined){
     //     userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
     // }
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`removed-movie:${messageId}`, (result, channel) => {
-        if (result) {
-            res.json({ success: true });
-        }
-        else {
-            res.json({ success: false, error: error });
-        }
+
         redisConnection.off(`removed-movie:${messageId}`);
         redisConnection.off(`removed-movie-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+        if (result) {
+            return res.json({ success: true });
+        }
+        else {
+            return res.json({ success: false, error: error });
+        }
     });
 
     redisConnection.on(`removed-movie-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json({ success: false, error: error });
+ 
         redisConnection.off(`removed-movie:${messageId}`);
         redisConnection.off(`removed-movie-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+            return res.json({ success: false, error: error });
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -397,43 +325,46 @@ router.delete("/movie/:movieId", (req, res) => {
 //ADD MOVIE TO PLAYLIST
 router.post("/:movieId", (req, res) => {
     console.log("in add movie to playlist");
-    let movieId = req.params.movieId;
+    var movieId = req.params.movieId;
     console.log("Movie ID - " + movieId);
     //Hardcoded the UserID to add movie to playlist using POSTMAN
-    let userId = req.session.userId;
+    var userId = req.session.userId;
     // Remove it
     if (userId === undefined) {
         userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
     }
     console.log("User ID - " + req.session.userId);
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`added-movie:${messageId}`, (result, channel) => {
-        if (result) {
-            res.json({ success: true });
-        }
-        else {
-            res.json({ success: false, error: error });
-        }
+
         redisConnection.off(`added-movie:${messageId}`);
         redisConnection.off(`added-movie-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+
+    if (result) {
+            return res.json({ success: true });
+        }
+        else {
+            return res.json({ success: false, error: error });
+        }
     });
 
     redisConnection.on(`added-movie-failed:${messageId}`, (error, channel) => {
-        res
-            .status(500)
-            .json({ success: false, error: error });
+
         redisConnection.off(`added-movie:${messageId}`);
         redisConnection.off(`added-movie-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
+
+      res.json({ success: false, error: error });
+
     });
 
     killswitchTimeoutId = setTimeout(() => {
@@ -453,4 +384,3 @@ router.post("/:movieId", (req, res) => {
 });
 
 module.exports = router;
-

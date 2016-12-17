@@ -6,7 +6,7 @@ const autoPrefix = require("gulp-autoprefixer");
 const gulpSASS = require("gulp-sass");
 const babel = require("gulp-babel");
 
-const cssFiles = "./public/css/source/**/*.css";
+const cssFiles = "./public/css/*.css";
 const sassFiles = "./public/css/source/sass/**/*.scss";
 //const jsxFiles = "./public/js/source/components/**/*.js";
 const jsxFiles = "./client/src/components/**.js";

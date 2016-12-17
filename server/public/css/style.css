@@ -3,6 +3,8 @@ body {
   font-size: 16px;
 }
 
+canvas {position: absolute;z-index: -1;}
+
 a {
   color: #00bcd4;
   font-weight: bold;
@@ -66,10 +68,6 @@ a:hover {
   color: green;
 }
 
-.grid-img{
-  height: 300px;
-  width: 300px;
-}
 .grid-img:hover{
   cursor: pointer;
 }

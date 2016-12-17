@@ -14,7 +14,6 @@ router.get('/', function (req, res) {
                         resTopFifteen : allRes2,
                         resByGenre : allRes3,
                         resTopRev : allRes4
-                        // partial: "jquery-detail-scripts"
                     });
                 })
             })

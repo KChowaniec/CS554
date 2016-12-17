@@ -1,6 +1,5 @@
 data/all-config.json
+server/views/layouts/main.handlebars
+server/node_modules/*
 data/node_modules/*
 worker/node_modules/*
-server/node_modules/*
-server/views/layouts/main.handlebars
-React Sample/node_modules/*

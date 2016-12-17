@@ -8,10 +8,14 @@ import AnalyticsPage from './containers/AnalyticsPage.js';
 import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
+import AccountPage from './containers/AccountPage';
+import axios from 'axios';
+
+// import HomePage from './containers/HomePage.js';
 
 function redirectToLogin(nextState, replace) {
   if (!auth.loggedIn()) {
-    replace('/login')
+    replace('/login');
   }
 }
 
@@ -65,7 +69,8 @@ const routes = {
     },
     {
       path: '/playlist',
-      component: Playlist
+      component: Playlist,
+      onEnter: redirectToLogin
     },
     {
       path: '/movie/:id',
@@ -85,6 +90,12 @@ const routes = {
       path: '/detailm',
       onEnter: getMovieById
     },
+    {
+      path: '/account',
+      component: AccountPage,
+      onEnter: redirectToLogin
+    },
+
     //match any other routes - redirect to home page
     {
       path: '/*',

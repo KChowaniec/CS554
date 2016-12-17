@@ -34414,27 +34414,27 @@
 
 	var _HomePage2 = _interopRequireDefault(_HomePage);
 
-	var _Playlist = __webpack_require__(455);
+	var _Playlist = __webpack_require__(488);
 
 	var _Playlist2 = _interopRequireDefault(_Playlist);
 
-	var _MovieDetailPage = __webpack_require__(486);
+	var _MovieDetailPage = __webpack_require__(489);
 
 	var _MovieDetailPage2 = _interopRequireDefault(_MovieDetailPage);
 
-	var _LoginPage = __webpack_require__(488);
+	var _LoginPage = __webpack_require__(502);
 
 	var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
-	var _SignUpPage = __webpack_require__(503);
+	var _SignUpPage = __webpack_require__(517);
 
 	var _SignUpPage2 = _interopRequireDefault(_SignUpPage);
 
-	var _AnalyticsPage = __webpack_require__(505);
+	var _AnalyticsPage = __webpack_require__(519);
 
 	var _AnalyticsPage2 = _interopRequireDefault(_AnalyticsPage);
 
-	var _Logout = __webpack_require__(506);
+	var _Logout = __webpack_require__(520);
 
 	var _Logout2 = _interopRequireDefault(_Logout);
 
@@ -34444,7 +34444,17 @@
 
 	var _auth2 = _interopRequireDefault(_auth);
 
+	var _AccountPage = __webpack_require__(521);
+
+	var _AccountPage2 = _interopRequireDefault(_AccountPage);
+
+	var _axios = __webpack_require__(461);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import HomePage from './containers/HomePage.js';
 
 	function redirectToLogin(nextState, replace) {
 	  if (!_auth2.default.loggedIn()) {
@@ -34493,7 +34503,8 @@
 	    onEnter: redirectToLogin
 	  }, {
 	    path: '/playlist',
-	    component: _Playlist2.default
+	    component: _Playlist2.default,
+	    onEnter: redirectToLogin
 	  }, {
 	    path: '/movie/:id',
 	    component: _MovieDetailPage2.default,
@@ -34508,7 +34519,12 @@
 	  }, {
 	    path: '/detailm',
 	    onEnter: getMovieById
+	  }, {
+	    path: '/account',
+	    component: _AccountPage2.default,
+	    onEnter: redirectToLogin
 	  },
+
 	  //match any other routes - redirect to home page
 	  {
 	    path: '/*',
@@ -34620,10 +34636,6 @@
 	  }
 	});
 
-	Base.propTypes = {
-	  children: _react.PropTypes.object.isRequired
-	};
-
 	exports.default = Base;
 
 /***/ },
@@ -34631,6 +34643,8 @@
 /***/ function(module, exports) {
 
 	"use strict";
+
+	// var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 	module.exports = {
 	  login: function login(username, password, cb) {
@@ -34686,6 +34700,21 @@
 	  },
 
 	  loggedIn: function loggedIn() {
+	    // var requestConfig = {
+	    //   method: "GET",
+	    //   url: "/user/authorized",
+	    //   contentType: 'application/json'
+	    // };
+	    // console.log(localStorage.token);
+	    // $.ajax(requestConfig).then((response) => {
+	    //   console.log(response);
+	    //   if (response.authorized && localStorage.token) {
+	    //     return true;
+	    //   }
+	    //   else {
+	    //     return false;
+	    //   }
+	    // });
 	    return !!localStorage.token;
 	  },
 
@@ -34753,7 +34782,9 @@
 	    } else {
 	      cb({
 	        authenticated: false
+
 	      });
+	      //return responseMessage.errors;
 	    }
 	  });
 	}
@@ -34765,8 +34796,10 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
 
@@ -34774,15 +34807,461 @@
 
 	var _Card = __webpack_require__(393);
 
+	var _reactRouter = __webpack_require__(334);
+
+	var _GridList = __webpack_require__(455);
+
+	var _IconButton = __webpack_require__(421);
+
+	var _IconButton2 = _interopRequireDefault(_IconButton);
+
+	var _starBorder = __webpack_require__(459);
+
+	var _starBorder2 = _interopRequireDefault(_starBorder);
+
+	var _deleteForever = __webpack_require__(460);
+
+	var _deleteForever2 = _interopRequireDefault(_deleteForever);
+
+	var _axios = __webpack_require__(461);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	var _playlistAdd = __webpack_require__(486);
+
+	var _playlistAdd2 = _interopRequireDefault(_playlistAdd);
+
+	var _playlistAddCheck = __webpack_require__(487);
+
+	var _playlistAddCheck2 = _interopRequireDefault(_playlistAddCheck);
+
+	var _TextField = __webpack_require__(506);
+
+	var _TextField2 = _interopRequireDefault(_TextField);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var HomePage = function HomePage() {
-	  return _react2.default.createElement(
-	    _Card.Card,
-	    { className: 'container' },
-	    _react2.default.createElement(_Card.CardTitle, { title: 'React Application', subtitle: 'This is the home page.' })
-	  );
-	};
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var SearchBar = function (_React$Component) {
+	    _inherits(SearchBar, _React$Component);
+
+	    function SearchBar(props) {
+	        _classCallCheck(this, SearchBar);
+
+	        // set the initial component state
+	        var _this = _possibleConstructorReturn(this, (SearchBar.__proto__ || Object.getPrototypeOf(SearchBar)).call(this, props));
+
+	        _this.state = {
+	            errors: {},
+	            data: [],
+	            styles: {
+
+	                titleStyle: {
+	                    color: 'rgb(0, 0, 0)',
+	                    fontWeight: 'bold'
+	                },
+	                root: {
+	                    display: 'flex',
+	                    flexWrap: 'wrap',
+	                    justifyContent: 'space-around'
+	                },
+	                gridList: {
+	                    display: 'flex',
+	                    flexWrap: 'nowrap',
+	                    overflowX: 'auto'
+	                },
+	                imageStyle: {
+	                    height: '200px',
+	                    width: '200px'
+	                }
+	            },
+	            parameters: {
+	                movie: '',
+	                actor: '',
+	                director: '',
+	                genre: ''
+	            },
+	            currentPage: 1
+	        };
+
+	        _this.handleMovieNameChange = _this.handleMovieNameChange.bind(_this);
+	        _this.handleActorChange = _this.handleActorChange.bind(_this);
+	        _this.handleDirectorChange = _this.handleDirectorChange.bind(_this);
+	        _this.handleGenreChange = _this.handleGenreChange.bind(_this);
+	        _this.handleSubmit = _this.handleSubmit.bind(_this);
+	        return _this;
+	    }
+
+	    _createClass(SearchBar, [{
+	        key: 'itemClicked',
+	        value: function itemClicked(id) {
+	            console.log("itemClicked Clicked");
+	            if (id !== "next") {
+	                console.log("Item Clicked: " + id);
+	                _reactRouter.browserHistory.push('/movie/' + id);
+	            } else {
+	                console.log("Next Clicked");
+	                this.getQueryStr_Movies();
+	            }
+	        }
+	    }, {
+	        key: 'additem',
+	        value: function additem(index) {
+	            if (!this.state.data[index].isAdded) {
+	                console.log("Add Movie Clicked " + this.state.data[index].id);
+	                var react_component = this;
+	                var movie_index = index;
+
+	                _axios2.default.post('/playlist/' + this.state.data[index].id).then(function (res) {
+	                    if (res.data.success === true) {
+	                        console.log("Movie Added");
+	                        //[movie_index].isAdded = true;
+	                        var arr_search = react_component.state.data;
+	                        arr_search[movie_index].isAdded = true;
+	                        react_component.setState({
+	                            data: arr_search
+	                        });
+	                        alert("Success : Movie added.");
+	                    } else {
+	                        console.log("Movie NOT Added");
+	                        alert("There was some problem in adding movie to the playlist.");
+	                    }
+	                });
+	            } else {
+	                alert("Movie Already Added");
+	            }
+	        }
+	    }, {
+	        key: 'handleMovieNameChange',
+	        value: function handleMovieNameChange(event) {
+	            //console.log('@ search bar : handleChange');
+
+	            var field = 'movie';
+	            //console.log('@ search bar : target property : ' + field);
+	            var parameters = this.state.parameters;
+	            //console.log('@ search bar : value : ' + event.target.value);
+	            parameters[field] = event.target.value;
+
+	            this.setState({ parameters: parameters });
+	        }
+	    }, {
+	        key: 'handleActorChange',
+	        value: function handleActorChange(event) {
+	            //console.log('@ search bar : handleChange');
+
+	            var field = 'actor';
+	            //console.log('@ search bar : target property : ' + field);
+	            var parameters = this.state.parameters;
+	            //console.log('@ search bar : value : ' + event.target.value);
+	            parameters[field] = event.target.value;
+
+	            this.setState({ parameters: parameters });
+	        }
+	    }, {
+	        key: 'handleDirectorChange',
+	        value: function handleDirectorChange(event) {
+	            //console.log('@ search bar : handleChange');
+
+	            var field = 'director';
+	            //console.log('@ search bar : target property : ' + field);
+	            var parameters = this.state.parameters;
+	            //console.log('@ search bar : value : ' + event.target.value);
+	            parameters[field] = event.target.value;
+
+	            this.setState({ parameters: parameters });
+	        }
+	    }, {
+	        key: 'handleGenreChange',
+	        value: function handleGenreChange(event) {
+	            //console.log('@ search bar : handleChange');
+
+	            var field = 'genre';
+	            //console.log('@ search bar : target property : ' + field);
+	            var parameters = this.state.parameters;
+	            //console.log('@ search bar : value : ' + event.target.value);
+	            parameters[field] = event.target.value;
+
+	            this.setState({ parameters: parameters });
+	        }
+	    }, {
+	        key: 'applyfilter',
+	        value: function applyfilter(playlist, searchResult) {
+
+	            var ids = [];
+	            var filter_indexes = [];
+
+	            console.log('Playlist Ids : ' + ids);
+	            var index = 0;
+	            var isFound = false;
+
+	            console.log('Pre Filter');
+	            searchResult.forEach(function (element) {
+	                //if(element.title == "300")
+	                console.log('Id: ' + element.id + ' title' + element.title + ' isAdded' + element.isAdded);
+	            }, this);
+
+	            var counter = 0;
+	            searchResult.forEach(function (search_item) {
+	                //console.log('id : ' + element.id + 'is in ids array @ : ' + ids.indexOf(element.id));
+	                playlist.forEach(function (pl_item) {
+	                    console.log('Search Item id : ' + search_item.id + " is compared with pl item id : " + pl_item._id + ' and the result is : ' + search_item.id == pl_item._id);
+	                    if (search_item.id == pl_item._id) filter_indexes.push(counter);
+	                }, this);
+	                counter++;
+	            }, this);
+
+	            filter_indexes.forEach(function (index) {
+	                searchResult[index].isAdded = true;
+	            }, this);
+
+	            //console.log('filtered Indexes : ' + filter_indexes);
+	            console.log('Post Filter');
+	            searchResult.forEach(function (element) {
+	                //if(element.title == "300")
+	                console.log('Id: ' + element.id + ' title' + element.title + ' isAdded' + element.isAdded);
+	            }, this);
+	            return searchResult;
+	        }
+	    }, {
+	        key: 'getQueryStr_Movies',
+	        value: function getQueryStr_Movies() {
+	            var myplayList = [];
+	            var get_playlist = {
+	                url: "/playlist",
+	                method: "GET",
+	                contentType: "application/json; charset=utf-8"
+
+	            };
+
+	            $.ajax(get_playlist).then(function (res) {
+	                myplayList = res;
+	            }, function (err) {
+	                console.log("error while getting user playlist : " + JSON.stringify(err));
+	            });
+	            var params = {
+	                title: this.state.parameters.movie,
+	                actor: this.state.parameters.actor,
+	                director: this.state.parameters.director,
+	                genre: this.state.parameters.genre,
+	                keywords: this.state.parameters.keywords
+	            };
+	            console.log('Getting query search : ' + JSON.stringify(params));
+	            var _url = "/search?";
+	            _url += params.title ? "title=" + params.title + "&" : "";
+	            _url += params.actor ? "actor=" + params.actor + "&" : "";
+	            _url += params.director ? "director=" + params.director + "&" : "";
+	            _url += params.genre ? "genre=" + params.genre + "&" : "";
+	            _url += params.keywords ? "keywords=" + params.keywords + "&" : "";
+	            console.log('Search string : ' + _url);
+	            var getQueryStr = {
+	                url: _url,
+	                method: "GET",
+	                contentType: "application/json; charset=utf-8"
+	            };
+	            var react_com = this;
+	            $.ajax(getQueryStr).then(function (response) {
+
+	                if (response.success) {
+	                    var qry_str = "/search/results/" + react_com.state.currentPage + "?" + response.query;
+	                    console.log(' ************* Query String  ************** ');
+	                    console.log(qry_str);
+	                    console.log(' ************* Query String  ************** ');
+	                    var getSearch_result = {
+	                        url: qry_str,
+	                        method: "GET",
+	                        contentType: "application/json"
+	                    };
+	                    $.ajax(getSearch_result).then(function (res) {
+	                        console.log('Movies : ' + JSON.stringify(res));
+	                        var newArr = res.movies;
+	                        newArr = react_com.applyfilter(myplayList, newArr);
+	                        console.log(newArr);
+	                        var page = parseInt(res.page);
+	                        var totalPages = parseInt(res.total);
+	                        if (totalPages - page > 0) {
+	                            react_com.setState({ currentPage: page });
+	                            newArr.push({
+	                                id: "next",
+	                                poster_path: "/public/images/next.png",
+	                                title: "Load More"
+	                            });
+	                        }
+	                        react_com.setState({
+	                            data: newArr
+	                        });
+	                    }, function (err2) {
+	                        console.log('Get query string returned error  : ' + JSON.stringify(err2));
+	                    });
+	                } else {
+	                    console.log('Error  : ' + JSON.stringify(response.error));
+	                }
+	            }, function (err) {
+	                console.log('Error in getting query string : ' + JSON.stringify(err));
+	            });
+	        }
+	    }, {
+	        key: 'handleSubmit',
+	        value: function handleSubmit(event) {
+
+	            event.preventDefault();
+	            this.getQueryStr_Movies();
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            console.log('rendering search bar');
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    _Card.Card,
+	                    { className: 'container' },
+	                    _react2.default.createElement(
+	                        'form',
+	                        { onSubmit: this.handleSubmit, id: 'search' },
+	                        _react2.default.createElement(
+	                            'h2',
+	                            { className: 'card-heading' },
+	                            'Matrix Search'
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'field-line' },
+	                            _react2.default.createElement(_TextField2.default, {
+	                                floatingLabelText: 'Movie Name',
+	                                name: 'title',
+	                                type: 'text',
+	                                value: this.state.parameters.movie,
+	                                onChange: this.handleMovieNameChange })
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'field-line' },
+	                            _react2.default.createElement(_TextField2.default, {
+	                                floatingLabelText: 'Actor',
+	                                name: 'actor',
+	                                type: 'text',
+	                                value: this.state.parameters.actor,
+	                                onChange: this.handleActorChange })
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'field-line' },
+	                            _react2.default.createElement(_TextField2.default, {
+	                                type: 'text',
+	                                name: 'director',
+	                                floatingLabelText: 'Director',
+	                                value: this.state.parameters.director,
+	                                onChange: this.handleDirectorChange })
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'field-line' },
+	                            _react2.default.createElement(_TextField2.default, {
+	                                type: 'text',
+	                                name: 'genre',
+	                                floatingLabelText: 'Genre',
+	                                value: this.state.parameters.genre,
+	                                onChange: this.handleGenreChange })
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'field-line' },
+	                            _react2.default.createElement(_TextField2.default, {
+	                                type: 'text',
+	                                name: 'keywords',
+	                                floatingLabelText: 'Keywords',
+	                                value: this.state.parameters.keywords,
+	                                onChange: this.handleGenreChange })
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'button-line' },
+	                            _react2.default.createElement('input', { type: 'submit', placeholder: 'Search' })
+	                        )
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: this.state.styles.root },
+	                        _react2.default.createElement(
+	                            _GridList.GridList,
+	                            { className: 'container', style: this.state.styles.gridList, cols: 2.2 },
+	                            this.state.data.map(function (tile, i) {
+	                                return _react2.default.createElement(
+	                                    _GridList.GridTile,
+	                                    {
+	                                        key: i,
+	                                        title: tile.title,
+	                                        actionIcon: tile.id === "next" ? null : _react2.default.createElement(
+	                                            _IconButton2.default,
+	                                            { onClick: _this2.additem.bind(_this2, i) },
+	                                            tile.isAdded ? _react2.default.createElement(_playlistAddCheck2.default, { color: 'rgb(0, 0, 0)' }) : _react2.default.createElement(_playlistAdd2.default, { color: 'rgb(0, 0, 0)' })
+	                                        ),
+	                                        titleStyle: _this2.state.styles.titleStyle,
+	                                        titleBackground: 'linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)'
+	                                    },
+	                                    _react2.default.createElement('img', { style: _this2.state.styles.imageStyle,
+	                                        onClick: _this2.itemClicked.bind(_this2, tile.id),
+	                                        src: tile.id == "next" ? tile.poster_path : tile.poster_path === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path })
+	                                );
+	                            })
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return SearchBar;
+	}(_react2.default.Component);
+
+	var HomePage = (0, _reactRouter.withRouter)(_react2.default.createClass({
+	    displayName: 'HomePage',
+
+	    api: "e443ee14fb107feee75db8b448e6a13e",
+	    getInitialState: function getInitialState() {
+	        return { data: [], mounted: false };
+	    },
+	    // getInitialState : function() {
+	    //   console.log('Initial State');
+	    //   return {title : "Title is Null"}
+	    // },
+	    // <Banners playlist={this.state.data}/>);
+	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+
+	        this.setState({ mounted: false });
+	    },
+	    componentDidMount: function componentDidMount() {
+
+	        this.setState({ mounted: true });
+	    },
+
+	    render: function render() {
+	        console.log('In Home Page Component');
+	        // return (<Card className="container">
+	        //           <CardTitle title={this.state.title} subtitle="This is the home page." />
+	        //         </Card>  );
+	        //return ( <Banners playlist={playlist_fake}/>);
+	        //if(this.state.data) {
+	        return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(SearchBar, null)
+	        );
+	        //}
+	    }
+	}));
 
 	exports.default = HomePage;
 
@@ -41259,170 +41738,15 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _Card = __webpack_require__(393);
-
-	var _GridList = __webpack_require__(456);
-
-	var _IconButton = __webpack_require__(421);
-
-	var _IconButton2 = _interopRequireDefault(_IconButton);
-
-	var _starBorder = __webpack_require__(460);
-
-	var _starBorder2 = _interopRequireDefault(_starBorder);
-
-	var _deleteForever = __webpack_require__(508);
-
-	var _deleteForever2 = _interopRequireDefault(_deleteForever);
-
-	var _axios = __webpack_require__(461);
-
-	var _axios2 = _interopRequireDefault(_axios);
-
-	var _reactRouter = __webpack_require__(334);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Playlist = function (_React$Component) {
-	    _inherits(Playlist, _React$Component);
-
-	    function Playlist(props) {
-	        _classCallCheck(this, Playlist);
-
-	        // set the initial component state
-	        var _this = _possibleConstructorReturn(this, (Playlist.__proto__ || Object.getPrototypeOf(Playlist)).call(this, props));
-
-	        _this.state = {
-	            styles: {
-	                root: {
-	                    display: 'flex',
-	                    flexWrap: 'wrap',
-	                    justifyContent: 'space-around'
-	                },
-	                gridList: {
-	                    display: 'flex',
-	                    flexWrap: 'nowrap',
-	                    overflowX: 'auto'
-	                },
-	                titleStyle: {
-	                    color: 'rgb(0, 188, 212)'
-	                },
-	                imageStyle: {
-	                    height: 300,
-	                    width: 200
-	                }
-	            },
-	            tilesData: []
-	        };
-	        return _this;
-	    }
-
-	    _createClass(Playlist, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            var _this2 = this;
-
-	            _axios2.default.get('/playlist').then(function (res) {
-	                _this2.setState({ tilesData: res.data });
-	                //console.log(res)
-	            });
-	        }
-	    }, {
-	        key: 'itemClicked',
-	        value: function itemClicked(id) {
-	            console.log("Item Clicked: " + id);
-	            _reactRouter.browserHistory.push('/movie/' + id);
-	        }
-	    }, {
-	        key: 'deleteItem',
-	        value: function deleteItem(index) {
-	            var _this3 = this;
-
-	            _axios2.default.delete('/playlist/movie/' + this.state.tilesData[index]._id).then(function (res) {
-	                if (res.data.success === true) {
-	                    return _axios2.default.get('/playlist');
-	                }
-	            }).then(function (res) {
-	                _this3.setState({ tilesData: res.data });
-	                //console.log(res)
-	            });
-	            //console.log("Delete Item Clicked : " + index + " - Movie ID : " + this.state.tilesData[index]._id);
-
-	            // code to delete item from array
-	            /*var newArr = this.state.tilesData.filter(function (itm, i) {
-	                return i !== index;
-	            });
-	            this.setState({ tilesData: newArr });*/
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this4 = this;
-
-	            return _react2.default.createElement(
-	                'div',
-	                { style: this.state.styles.root },
-	                _react2.default.createElement(
-	                    _GridList.GridList,
-	                    { className: 'container', style: this.state.styles.gridList, cols: 2.2 },
-	                    this.state.tilesData.map(function (tile, i) {
-	                        return _react2.default.createElement(
-	                            _GridList.GridTile,
-	                            {
-	                                key: i,
-	                                title: tile.title,
-	                                actionIcon: _react2.default.createElement(
-	                                    _IconButton2.default,
-	                                    { onClick: _this4.deleteItem.bind(_this4, i) },
-	                                    _react2.default.createElement(_deleteForever2.default, { color: 'rgb(0, 188, 212)' })
-	                                ),
-	                                titleStyle: _this4.state.styles.titleStyle,
-	                                titleBackground: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)'
-	                            },
-	                            _react2.default.createElement('img', { style: _this4.state.styles.imageStyle, onClick: _this4.itemClicked.bind(_this4, tile._id), src: "https://image.tmdb.org/t/p/w200_and_h300_bestv2/" + tile.image })
-	                        );
-	                    })
-	                )
-	            );
-	        }
-	    }]);
-
-	    return Playlist;
-	}(_react2.default.Component);
-
-	exports.default = Playlist;
-
-/***/ },
-/* 456 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.default = exports.GridTile = exports.GridList = undefined;
 
-	var _GridList2 = __webpack_require__(457);
+	var _GridList2 = __webpack_require__(456);
 
 	var _GridList3 = _interopRequireDefault(_GridList2);
 
-	var _GridTile2 = __webpack_require__(458);
+	var _GridTile2 = __webpack_require__(457);
 
 	var _GridTile3 = _interopRequireDefault(_GridTile2);
 
@@ -41433,7 +41757,7 @@
 	exports.default = _GridList3.default;
 
 /***/ },
-/* 457 */
+/* 456 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -41580,7 +41904,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 458 */
+/* 457 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -41617,7 +41941,7 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _defineProperty2 = __webpack_require__(459);
+	var _defineProperty2 = __webpack_require__(458);
 
 	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -41886,7 +42210,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 459 */
+/* 458 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -41915,7 +42239,7 @@
 	};
 
 /***/ },
-/* 460 */
+/* 459 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -41950,6 +42274,43 @@
 	ToggleStarBorder.muiName = 'SvgIcon';
 
 	exports.default = ToggleStarBorder;
+
+/***/ },
+/* 460 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pure = __webpack_require__(408);
+
+	var _pure2 = _interopRequireDefault(_pure);
+
+	var _SvgIcon = __webpack_require__(418);
+
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ActionDeleteForever = function ActionDeleteForever(props) {
+	  return _react2.default.createElement(
+	    _SvgIcon2.default,
+	    props,
+	    _react2.default.createElement('path', { d: 'M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z' })
+	  );
+	};
+	ActionDeleteForever = (0, _pure2.default)(ActionDeleteForever);
+	ActionDeleteForever.displayName = 'ActionDeleteForever';
+	ActionDeleteForever.muiName = 'SvgIcon';
+
+	exports.default = ActionDeleteForever;
 
 /***/ },
 /* 461 */
@@ -43450,13 +43811,252 @@
 	  value: true
 	});
 
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pure = __webpack_require__(408);
+
+	var _pure2 = _interopRequireDefault(_pure);
+
+	var _SvgIcon = __webpack_require__(418);
+
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var AvPlaylistAdd = function AvPlaylistAdd(props) {
+	  return _react2.default.createElement(
+	    _SvgIcon2.default,
+	    props,
+	    _react2.default.createElement('path', { d: 'M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z' })
+	  );
+	};
+	AvPlaylistAdd = (0, _pure2.default)(AvPlaylistAdd);
+	AvPlaylistAdd.displayName = 'AvPlaylistAdd';
+	AvPlaylistAdd.muiName = 'SvgIcon';
+
+	exports.default = AvPlaylistAdd;
+
+/***/ },
+/* 487 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pure = __webpack_require__(408);
+
+	var _pure2 = _interopRequireDefault(_pure);
+
+	var _SvgIcon = __webpack_require__(418);
+
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var AvPlaylistAddCheck = function AvPlaylistAddCheck(props) {
+	  return _react2.default.createElement(
+	    _SvgIcon2.default,
+	    props,
+	    _react2.default.createElement('path', { d: 'M14 10H2v2h12v-2zm0-4H2v2h12V6zM2 16h8v-2H2v2zm19.5-4.5L23 13l-6.99 7-4.51-4.5L13 14l3.01 3 5.49-5.5z' })
+	  );
+	};
+	AvPlaylistAddCheck = (0, _pure2.default)(AvPlaylistAddCheck);
+	AvPlaylistAddCheck.displayName = 'AvPlaylistAddCheck';
+	AvPlaylistAddCheck.muiName = 'SvgIcon';
+
+	exports.default = AvPlaylistAddCheck;
+
+/***/ },
+/* 488 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Movie = __webpack_require__(487);
+	var _Card = __webpack_require__(393);
+
+	var _GridList = __webpack_require__(455);
+
+	var _IconButton = __webpack_require__(421);
+
+	var _IconButton2 = _interopRequireDefault(_IconButton);
+
+	var _starBorder = __webpack_require__(459);
+
+	var _starBorder2 = _interopRequireDefault(_starBorder);
+
+	var _deleteForever = __webpack_require__(460);
+
+	var _deleteForever2 = _interopRequireDefault(_deleteForever);
+
+	var _axios = __webpack_require__(461);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	var _reactRouter = __webpack_require__(334);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Playlist = function (_React$Component) {
+	    _inherits(Playlist, _React$Component);
+
+	    function Playlist(props) {
+	        _classCallCheck(this, Playlist);
+
+	        // set the initial component state
+	        var _this = _possibleConstructorReturn(this, (Playlist.__proto__ || Object.getPrototypeOf(Playlist)).call(this, props));
+
+	        _this.state = {
+	            styles: {
+	                root: {
+	                    display: 'flex',
+	                    flexWrap: 'wrap',
+	                    justifyContent: 'space-around'
+	                },
+	                gridList: {
+	                    display: 'flex',
+	                    flexWrap: 'nowrap',
+	                    overflowX: 'auto'
+	                },
+	                titleStyle: {
+	                    color: 'rgb(0, 0, 0)',
+	                    fontWeight: 'bold'
+	                },
+	                imageStyle: {
+	                    height: '200px',
+	                    width: '200px'
+	                }
+	            },
+	            tilesData: []
+	        };
+	        return _this;
+	    }
+
+	    _createClass(Playlist, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var _this2 = this;
+
+	            _axios2.default.get('/playlist').then(function (res) {
+	                _this2.setState({ tilesData: res.data });
+	                //console.log(res)
+	            });
+	        }
+	    }, {
+	        key: 'itemClicked',
+	        value: function itemClicked(id) {
+	            console.log("Item Clicked: " + id);
+	            _reactRouter.browserHistory.push('/movie/' + id);
+	        }
+	    }, {
+	        key: 'deleteItem',
+	        value: function deleteItem(index) {
+	            var _this3 = this;
+
+	            _axios2.default.delete('/playlist/movie/' + this.state.tilesData[index]._id).then(function (res) {
+	                if (res.data.success === true) {
+	                    return _axios2.default.get('/playlist');
+	                }
+	            }).then(function (res) {
+	                _this3.setState({ tilesData: res.data });
+	                //console.log(res)
+	            });
+	            //console.log("Delete Item Clicked : " + index + " - Movie ID : " + this.state.tilesData[index]._id);
+
+	            // code to delete item from array
+	            /*var newArr = this.state.tilesData.filter(function (itm, i) {
+	                return i !== index;
+	            });
+	            this.setState({ tilesData: newArr });*/
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this4 = this;
+
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                this.state.tilesData.length > 0 ? _react2.default.createElement(
+	                    'div',
+	                    { style: this.state.styles.root },
+	                    _react2.default.createElement(
+	                        _GridList.GridList,
+	                        { className: 'container', style: this.state.styles.gridList, cols: 2.2 },
+	                        this.state.tilesData.map(function (tile, i) {
+	                            return _react2.default.createElement(
+	                                _GridList.GridTile,
+	                                {
+	                                    key: i,
+	                                    title: tile.title,
+	                                    actionIcon: _react2.default.createElement(
+	                                        _IconButton2.default,
+	                                        { onClick: _this4.deleteItem.bind(_this4, i) },
+	                                        _react2.default.createElement(_deleteForever2.default, { color: 'rgb(0, 0, 0)' })
+	                                    ),
+	                                    titleStyle: _this4.state.styles.titleStyle,
+	                                    titleBackground: 'linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)'
+	                                },
+	                                _react2.default.createElement('img', { className: 'grid-img', style: _this4.state.styles.imageStyle, onClick: _this4.itemClicked.bind(_this4, tile._id),
+	                                    src: tile.image === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.image })
+	                            );
+	                        })
+	                    )
+	                ) : _react2.default.createElement(
+	                    _Card.Card,
+	                    { className: 'container' },
+	                    _react2.default.createElement(_Card.CardTitle, { title: 'My Playlist', subtitle: 'No Movies in your playlist' })
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Playlist;
+	}(_react2.default.Component);
+
+	exports.default = Playlist;
+
+/***/ },
+/* 489 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Movie = __webpack_require__(490);
 
 	var _Movie2 = _interopRequireDefault(_Movie);
 
@@ -43483,7 +44083,10 @@
 
 	    _this.state = {
 	      error: false,
-	      movie: {}
+	      movie: {},
+	      recs: [],
+	      reviews: [],
+	      internalReviews: []
 	    };
 	    return _this;
 	  }
@@ -43496,13 +44099,26 @@
 	      _axios2.default.get('/movies/detail/' + this.props.params.id).then(function (res) {
 	        _this2.setState({ movie: res.data });
 	      });
+	      _axios2.default.get('/movies/recommendations/' + this.props.params.id).then(function (res) {
+	        _this2.setState({ recs: res.data.results });
+	      });
+	      _axios2.default.get('/movies/reviews/' + this.props.params.id).then(function (res) {
+	        _this2.setState({ reviews: res.data.results });
+	      });
+	      _axios2.default.get('/movies/allreviews/' + this.props.params.id).then(function (res) {
+	        debugger;
+	        _this2.setState({ internalReviews: res.data });
+	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(_Movie2.default, {
 	        error: this.state.error,
-	        movie: this.state.movie
+	        movie: this.state.movie,
+	        recs: this.state.recs,
+	        reviews: this.state.reviews,
+	        intreviews: this.state.internalReviews
 	      });
 	    }
 	  }]);
@@ -43513,7 +44129,1156 @@
 	exports.default = MovieDetailsPage;
 
 /***/ },
-/* 487 */
+/* 490 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Card = __webpack_require__(393);
+
+	var _List = __webpack_require__(491);
+
+	var _GridList = __webpack_require__(455);
+
+	var _IconButton = __webpack_require__(421);
+
+	var _IconButton2 = _interopRequireDefault(_IconButton);
+
+	var _starBorder = __webpack_require__(459);
+
+	var _starBorder2 = _interopRequireDefault(_starBorder);
+
+	var _Divider = __webpack_require__(500);
+
+	var _Divider2 = _interopRequireDefault(_Divider);
+
+	var _Subheader = __webpack_require__(493);
+
+	var _Subheader2 = _interopRequireDefault(_Subheader);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Movie = function (_React$Component) {
+	    _inherits(Movie, _React$Component);
+
+	    function Movie() {
+	        _classCallCheck(this, Movie);
+
+	        return _possibleConstructorReturn(this, (Movie.__proto__ || Object.getPrototypeOf(Movie)).apply(this, arguments));
+	    }
+
+	    _createClass(Movie, [{
+	        key: 'render',
+	        value: function render() {
+	            var styles = {
+	                root: {
+	                    display: 'flex',
+	                    flexWrap: 'wrap',
+	                    justifyContent: 'space-around'
+	                },
+	                gridList: {
+	                    display: 'flex',
+	                    flexWrap: 'nowrap',
+	                    overflowX: 'auto'
+	                },
+	                titleStyle: {
+	                    color: 'rgb(0, 188, 212)'
+	                }
+	            };
+	            var recsTiles = this.props.recs.map(function (rec, i) {
+	                return _react2.default.createElement(
+	                    _GridList.GridTile,
+	                    {
+	                        key: rec.id,
+	                        title: rec.title,
+	                        actionIcon: _react2.default.createElement(
+	                            _IconButton2.default,
+	                            null,
+	                            _react2.default.createElement(_starBorder2.default, { color: 'rgb(0, 188, 212)' })
+	                        ),
+	                        titleStyle: styles.titleStyle,
+	                        titleBackground: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)'
+	                    },
+	                    _react2.default.createElement(
+	                        'a',
+	                        { href: '/movie/' + rec.id },
+	                        _react2.default.createElement('img', { src: 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + rec.poster_path, style: { width: '180px' } })
+	                    )
+	                );
+	            });
+	            var revs = "";
+	            if (this.props.reviews && this.props.reviews.length > 0) {
+	                revs = this.props.reviews.map(function (rec, i) {
+	                    return _react2.default.createElement(_List.ListItem, {
+	                        key: rec.id,
+	                        primaryText: rec.author,
+	                        secondaryText: rec.content,
+	                        secondaryTextLines: 2
+	                    });
+	                });
+	            }
+	            var intrevs = "";
+	            if (this.props.intreviews && this.props.intreviews.length > 0) {
+	                intrevs = this.props.intreviews.map(function (rec, i) {
+	                    return _react2.default.createElement(_List.ListItem, {
+	                        key: rec.id,
+	                        primaryText: rec.author,
+	                        secondaryText: rec.content,
+	                        secondaryTextLines: 2
+	                    });
+	                });
+	            }
+	            return _react2.default.createElement(
+	                _Card.Card,
+	                { style: { width: '70%', margin: '0 auto', color: '#1976d2' } },
+	                _react2.default.createElement(_Card.CardHeader, { title: this.props.movie.title, subtitle: this.props.movie.releaseDate, titleColor: '#00bcd4', titleStyle: { fontSize: '30px', fontWeight: 'bold' } }),
+	                _react2.default.createElement(
+	                    _Card.CardText,
+	                    null,
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { float: 'left', maxWidth: '300px' } },
+	                        _react2.default.createElement('img', { src: 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + this.props.movie.poster_path, style: { maxWidth: '300px' } })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { float: 'left', maxWidth: '500px', marginLeft: '10px' } },
+	                        _react2.default.createElement(
+	                            'h2',
+	                            null,
+	                            'Overview'
+	                        ),
+	                        this.props.movie.description
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { clear: 'both', paddingTop: '10px' } },
+	                        _react2.default.createElement(
+	                            'h4',
+	                            null,
+	                            'If you loved ',
+	                            this.props.movie.title,
+	                            ', you would like these:'
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { style: styles.root },
+	                            _react2.default.createElement(
+	                                _GridList.GridList,
+	                                { style: styles.gridList, cols: 2.2 },
+	                                recsTiles
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            _List.List,
+	                            null,
+	                            intrevs != "" && _react2.default.createElement(
+	                                'h3',
+	                                null,
+	                                'Internal Reviews'
+	                            ),
+	                            intrevs
+	                        ),
+	                        _react2.default.createElement(
+	                            _List.List,
+	                            null,
+	                            revs != "" && _react2.default.createElement(
+	                                'h3',
+	                                null,
+	                                'Movie Reviews From MovieDB.com'
+	                            ),
+	                            revs
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Movie;
+	}(_react2.default.Component);
+
+	exports.default = Movie;
+
+/***/ },
+/* 491 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = exports.makeSelectable = exports.ListItem = exports.List = undefined;
+
+	var _List2 = __webpack_require__(492);
+
+	var _List3 = _interopRequireDefault(_List2);
+
+	var _ListItem2 = __webpack_require__(495);
+
+	var _ListItem3 = _interopRequireDefault(_ListItem2);
+
+	var _makeSelectable2 = __webpack_require__(499);
+
+	var _makeSelectable3 = _interopRequireDefault(_makeSelectable2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.List = _List3.default;
+	exports.ListItem = _ListItem3.default;
+	exports.makeSelectable = _makeSelectable3.default;
+	exports.default = _List3.default;
+
+/***/ },
+/* 492 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(395);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(400);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(318);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(316);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(321);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(325);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(326);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(401);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Subheader = __webpack_require__(493);
+
+	var _Subheader2 = _interopRequireDefault(_Subheader);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var List = function (_Component) {
+	  (0, _inherits3.default)(List, _Component);
+
+	  function List() {
+	    (0, _classCallCheck3.default)(this, List);
+	    return (0, _possibleConstructorReturn3.default)(this, (List.__proto__ || (0, _getPrototypeOf2.default)(List)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(List, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          children = _props.children,
+	          style = _props.style,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['children', 'style']);
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+
+	      var hasSubheader = false;
+
+	      var firstChild = _react.Children.toArray(children)[0];
+	      if ((0, _react.isValidElement)(firstChild) && firstChild.type === _Subheader2.default) {
+	        hasSubheader = true;
+	      }
+
+	      var styles = {
+	        root: {
+	          padding: (hasSubheader ? 0 : 8) + 'px 0px 8px 0px'
+	        }
+	      };
+
+	      return _react2.default.createElement(
+	        'div',
+	        (0, _extends3.default)({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+	        children
+	      );
+	    }
+	  }]);
+	  return List;
+	}(_react.Component);
+
+	List.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? List.propTypes = {
+	  /**
+	   * These are usually `ListItem`s that are passed to
+	   * be part of the list.
+	   */
+	  children: _react.PropTypes.node,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+	exports.default = List;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 493 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _Subheader = __webpack_require__(494);
+
+	var _Subheader2 = _interopRequireDefault(_Subheader);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _Subheader2.default;
+
+/***/ },
+/* 494 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(395);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(400);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _simpleAssign = __webpack_require__(401);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Subheader = function Subheader(props, context) {
+	  var children = props.children,
+	      inset = props.inset,
+	      style = props.style,
+	      other = (0, _objectWithoutProperties3.default)(props, ['children', 'inset', 'style']);
+	  var _context$muiTheme = context.muiTheme,
+	      prepareStyles = _context$muiTheme.prepareStyles,
+	      subheader = _context$muiTheme.subheader;
+
+
+	  var styles = {
+	    root: {
+	      boxSizing: 'border-box',
+	      color: subheader.color,
+	      fontSize: 14,
+	      fontWeight: subheader.fontWeight,
+	      lineHeight: '48px',
+	      paddingLeft: inset ? 72 : 16,
+	      width: '100%'
+	    }
+	  };
+
+	  return _react2.default.createElement(
+	    'div',
+	    (0, _extends3.default)({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+	    children
+	  );
+	};
+
+	Subheader.muiName = 'Subheader';
+
+	process.env.NODE_ENV !== "production" ? Subheader.propTypes = {
+	  /**
+	   * Node that will be placed inside the `Subheader`.
+	   */
+	  children: _react.PropTypes.node,
+	  /**
+	   * If true, the `Subheader` will be indented.
+	   */
+	  inset: _react.PropTypes.bool,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+
+	Subheader.defaultProps = {
+	  inset: false
+	};
+
+	Subheader.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+
+	exports.default = Subheader;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 495 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _objectWithoutProperties2 = __webpack_require__(400);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _extends2 = __webpack_require__(395);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _getPrototypeOf = __webpack_require__(318);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(316);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(321);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(325);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(326);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(401);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(32);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _shallowEqual = __webpack_require__(417);
+
+	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
+
+	var _colorManipulator = __webpack_require__(242);
+
+	var _transitions = __webpack_require__(405);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _EnhancedButton = __webpack_require__(423);
+
+	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
+
+	var _IconButton = __webpack_require__(421);
+
+	var _IconButton2 = _interopRequireDefault(_IconButton);
+
+	var _expandLess = __webpack_require__(496);
+
+	var _expandLess2 = _interopRequireDefault(_expandLess);
+
+	var _expandMore = __webpack_require__(497);
+
+	var _expandMore2 = _interopRequireDefault(_expandMore);
+
+	var _NestedList = __webpack_require__(498);
+
+	var _NestedList2 = _interopRequireDefault(_NestedList);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context, state) {
+	  var insetChildren = props.insetChildren,
+	      leftAvatar = props.leftAvatar,
+	      leftCheckbox = props.leftCheckbox,
+	      leftIcon = props.leftIcon,
+	      nestedLevel = props.nestedLevel,
+	      rightAvatar = props.rightAvatar,
+	      rightIcon = props.rightIcon,
+	      rightIconButton = props.rightIconButton,
+	      rightToggle = props.rightToggle,
+	      secondaryText = props.secondaryText,
+	      secondaryTextLines = props.secondaryTextLines;
+	  var muiTheme = context.muiTheme;
+	  var listItem = muiTheme.listItem;
+
+
+	  var textColor = muiTheme.baseTheme.palette.textColor;
+	  var hoverColor = props.hoverColor || (0, _colorManipulator.fade)(textColor, 0.1);
+	  var singleAvatar = !secondaryText && (leftAvatar || rightAvatar);
+	  var singleNoAvatar = !secondaryText && !(leftAvatar || rightAvatar);
+	  var twoLine = secondaryText && secondaryTextLines === 1;
+	  var threeLine = secondaryText && secondaryTextLines > 1;
+
+	  var styles = {
+	    root: {
+	      backgroundColor: (state.isKeyboardFocused || state.hovered) && !state.rightIconButtonHovered && !state.rightIconButtonKeyboardFocused ? hoverColor : null,
+	      color: textColor,
+	      display: 'block',
+	      fontSize: 16,
+	      lineHeight: '16px',
+	      position: 'relative',
+	      transition: _transitions2.default.easeOut()
+	    },
+
+	    // This inner div is needed so that ripples will span the entire container
+	    innerDiv: {
+	      marginLeft: nestedLevel * listItem.nestedLevelDepth,
+	      paddingLeft: leftIcon || leftAvatar || leftCheckbox || insetChildren ? 72 : 16,
+	      paddingRight: rightIcon || rightAvatar || rightIconButton ? 56 : rightToggle ? 72 : 16,
+	      paddingBottom: singleAvatar ? 20 : 16,
+	      paddingTop: singleNoAvatar || threeLine ? 16 : 20,
+	      position: 'relative'
+	    },
+
+	    icons: {
+	      height: 24,
+	      width: 24,
+	      display: 'block',
+	      position: 'absolute',
+	      top: twoLine ? 12 : singleAvatar ? 4 : 0,
+	      margin: 12
+	    },
+
+	    leftIcon: {
+	      left: 4
+	    },
+
+	    rightIcon: {
+	      right: 4
+	    },
+
+	    avatars: {
+	      position: 'absolute',
+	      top: singleAvatar ? 8 : 16
+	    },
+
+	    label: {
+	      cursor: 'pointer'
+	    },
+
+	    leftAvatar: {
+	      left: 16
+	    },
+
+	    rightAvatar: {
+	      right: 16
+	    },
+
+	    leftCheckbox: {
+	      position: 'absolute',
+	      display: 'block',
+	      width: 24,
+	      top: twoLine ? 24 : singleAvatar ? 16 : 12,
+	      left: 16
+	    },
+
+	    primaryText: {},
+
+	    rightIconButton: {
+	      position: 'absolute',
+	      display: 'block',
+	      top: twoLine ? 12 : singleAvatar ? 4 : 0,
+	      right: 4
+	    },
+
+	    rightToggle: {
+	      position: 'absolute',
+	      display: 'block',
+	      width: 54,
+	      top: twoLine ? 25 : singleAvatar ? 17 : 13,
+	      right: 8
+	    },
+
+	    secondaryText: {
+	      fontSize: 14,
+	      lineHeight: threeLine ? '18px' : '16px',
+	      height: threeLine ? 36 : 16,
+	      margin: 0,
+	      marginTop: 4,
+	      color: listItem.secondaryTextColor,
+
+	      // needed for 2 and 3 line ellipsis
+	      overflow: 'hidden',
+	      textOverflow: 'ellipsis',
+	      whiteSpace: threeLine ? null : 'nowrap',
+	      display: threeLine ? '-webkit-box' : null,
+	      WebkitLineClamp: threeLine ? 2 : null,
+	      WebkitBoxOrient: threeLine ? 'vertical' : null
+	    }
+	  };
+
+	  return styles;
+	}
+
+	var ListItem = function (_Component) {
+	  (0, _inherits3.default)(ListItem, _Component);
+
+	  function ListItem() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, ListItem);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = ListItem.__proto__ || (0, _getPrototypeOf2.default)(ListItem)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      hovered: false,
+	      isKeyboardFocused: false,
+	      open: false,
+	      rightIconButtonHovered: false,
+	      rightIconButtonKeyboardFocused: false,
+	      touch: false
+	    }, _this.handleKeyboardFocus = function (event, isKeyboardFocused) {
+	      _this.setState({ isKeyboardFocused: isKeyboardFocused });
+	      _this.props.onKeyboardFocus(event, isKeyboardFocused);
+	    }, _this.handleMouseEnter = function (event) {
+	      if (!_this.state.touch) _this.setState({ hovered: true });
+	      _this.props.onMouseEnter(event);
+	    }, _this.handleMouseLeave = function (event) {
+	      _this.setState({ hovered: false });
+	      _this.props.onMouseLeave(event);
+	    }, _this.handleNestedListToggle = function (event) {
+	      event.stopPropagation();
+
+	      if (_this.props.open === null) {
+	        _this.setState({ open: !_this.state.open }, function () {
+	          _this.props.onNestedListToggle(_this);
+	        });
+	      } else {
+	        // Exposing `this` in the callback is quite a bad API.
+	        // I'm doing a one level deep clone to expose a fake state.open.
+	        _this.props.onNestedListToggle((0, _extends3.default)({}, _this, {
+	          state: {
+	            open: !_this.state.open
+	          }
+	        }));
+	      }
+	    }, _this.handleRightIconButtonKeyboardFocus = function (event, isKeyboardFocused) {
+	      if (isKeyboardFocused) {
+	        _this.setState({
+	          isKeyboardFocused: false,
+	          rightIconButtonKeyboardFocused: isKeyboardFocused
+	        });
+	      }
+
+	      var iconButton = _this.props.rightIconButton;
+
+	      if (iconButton && iconButton.props.onKeyboardFocus) iconButton.props.onKeyboardFocus(event, isKeyboardFocused);
+	    }, _this.handleRightIconButtonMouseLeave = function (event) {
+	      var iconButton = _this.props.rightIconButton;
+	      _this.setState({ rightIconButtonHovered: false });
+	      if (iconButton && iconButton.props.onMouseLeave) iconButton.props.onMouseLeave(event);
+	    }, _this.handleRightIconButtonMouseEnter = function (event) {
+	      var iconButton = _this.props.rightIconButton;
+	      _this.setState({ rightIconButtonHovered: true });
+	      if (iconButton && iconButton.props.onMouseEnter) iconButton.props.onMouseEnter(event);
+	    }, _this.handleRightIconButtonMouseUp = function (event) {
+	      var iconButton = _this.props.rightIconButton;
+	      event.stopPropagation();
+	      if (iconButton && iconButton.props.onMouseUp) iconButton.props.onMouseUp(event);
+	    }, _this.handleRightIconButtonTouchTap = function (event) {
+	      var iconButton = _this.props.rightIconButton;
+
+	      // Stop the event from bubbling up to the list-item
+	      event.stopPropagation();
+	      if (iconButton && iconButton.props.onTouchTap) iconButton.props.onTouchTap(event);
+	    }, _this.handleTouchStart = function (event) {
+	      _this.setState({ touch: true });
+	      _this.props.onTouchStart(event);
+	    }, _this.handleTouchEnd = function (event) {
+	      _this.setState({ touch: true });
+	      _this.props.onTouchEnd(event);
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(ListItem, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.setState({
+	        open: this.props.open === null ? this.props.initiallyOpen === true : this.props.open
+	      });
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      // update the state when the component is controlled.
+	      if (nextProps.open !== null) this.setState({ open: nextProps.open });
+	      if (nextProps.disabled && this.state.hovered) this.setState({ hovered: false });
+	    }
+	  }, {
+	    key: 'shouldComponentUpdate',
+	    value: function shouldComponentUpdate(nextProps, nextState, nextContext) {
+	      return !(0, _shallowEqual2.default)(this.props, nextProps) || !(0, _shallowEqual2.default)(this.state, nextState) || !(0, _shallowEqual2.default)(this.context, nextContext);
+	    }
+
+	    // This method is needed by the `MenuItem` component.
+
+	  }, {
+	    key: 'applyFocusState',
+	    value: function applyFocusState(focusState) {
+	      var button = this.refs.enhancedButton;
+
+	      if (button) {
+	        var buttonEl = _reactDom2.default.findDOMNode(button);
+
+	        switch (focusState) {
+	          case 'none':
+	            buttonEl.blur();
+	            break;
+	          case 'focused':
+	            buttonEl.focus();
+	            break;
+	          case 'keyboard-focused':
+	            button.setKeyboardFocus();
+	            buttonEl.focus();
+	            break;
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'createDisabledElement',
+	    value: function createDisabledElement(styles, contentChildren, additionalProps) {
+	      var _props = this.props,
+	          innerDivStyle = _props.innerDivStyle,
+	          style = _props.style;
+
+
+	      var mergedDivStyles = (0, _simpleAssign2.default)({}, styles.root, styles.innerDiv, innerDivStyle, style);
+
+	      return _react2.default.createElement(
+	        'div',
+	        (0, _extends3.default)({}, additionalProps, {
+	          style: this.context.muiTheme.prepareStyles(mergedDivStyles)
+	        }),
+	        contentChildren
+	      );
+	    }
+	  }, {
+	    key: 'createLabelElement',
+	    value: function createLabelElement(styles, contentChildren, additionalProps) {
+	      var _props2 = this.props,
+	          innerDivStyle = _props2.innerDivStyle,
+	          style = _props2.style;
+
+
+	      var mergedLabelStyles = (0, _simpleAssign2.default)({}, styles.root, styles.innerDiv, innerDivStyle, styles.label, style);
+
+	      return _react2.default.createElement(
+	        'label',
+	        (0, _extends3.default)({}, additionalProps, {
+	          style: this.context.muiTheme.prepareStyles(mergedLabelStyles)
+	        }),
+	        contentChildren
+	      );
+	    }
+	  }, {
+	    key: 'createTextElement',
+	    value: function createTextElement(styles, data, key) {
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      if (_react2.default.isValidElement(data)) {
+	        var style = (0, _simpleAssign2.default)({}, styles, data.props.style);
+	        if (typeof data.type === 'string') {
+	          // if element is a native dom node
+	          style = prepareStyles(style);
+	        }
+	        return _react2.default.cloneElement(data, {
+	          key: key,
+	          style: style
+	        });
+	      }
+
+	      return _react2.default.createElement(
+	        'div',
+	        { key: key, style: prepareStyles(styles) },
+	        data
+	      );
+	    }
+	  }, {
+	    key: 'pushElement',
+	    value: function pushElement(children, element, baseStyles, additionalProps) {
+	      if (element) {
+	        var styles = (0, _simpleAssign2.default)({}, baseStyles, element.props.style);
+	        children.push(_react2.default.cloneElement(element, (0, _extends3.default)({
+	          key: children.length,
+	          style: styles
+	        }, additionalProps)));
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props3 = this.props,
+	          autoGenerateNestedIndicator = _props3.autoGenerateNestedIndicator,
+	          children = _props3.children,
+	          disabled = _props3.disabled,
+	          disableKeyboardFocus = _props3.disableKeyboardFocus,
+	          hoverColor = _props3.hoverColor,
+	          initiallyOpen = _props3.initiallyOpen,
+	          innerDivStyle = _props3.innerDivStyle,
+	          insetChildren = _props3.insetChildren,
+	          leftAvatar = _props3.leftAvatar,
+	          leftCheckbox = _props3.leftCheckbox,
+	          leftIcon = _props3.leftIcon,
+	          nestedItems = _props3.nestedItems,
+	          nestedLevel = _props3.nestedLevel,
+	          nestedListStyle = _props3.nestedListStyle,
+	          onKeyboardFocus = _props3.onKeyboardFocus,
+	          onMouseEnter = _props3.onMouseEnter,
+	          onMouseLeave = _props3.onMouseLeave,
+	          onNestedListToggle = _props3.onNestedListToggle,
+	          onTouchStart = _props3.onTouchStart,
+	          onTouchTap = _props3.onTouchTap,
+	          rightAvatar = _props3.rightAvatar,
+	          rightIcon = _props3.rightIcon,
+	          rightIconButton = _props3.rightIconButton,
+	          rightToggle = _props3.rightToggle,
+	          primaryText = _props3.primaryText,
+	          primaryTogglesNestedList = _props3.primaryTogglesNestedList,
+	          secondaryText = _props3.secondaryText,
+	          secondaryTextLines = _props3.secondaryTextLines,
+	          style = _props3.style,
+	          other = (0, _objectWithoutProperties3.default)(_props3, ['autoGenerateNestedIndicator', 'children', 'disabled', 'disableKeyboardFocus', 'hoverColor', 'initiallyOpen', 'innerDivStyle', 'insetChildren', 'leftAvatar', 'leftCheckbox', 'leftIcon', 'nestedItems', 'nestedLevel', 'nestedListStyle', 'onKeyboardFocus', 'onMouseEnter', 'onMouseLeave', 'onNestedListToggle', 'onTouchStart', 'onTouchTap', 'rightAvatar', 'rightIcon', 'rightIconButton', 'rightToggle', 'primaryText', 'primaryTogglesNestedList', 'secondaryText', 'secondaryTextLines', 'style']);
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context, this.state);
+	      var contentChildren = [children];
+
+	      if (leftIcon) {
+	        var additionalProps = {
+	          color: leftIcon.props.color || this.context.muiTheme.listItem.leftIconColor
+	        };
+	        this.pushElement(contentChildren, leftIcon, (0, _simpleAssign2.default)({}, styles.icons, styles.leftIcon), additionalProps);
+	      }
+
+	      if (rightIcon) {
+	        var _additionalProps = {
+	          color: rightIcon.props.color || this.context.muiTheme.listItem.rightIconColor
+	        };
+	        this.pushElement(contentChildren, rightIcon, (0, _simpleAssign2.default)({}, styles.icons, styles.rightIcon), _additionalProps);
+	      }
+
+	      if (leftAvatar) {
+	        this.pushElement(contentChildren, leftAvatar, (0, _simpleAssign2.default)({}, styles.avatars, styles.leftAvatar));
+	      }
+
+	      if (rightAvatar) {
+	        this.pushElement(contentChildren, rightAvatar, (0, _simpleAssign2.default)({}, styles.avatars, styles.rightAvatar));
+	      }
+
+	      if (leftCheckbox) {
+	        this.pushElement(contentChildren, leftCheckbox, (0, _simpleAssign2.default)({}, styles.leftCheckbox));
+	      }
+
+	      // RightIconButtonElement
+	      var hasNestListItems = nestedItems.length;
+	      var hasRightElement = rightAvatar || rightIcon || rightIconButton || rightToggle;
+	      var needsNestedIndicator = hasNestListItems && autoGenerateNestedIndicator && !hasRightElement;
+
+	      if (rightIconButton || needsNestedIndicator) {
+	        var rightIconButtonElement = rightIconButton;
+	        var rightIconButtonHandlers = {
+	          onKeyboardFocus: this.handleRightIconButtonKeyboardFocus,
+	          onMouseEnter: this.handleRightIconButtonMouseEnter,
+	          onMouseLeave: this.handleRightIconButtonMouseLeave,
+	          onTouchTap: this.handleRightIconButtonTouchTap,
+	          onMouseDown: this.handleRightIconButtonMouseUp,
+	          onMouseUp: this.handleRightIconButtonMouseUp
+	        };
+
+	        // Create a nested list indicator icon if we don't have an icon on the right
+	        if (needsNestedIndicator) {
+	          rightIconButtonElement = this.state.open ? _react2.default.createElement(
+	            _IconButton2.default,
+	            null,
+	            _react2.default.createElement(_expandLess2.default, null)
+	          ) : _react2.default.createElement(
+	            _IconButton2.default,
+	            null,
+	            _react2.default.createElement(_expandMore2.default, null)
+	          );
+	          rightIconButtonHandlers.onTouchTap = this.handleNestedListToggle;
+	        }
+
+	        this.pushElement(contentChildren, rightIconButtonElement, (0, _simpleAssign2.default)({}, styles.rightIconButton), rightIconButtonHandlers);
+	      }
+
+	      if (rightToggle) {
+	        this.pushElement(contentChildren, rightToggle, (0, _simpleAssign2.default)({}, styles.rightToggle));
+	      }
+
+	      if (primaryText) {
+	        var primaryTextElement = this.createTextElement(styles.primaryText, primaryText, 'primaryText');
+	        contentChildren.push(primaryTextElement);
+	      }
+
+	      if (secondaryText) {
+	        var secondaryTextElement = this.createTextElement(styles.secondaryText, secondaryText, 'secondaryText');
+	        contentChildren.push(secondaryTextElement);
+	      }
+
+	      var nestedList = nestedItems.length ? _react2.default.createElement(
+	        _NestedList2.default,
+	        { nestedLevel: nestedLevel, open: this.state.open, style: nestedListStyle },
+	        nestedItems
+	      ) : undefined;
+
+	      var simpleLabel = !primaryTogglesNestedList && (leftCheckbox || rightToggle);
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        simpleLabel ? this.createLabelElement(styles, contentChildren, other) : disabled ? this.createDisabledElement(styles, contentChildren, other) : _react2.default.createElement(
+	          _EnhancedButton2.default,
+	          (0, _extends3.default)({
+	            containerElement: 'span'
+	          }, other, {
+	            disableKeyboardFocus: disableKeyboardFocus || this.state.rightIconButtonKeyboardFocused,
+	            onKeyboardFocus: this.handleKeyboardFocus,
+	            onMouseLeave: this.handleMouseLeave,
+	            onMouseEnter: this.handleMouseEnter,
+	            onTouchStart: this.handleTouchStart,
+	            onTouchEnd: this.handleTouchEnd,
+	            onTouchTap: primaryTogglesNestedList ? this.handleNestedListToggle : onTouchTap,
+	            ref: 'enhancedButton',
+	            style: (0, _simpleAssign2.default)({}, styles.root, style)
+	          }),
+	          _react2.default.createElement(
+	            'div',
+	            { style: prepareStyles((0, _simpleAssign2.default)(styles.innerDiv, innerDivStyle)) },
+	            contentChildren
+	          )
+	        ),
+	        nestedList
+	      );
+	    }
+	  }]);
+	  return ListItem;
+	}(_react.Component);
+
+	ListItem.muiName = 'ListItem';
+	ListItem.defaultProps = {
+	  autoGenerateNestedIndicator: true,
+	  disableKeyboardFocus: false,
+	  disabled: false,
+	  initiallyOpen: false,
+	  insetChildren: false,
+	  nestedItems: [],
+	  nestedLevel: 0,
+	  onKeyboardFocus: function onKeyboardFocus() {},
+	  onMouseEnter: function onMouseEnter() {},
+	  onMouseLeave: function onMouseLeave() {},
+	  onNestedListToggle: function onNestedListToggle() {},
+	  onTouchEnd: function onTouchEnd() {},
+	  onTouchStart: function onTouchStart() {},
+	  open: null,
+	  primaryTogglesNestedList: false,
+	  secondaryTextLines: 1
+	};
+	ListItem.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? ListItem.propTypes = {
+	  /**
+	   * If true, generate a nested-list-indicator icon when nested list
+	   * items are detected. Note that an indicator will not be created
+	   * if a `rightIcon` or `rightIconButton` has been provided to
+	   * the element.
+	   */
+	  autoGenerateNestedIndicator: _react.PropTypes.bool,
+	  /**
+	   * Children passed into the `ListItem`.
+	   */
+	  children: _react.PropTypes.node,
+	  /**
+	   * If true, the element will not be able to be focused by the keyboard.
+	   */
+	  disableKeyboardFocus: _react.PropTypes.bool,
+	  /**
+	   * If true, the element will not be clickable
+	   * and will not display hover effects.
+	   * This is automatically disabled if either `leftCheckbox`
+	   * or `rightToggle` is set.
+	   */
+	  disabled: _react.PropTypes.bool,
+	  /**
+	  * Override the hover background color.
+	  */
+	  hoverColor: _react.PropTypes.string,
+	  /**
+	   * If true, the nested `ListItem`s are initially displayed.
+	   */
+	  initiallyOpen: _react.PropTypes.bool,
+	  /**
+	   * Override the inline-styles of the inner div element.
+	   */
+	  innerDivStyle: _react.PropTypes.object,
+	  /**
+	   * If true, the children will be indented by 72px.
+	   * This is useful if there is no left avatar or left icon.
+	   */
+	  insetChildren: _react.PropTypes.bool,
+	  /**
+	   * This is the `Avatar` element to be displayed on the left side.
+	   */
+	  leftAvatar: _react.PropTypes.element,
+	  /**
+	   * This is the `Checkbox` element to be displayed on the left side.
+	   */
+	  leftCheckbox: _react.PropTypes.element,
+	  /**
+	   * This is the `SvgIcon` or `FontIcon` to be displayed on the left side.
+	   */
+	  leftIcon: _react.PropTypes.element,
+	  /**
+	   * An array of `ListItem`s to nest underneath the current `ListItem`.
+	   */
+	  nestedItems: _react.PropTypes.arrayOf(_react.PropTypes.element),
+	  /**
+	   * Controls how deep a `ListItem` appears.
+	   * This property is automatically managed, so modify at your own risk.
+	   */
+	  nestedLevel: _react.PropTypes.number,
+	  /**
+	   * Override the inline-styles of the nested items' `NestedList`.
+	   */
+	  nestedListStyle: _react.PropTypes.object,
+	  /**
+	   * Callback function fired when the `ListItem` is focused or blurred by the keyboard.
+	   *
+	   * @param {object} event `focus` or `blur` event targeting the `ListItem`.
+	   * @param {boolean} isKeyboardFocused If true, the `ListItem` is focused.
+	   */
+	  onKeyboardFocus: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseEnter: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseLeave: _react.PropTypes.func,
+	  /**
+	   * Callbak function fired when the `ListItem` toggles its nested list.
+	   *
+	   * @param {object} listItem The `ListItem`.
+	   */
+	  onNestedListToggle: _react.PropTypes.func,
+	  /** @ignore */
+	  onTouchEnd: _react.PropTypes.func,
+	  /** @ignore */
+	  onTouchStart: _react.PropTypes.func,
+	  /** @ignore */
+	  onTouchTap: _react.PropTypes.func,
+	  /**
+	   * Control toggle state of nested list.
+	   */
+	  open: _react.PropTypes.bool,
+	  /**
+	   * This is the block element that contains the primary text.
+	   * If a string is passed in, a div tag will be rendered.
+	   */
+	  primaryText: _react.PropTypes.node,
+	  /**
+	   * If true, clicking or tapping the primary text of the `ListItem`
+	   * toggles the nested list.
+	   */
+	  primaryTogglesNestedList: _react.PropTypes.bool,
+	  /**
+	   * This is the `Avatar` element to be displayed on the right side.
+	   */
+	  rightAvatar: _react.PropTypes.element,
+	  /**
+	   * This is the `SvgIcon` or `FontIcon` to be displayed on the right side.
+	   */
+	  rightIcon: _react.PropTypes.element,
+	  /**
+	   * This is the `IconButton` to be displayed on the right side.
+	   * Hovering over this button will remove the `ListItem` hover.
+	   * Also, clicking on this button will not trigger a
+	   * ripple on the `ListItem`; the event will be stopped and prevented
+	   * from bubbling up to cause a `ListItem` click.
+	   */
+	  rightIconButton: _react.PropTypes.element,
+	  /**
+	   * This is the `Toggle` element to display on the right side.
+	   */
+	  rightToggle: _react.PropTypes.element,
+	  /**
+	   * This is the block element that contains the secondary text.
+	   * If a string is passed in, a div tag will be rendered.
+	   */
+	  secondaryText: _react.PropTypes.node,
+	  /**
+	   * Can be 1 or 2. This is the number of secondary
+	   * text lines before ellipsis will show.
+	   */
+	  secondaryTextLines: _react.PropTypes.oneOf([1, 2]),
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+	exports.default = ListItem;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 496 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43526,30 +45291,390 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Card = __webpack_require__(393);
+	var _pure = __webpack_require__(408);
+
+	var _pure2 = _interopRequireDefault(_pure);
+
+	var _SvgIcon = __webpack_require__(418);
+
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Movie = function Movie(_ref) {
-	  var onChange = _ref.onChange,
-	      error = _ref.error,
-	      movie = _ref.movie;
+	var NavigationExpandLess = function NavigationExpandLess(props) {
 	  return _react2.default.createElement(
-	    _Card.Card,
-	    { className: 'container' },
-	    _react2.default.createElement(_Card.CardTitle, { title: movie.title, subtitle: movie.releaseDate }),
-	    _react2.default.createElement(
-	      _Card.CardText,
-	      null,
-	      movie.description
-	    )
+	    _SvgIcon2.default,
+	    props,
+	    _react2.default.createElement('path', { d: 'M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z' })
+	  );
+	};
+	NavigationExpandLess = (0, _pure2.default)(NavigationExpandLess);
+	NavigationExpandLess.displayName = 'NavigationExpandLess';
+	NavigationExpandLess.muiName = 'SvgIcon';
+
+	exports.default = NavigationExpandLess;
+
+/***/ },
+/* 497 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pure = __webpack_require__(408);
+
+	var _pure2 = _interopRequireDefault(_pure);
+
+	var _SvgIcon = __webpack_require__(418);
+
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var NavigationExpandMore = function NavigationExpandMore(props) {
+	  return _react2.default.createElement(
+	    _SvgIcon2.default,
+	    props,
+	    _react2.default.createElement('path', { d: 'M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z' })
+	  );
+	};
+	NavigationExpandMore = (0, _pure2.default)(NavigationExpandMore);
+	NavigationExpandMore.displayName = 'NavigationExpandMore';
+	NavigationExpandMore.muiName = 'SvgIcon';
+
+	exports.default = NavigationExpandMore;
+
+/***/ },
+/* 498 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _List = __webpack_require__(492);
+
+	var _List2 = _interopRequireDefault(_List);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var NestedList = function NestedList(props) {
+	  var children = props.children,
+	      open = props.open,
+	      nestedLevel = props.nestedLevel,
+	      style = props.style;
+
+
+	  if (!open) {
+	    return null;
+	  }
+
+	  return _react2.default.createElement(
+	    _List2.default,
+	    { style: style },
+	    _react.Children.map(children, function (child) {
+	      return (0, _react.isValidElement)(child) ? (0, _react.cloneElement)(child, {
+	        nestedLevel: nestedLevel + 1
+	      }) : child;
+	    })
 	  );
 	};
 
-	exports.default = Movie;
+	process.env.NODE_ENV !== "production" ? NestedList.propTypes = {
+	  children: _react.PropTypes.node,
+	  nestedLevel: _react.PropTypes.number.isRequired,
+	  open: _react.PropTypes.bool.isRequired,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+
+	exports.default = NestedList;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 488 */
+/* 499 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.makeSelectable = undefined;
+
+	var _extends2 = __webpack_require__(395);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(400);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(318);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(316);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(321);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(325);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(326);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(401);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _colorManipulator = __webpack_require__(242);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var makeSelectable = function makeSelectable(MyComponent) {
+	  var _class, _temp2;
+
+	  return _temp2 = _class = function (_Component) {
+	    (0, _inherits3.default)(_class, _Component);
+
+	    function _class() {
+	      var _ref;
+
+	      var _temp, _this, _ret;
+
+	      (0, _classCallCheck3.default)(this, _class);
+
+	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	        args[_key] = arguments[_key];
+	      }
+
+	      return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = _class.__proto__ || (0, _getPrototypeOf2.default)(_class)).call.apply(_ref, [this].concat(args))), _this), _this.hasSelectedDescendant = function (previousValue, child) {
+	        if (_react2.default.isValidElement(child) && child.props.nestedItems && child.props.nestedItems.length > 0) {
+	          return child.props.nestedItems.reduce(_this.hasSelectedDescendant, previousValue);
+	        }
+	        return previousValue || _this.isChildSelected(child, _this.props);
+	      }, _this.handleItemTouchTap = function (event, item) {
+	        var itemValue = item.props.value;
+
+	        if (itemValue !== _this.props.value) {
+	          if (_this.props.onChange) {
+	            _this.props.onChange(event, itemValue);
+	          }
+	        }
+	      }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	    }
+
+	    (0, _createClass3.default)(_class, [{
+	      key: 'extendChild',
+	      value: function extendChild(child, styles, selectedItemStyle) {
+	        var _this2 = this;
+
+	        if (child && child.type && child.type.muiName === 'ListItem') {
+	          var selected = this.isChildSelected(child, this.props);
+	          var selectedChildrenStyles = void 0;
+	          if (selected) {
+	            selectedChildrenStyles = (0, _simpleAssign2.default)({}, styles, selectedItemStyle);
+	          }
+
+	          var mergedChildrenStyles = (0, _simpleAssign2.default)({}, child.props.style, selectedChildrenStyles);
+
+	          this.keyIndex += 1;
+
+	          return _react2.default.cloneElement(child, {
+	            onTouchTap: function onTouchTap(event) {
+	              _this2.handleItemTouchTap(event, child);
+	              if (child.props.onTouchTap) {
+	                child.props.onTouchTap(event);
+	              }
+	            },
+	            key: this.keyIndex,
+	            style: mergedChildrenStyles,
+	            nestedItems: child.props.nestedItems.map(function (child) {
+	              return _this2.extendChild(child, styles, selectedItemStyle);
+	            }),
+	            initiallyOpen: this.isInitiallyOpen(child)
+	          });
+	        } else {
+	          return child;
+	        }
+	      }
+	    }, {
+	      key: 'isInitiallyOpen',
+	      value: function isInitiallyOpen(child) {
+	        if (child.props.initiallyOpen) {
+	          return child.props.initiallyOpen;
+	        }
+	        return this.hasSelectedDescendant(false, child);
+	      }
+	    }, {
+	      key: 'isChildSelected',
+	      value: function isChildSelected(child, props) {
+	        return props.value === child.props.value;
+	      }
+	    }, {
+	      key: 'render',
+	      value: function render() {
+	        var _this3 = this;
+
+	        var _props = this.props,
+	            children = _props.children,
+	            selectedItemStyle = _props.selectedItemStyle,
+	            other = (0, _objectWithoutProperties3.default)(_props, ['children', 'selectedItemStyle']);
+
+
+	        this.keyIndex = 0;
+	        var styles = {};
+
+	        if (!selectedItemStyle) {
+	          var textColor = this.context.muiTheme.baseTheme.palette.textColor;
+	          styles.backgroundColor = (0, _colorManipulator.fade)(textColor, 0.2);
+	        }
+
+	        return _react2.default.createElement(
+	          MyComponent,
+	          (0, _extends3.default)({}, other, this.state),
+	          _react.Children.map(children, function (child) {
+	            return _this3.extendChild(child, styles, selectedItemStyle);
+	          })
+	        );
+	      }
+	    }]);
+	    return _class;
+	  }(_react.Component), _class.propTypes = {
+	    children: _react.PropTypes.node,
+	    onChange: _react.PropTypes.func,
+	    selectedItemStyle: _react.PropTypes.object,
+	    value: _react.PropTypes.any
+	  }, _class.contextTypes = {
+	    muiTheme: _react.PropTypes.object.isRequired
+	  }, _temp2;
+	};
+
+	exports.makeSelectable = makeSelectable;
+	exports.default = makeSelectable;
+
+/***/ },
+/* 500 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _Divider = __webpack_require__(501);
+
+	var _Divider2 = _interopRequireDefault(_Divider);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _Divider2.default;
+
+/***/ },
+/* 501 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(395);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(400);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _simpleAssign = __webpack_require__(401);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Divider = function Divider(props, context) {
+	  var inset = props.inset,
+	      style = props.style,
+	      other = (0, _objectWithoutProperties3.default)(props, ['inset', 'style']);
+	  var _context$muiTheme = context.muiTheme,
+	      baseTheme = _context$muiTheme.baseTheme,
+	      prepareStyles = _context$muiTheme.prepareStyles;
+
+
+	  var styles = {
+	    root: {
+	      margin: 0,
+	      marginTop: -1,
+	      marginLeft: inset ? 72 : 0,
+	      height: 1,
+	      border: 'none',
+	      backgroundColor: baseTheme.palette.borderColor
+	    }
+	  };
+
+	  return _react2.default.createElement('hr', (0, _extends3.default)({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }));
+	};
+
+	Divider.muiName = 'Divider';
+
+	process.env.NODE_ENV !== "production" ? Divider.propTypes = {
+	  /**
+	   * If true, the `Divider` will be indented.
+	   */
+	  inset: _react.PropTypes.bool,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+
+	Divider.defaultProps = {
+	  inset: false
+	};
+
+	Divider.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+
+	exports.default = Divider;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 502 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43564,7 +45689,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _LoginForm = __webpack_require__(489);
+	var _LoginForm = __webpack_require__(503);
 
 	var _LoginForm2 = _interopRequireDefault(_LoginForm);
 
@@ -43595,26 +45720,31 @@
 	    var _this = _possibleConstructorReturn(this, (LoginPage.__proto__ || Object.getPrototypeOf(LoginPage)).call(this, props));
 
 	    _this.state = {
+	      errors: {},
 	      error: false,
 	      user: {
 	        username: '',
 	        password: ''
 	      }
 	    };
-
 	    _this.processForm = _this.processForm.bind(_this);
 	    _this.changeUser = _this.changeUser.bind(_this);
 	    return _this;
 	  }
 
-	  /**
-	   * Process the form.
-	   *
-	   * @param {object} event - the JavaScript event object
-	   */
-
-
 	  _createClass(LoginPage, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      _auth2.default.logout();
+	    }
+
+	    /**
+	     * Process the form.
+	     *
+	     * @param {object} event - the JavaScript event object
+	     */
+
+	  }, {
 	    key: 'processForm',
 	    value: function processForm(event) {
 	      var _this2 = this;
@@ -43623,52 +45753,26 @@
 	      event.preventDefault();
 
 	      // create a string for an HTTP body message
-	      var username = encodeURIComponent(this.state.user.username);
-	      var password = encodeURIComponent(this.state.user.password);
-
-	      _auth2.default.login(username, password, function (loggedIn) {
-	        if (!loggedIn) {
-	          return _this2.setState({ error: true });
-	        } else {
-	          _reactRouter.browserHistory.push('/home');
-	        }
-
-	        //const { location } = this.props
-
-	        // if (location.state && location.state.nextPathname) {
-	        //   this.history.replaceState(null, location.state.nextPathname)
-	        // } else {
-	        //   this.history.replaceState(null, '/')
-	        // }
-	      });
-
-	      // var requestConfig = {
-	      //   method: "POST",
-	      //   url: "/user/login",
-	      //   contentType: 'application/json',
-	      //   data: JSON.stringify({
-	      //     username: username,
-	      //     password: password,
-	      //   })
-	      // };
-	      // let reactThis = this;
-	      // $.ajax(requestConfig).then((responseMessage) => {
-	      //   if (responseMessage.success) {
-	      //     reactThis.setState({
-	      //       errors: {},
-	      //       loggedIn: true
-	      //     });
-	      //     browserHistory.push('/home'); //redirect to home page upon successful registration
-	      //   }
-	      //   else {
-	      //     const errors = responseMessage.errors ? responseMessage.errors : {};
-	      //     errors.summary = responseMessage.message;
-	      //     console.log("login failed");
-	      //     reactThis.setState({
-	      //       errors
-	      //     });
-	      //   }
-	      // });
+	      var username = this.state.user.username;
+	      var password = this.state.user.password;
+	      var errors = {};
+	      if (!username) {
+	        errors.username = "This field is required";
+	      }
+	      if (!password) {
+	        errors.password = "This field is required";
+	      }
+	      if (!jQuery.isEmptyObject(errors)) {
+	        return this.setState({ errors: errors });
+	      } else {
+	        _auth2.default.login(username, password, function (loggedIn) {
+	          if (!loggedIn) {
+	            return _this2.setState({ error: true });
+	          } else {
+	            _reactRouter.browserHistory.push('/home');
+	          }
+	        });
+	      }
 	    }
 
 	    /**
@@ -43700,6 +45804,7 @@
 	        onSubmit: this.processForm,
 	        onChange: this.changeUser,
 	        error: this.state.error,
+	        errors: this.state.errors,
 	        user: this.state.user
 	      });
 	    }
@@ -43711,7 +45816,7 @@
 	exports.default = LoginPage;
 
 /***/ },
-/* 489 */
+/* 503 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43728,11 +45833,11 @@
 
 	var _Card = __webpack_require__(393);
 
-	var _RaisedButton = __webpack_require__(490);
+	var _RaisedButton = __webpack_require__(504);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
-	var _TextField = __webpack_require__(492);
+	var _TextField = __webpack_require__(506);
 
 	var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -43744,6 +45849,7 @@
 	  var onSubmit = _ref.onSubmit,
 	      onChange = _ref.onChange,
 	      error = _ref.error,
+	      errors = _ref.errors,
 	      user = _ref.user;
 	  return _react2.default.createElement(
 	    _Card.Card,
@@ -43767,7 +45873,7 @@
 	        _react2.default.createElement(_TextField2.default, {
 	          floatingLabelText: 'Username',
 	          name: 'username',
-	          errorText: error.username,
+	          errorText: errors.username,
 	          onChange: onChange,
 	          value: user.username
 	        })
@@ -43780,7 +45886,7 @@
 	          type: 'password',
 	          name: 'password',
 	          onChange: onChange,
-	          errorText: error.password,
+	          errorText: errors.password,
 	          value: user.password
 	        })
 	      ),
@@ -43808,13 +45914,14 @@
 	  onSubmit: _react.PropTypes.func.isRequired,
 	  onChange: _react.PropTypes.func.isRequired,
 	  error: _react.PropTypes.bool.isRequired,
+	  errors: _react.PropTypes.object.isRequired,
 	  user: _react.PropTypes.object.isRequired
 	};
 
 	exports.default = LoginForm;
 
 /***/ },
-/* 490 */
+/* 504 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43824,7 +45931,7 @@
 	});
 	exports.default = undefined;
 
-	var _RaisedButton = __webpack_require__(491);
+	var _RaisedButton = __webpack_require__(505);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
@@ -43833,7 +45940,7 @@
 	exports.default = _RaisedButton2.default;
 
 /***/ },
-/* 491 */
+/* 505 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -44314,7 +46421,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 492 */
+/* 506 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44324,7 +46431,7 @@
 	});
 	exports.default = undefined;
 
-	var _TextField = __webpack_require__(493);
+	var _TextField = __webpack_require__(507);
 
 	var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -44333,7 +46440,7 @@
 	exports.default = _TextField2.default;
 
 /***/ },
-/* 493 */
+/* 507 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -44390,19 +46497,19 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _EnhancedTextarea = __webpack_require__(494);
+	var _EnhancedTextarea = __webpack_require__(508);
 
 	var _EnhancedTextarea2 = _interopRequireDefault(_EnhancedTextarea);
 
-	var _TextFieldHint = __webpack_require__(500);
+	var _TextFieldHint = __webpack_require__(514);
 
 	var _TextFieldHint2 = _interopRequireDefault(_TextFieldHint);
 
-	var _TextFieldLabel = __webpack_require__(501);
+	var _TextFieldLabel = __webpack_require__(515);
 
 	var _TextFieldLabel2 = _interopRequireDefault(_TextFieldLabel);
 
-	var _TextFieldUnderline = __webpack_require__(502);
+	var _TextFieldUnderline = __webpack_require__(516);
 
 	var _TextFieldUnderline2 = _interopRequireDefault(_TextFieldUnderline);
 
@@ -44911,7 +47018,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 494 */
+/* 508 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -44956,7 +47063,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactEventListener = __webpack_require__(495);
+	var _reactEventListener = __webpack_require__(509);
 
 	var _reactEventListener2 = _interopRequireDefault(_reactEventListener);
 
@@ -45157,7 +47264,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 495 */
+/* 509 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -45200,7 +47307,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactAddonsShallowCompare = __webpack_require__(496);
+	var _reactAddonsShallowCompare = __webpack_require__(510);
 
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 
@@ -45208,7 +47315,7 @@
 
 	var _warning2 = _interopRequireDefault(_warning);
 
-	var _supports = __webpack_require__(498);
+	var _supports = __webpack_require__(512);
 
 	var supports = _interopRequireWildcard(_supports);
 
@@ -45370,13 +47477,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 496 */
+/* 510 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(497);
+	module.exports = __webpack_require__(511);
 
 /***/ },
-/* 497 */
+/* 511 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -45405,7 +47512,7 @@
 	module.exports = shallowCompare;
 
 /***/ },
-/* 498 */
+/* 512 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45415,7 +47522,7 @@
 	});
 	exports.passiveOption = exports.detachEvent = exports.attachEvent = exports.removeEventListener = exports.addEventListener = exports.canUseDOM = undefined;
 
-	var _defineProperty = __webpack_require__(499);
+	var _defineProperty = __webpack_require__(513);
 
 	var _defineProperty2 = _interopRequireDefault(_defineProperty);
 
@@ -45458,7 +47565,7 @@
 	}();
 
 /***/ },
-/* 499 */
+/* 513 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -45482,7 +47589,7 @@
 	}
 
 /***/ },
-/* 500 */
+/* 514 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -45564,7 +47671,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 501 */
+/* 515 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -45681,7 +47788,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 502 */
+/* 516 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -45819,7 +47926,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 503 */
+/* 517 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45834,11 +47941,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _SignUpForm = __webpack_require__(504);
+	var _SignUpForm = __webpack_require__(518);
 
 	var _SignUpForm2 = _interopRequireDefault(_SignUpForm);
 
 	var _reactRouter = __webpack_require__(334);
+
+	var _auth = __webpack_require__(391);
+
+	var _auth2 = _interopRequireDefault(_auth);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -45861,7 +47972,8 @@
 	    var _this = _possibleConstructorReturn(this, (SignUpPage.__proto__ || Object.getPrototypeOf(SignUpPage)).call(this, props));
 
 	    _this.state = {
-	      errors: false,
+	      error: false,
+	      errors: {},
 	      user: {
 	        username: '',
 	        name: '',
@@ -45910,53 +48022,43 @@
 	      event.preventDefault();
 
 	      // create a string for an HTTP body message
-	      var username = encodeURIComponent(this.state.user.username);
-	      var name = encodeURIComponent(this.state.user.name);
-	      var email = encodeURIComponent(this.state.user.email);
-	      var password = encodeURIComponent(this.state.user.password);
-	      var confirm = encodeURIComponent(this.state.user.confirm);
-
-	      auth.register(username, password, confirm, email, name, function (loggedIn) {
-	        console.log(loggedIn);
-	        if (!loggedIn) {
-	          return _this2.setState({ errors: true });
-	        } else {
-	          _reactRouter.browserHistory.push('/home');
-	        }
-	      });
+	      var username = this.state.user.username;
+	      var name = this.state.user.name;
+	      var email = this.state.user.email;
+	      var password = this.state.user.password;
+	      var confirm = this.state.user.confirm;
+	      var errors = {};
+	      if (!username) {
+	        errors.username = "This field is required";
+	      }
+	      if (!name) {
+	        errors.name = "This field is required";
+	      }
+	      if (!email) {
+	        errors.email = "This field is required";
+	      }
+	      if (!password) {
+	        errors.password = "This field is required";
+	      }
+	      if (!confirm) {
+	        errors.confirm = "This field is required";
+	      }
+	      if (confirm && password && confirm != password) {
+	        errors.confirm = "The confirmed password must match the original password";
+	      }
+	      if (!jQuery.isEmptyObject(errors)) {
+	        return this.setState({ errors: errors });
+	      } else {
+	        _auth2.default.register(username, password, confirm, email, name, function (loggedIn) {
+	          if (!loggedIn) {
+	            return _this2.setState({ error: true });
+	          } else {
+	            _this2.setState({ error: false });
+	            _reactRouter.browserHistory.push('/home');
+	          }
+	        });
+	      }
 	    }
-
-	    // var requestConfig = {
-	    //   method: "POST",
-	    //   url: "/user/register",
-	    //   contentType: 'application/json',
-	    //   data: JSON.stringify({
-	    //     username: username,
-	    //     password: password,
-	    //     name: name,
-	    //     email: email,
-	    //     confirm: confirm
-	    //   })
-	    // };
-	    // let reactThis = this;
-	    // $.ajax(requestConfig).then((responseMessage) => {
-	    //   if (responseMessage.success) {
-	    //     reactThis.setState({
-	    //       errors: {}
-	    //     });
-	    //     browserHistory.push('/home'); //redirect to home page upon successful registration
-	    //   }
-	    //   else {
-	    //     console.log("error");
-	    //     const errors = responseMessage.errors ? responseMessage.errors : {};
-	    //     errors.summary = responseMessage.message;
-
-	    //     reactThis.setState({
-	    //       errors
-	    //     });
-	    //   }
-	    // });
-	    //   }
 
 	    // Render the component.
 
@@ -45967,6 +48069,7 @@
 	        onSubmit: this.processForm,
 	        onChange: this.changeUser,
 	        errors: this.state.errors,
+	        error: this.state.error,
 	        user: this.state.user
 	      });
 	    }
@@ -45982,7 +48085,7 @@
 	exports.default = SignUpPage;
 
 /***/ },
-/* 504 */
+/* 518 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45999,11 +48102,11 @@
 
 	var _Card = __webpack_require__(393);
 
-	var _RaisedButton = __webpack_require__(490);
+	var _RaisedButton = __webpack_require__(504);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
-	var _TextField = __webpack_require__(492);
+	var _TextField = __webpack_require__(506);
 
 	var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -46012,6 +48115,7 @@
 	var SignUpForm = function SignUpForm(_ref) {
 	  var onSubmit = _ref.onSubmit,
 	      onChange = _ref.onChange,
+	      error = _ref.error,
 	      errors = _ref.errors,
 	      user = _ref.user;
 	  return _react2.default.createElement(
@@ -46025,7 +48129,7 @@
 	        { className: 'card-heading' },
 	        'Sign Up'
 	      ),
-	      errors && _react2.default.createElement(
+	      error && _react2.default.createElement(
 	        'p',
 	        { className: 'error-message' },
 	        'Please correct the errors'
@@ -46109,20 +48213,21 @@
 	SignUpForm.propTypes = {
 	  onSubmit: _react.PropTypes.func.isRequired,
 	  onChange: _react.PropTypes.func.isRequired,
-	  errors: _react.PropTypes.bool.isRequired,
+	  error: _react.PropTypes.bool.isRequired,
+	  errors: _react.PropTypes.object.isRequired,
 	  user: _react.PropTypes.object.isRequired
 	};
 
 	exports.default = SignUpForm;
 
 /***/ },
-/* 505 */
+/* 519 */
 /***/ function(module, exports) {
 
 	"use strict";
 
 /***/ },
-/* 506 */
+/* 520 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46148,6 +48253,17 @@
 	  componentDidMount: function componentDidMount() {
 	    _auth2.default.logout();
 	    _reactRouter.browserHistory.push('/');
+	    // var requestConfig = {
+	    //   method: "GET",
+	    //   url: "/logout",
+	    //   contentType: 'application/json'
+	    // };
+	    // let react = this;
+	    // $.ajax(requestConfig).then((responseMessage) => {
+	    //   if (responseMessage.success) {
+	    //     react.browserHistory.push('/login');
+	    //   }
+	    // });
 	  },
 	  render: function render() {
 	    return _react2.default.createElement(
@@ -46161,42 +48277,271 @@
 	exports.default = Logout;
 
 /***/ },
-/* 507 */,
-/* 508 */
+/* 521 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Account = __webpack_require__(522);
+
+	var _Account2 = _interopRequireDefault(_Account);
+
+	var _reactRouter = __webpack_require__(334);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var AccountPage = function (_React$Component) {
+	    _inherits(AccountPage, _React$Component);
+
+	    /**
+	     * Class constructor.
+	     */
+	    function AccountPage(props) {
+	        _classCallCheck(this, AccountPage);
+
+	        // set the initial component state
+	        var _this = _possibleConstructorReturn(this, (AccountPage.__proto__ || Object.getPrototypeOf(AccountPage)).call(this, props));
+
+	        _this.state = {
+	            errors: {},
+	            error: false,
+	            success: false,
+	            user: {
+	                email: '',
+	                password: '',
+	                confirm: ''
+	            }
+	        };
+
+	        _this.processForm = _this.processForm.bind(_this);
+	        _this.changeUser = _this.changeUser.bind(_this);
+	        return _this;
+	    }
+
+	    /**
+	     * Process the form.
+	     *
+	     * @param {object} event - the JavaScript event object
+	     */
+
+
+	    _createClass(AccountPage, [{
+	        key: 'processForm',
+	        value: function processForm(event) {
+	            var _this2 = this;
+
+	            // prevent default action. in this case, action is the form submission event
+	            event.preventDefault();
+
+	            // create a string for an HTTP body message
+	            var email = this.state.user.email;
+	            var password = this.state.user.password;
+	            var confirm = this.state.user.confirm;
+
+	            var errors = {};
+	            if (!email) {
+	                errors.username = "This field is required";
+	            }
+	            if (!password) {
+	                errors.password = "This field is required";
+	            }
+	            if (!confirm) {
+	                errors.confirm = "This field is required";
+	            }
+	            if (confirm && password && confirm != password) {
+	                errors.confirm = "The confirmed password must match the original password";
+	            }
+	            if (!jQuery.isEmptyObject(errors)) {
+	                return this.setState({ errors: errors });
+	            } else {
+	                //change account information
+	                var requestConfig = {
+	                    method: "PUT",
+	                    url: "/user",
+	                    contentType: 'application/json',
+	                    data: JSON.stringify({
+	                        password: password,
+	                        email: email,
+	                        confirm: confirm
+	                    })
+	                };
+	                $.ajax(requestConfig).then(function (responseMessage) {
+	                    if (responseMessage.success) {
+	                        return _this2.setState({ success: true, user: responseMessage.user });
+	                    } else {
+	                        return _this2.setState({ error: true });
+	                    }
+	                });
+	            }
+	        }
+
+	        /**
+	         * Change the user object.
+	         *
+	         * @param {object} event - the JavaScript event object
+	         */
+
+	    }, {
+	        key: 'changeUser',
+	        value: function changeUser(event) {
+	            var field = event.target.name;
+	            var user = this.state.user;
+	            user[field] = event.target.value;
+
+	            this.setState({
+	                user: user
+	            });
+	        }
+
+	        /**
+	         * Render the component.
+	         */
+
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(_Account2.default, {
+	                onSubmit: this.processForm,
+	                onChange: this.changeUser,
+	                error: this.state.error,
+	                errors: this.state.errors,
+	                user: this.state.user,
+	                success: this.state.success
+	            });
+	        }
+	    }]);
+
+	    return AccountPage;
+	}(_react2.default.Component);
+
+	exports.default = AccountPage;
+
+/***/ },
+/* 522 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
 	});
 
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _pure = __webpack_require__(408);
+	var _reactRouter = __webpack_require__(334);
 
-	var _pure2 = _interopRequireDefault(_pure);
+	var _Card = __webpack_require__(393);
 
-	var _SvgIcon = __webpack_require__(418);
+	var _RaisedButton = __webpack_require__(504);
 
-	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _TextField = __webpack_require__(506);
+
+	var _TextField2 = _interopRequireDefault(_TextField);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var ActionDeleteForever = function ActionDeleteForever(props) {
-	  return _react2.default.createElement(
-	    _SvgIcon2.default,
-	    props,
-	    _react2.default.createElement('path', { d: 'M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z' })
-	  );
+	var Account = function Account(_ref) {
+	    var onSubmit = _ref.onSubmit,
+	        onChange = _ref.onChange,
+	        error = _ref.error,
+	        errors = _ref.errors,
+	        success = _ref.success,
+	        user = _ref.user;
+	    return _react2.default.createElement(
+	        _Card.Card,
+	        { className: 'container' },
+	        _react2.default.createElement(
+	            'form',
+	            { action: '/', onSubmit: onSubmit },
+	            _react2.default.createElement(
+	                'h2',
+	                { className: 'card-heading' },
+	                'Change Account Settings'
+	            ),
+	            error && _react2.default.createElement(
+	                'p',
+	                { className: 'error-message' },
+	                'Please correct the errors'
+	            ),
+	            success && _react2.default.createElement(
+	                'p',
+	                { className: 'success-message' },
+	                'Account has been updated successfully'
+	            ),
+	            _react2.default.createElement(
+	                'div',
+	                { className: 'field-line' },
+	                _react2.default.createElement(_TextField2.default, {
+	                    floatingLabelText: 'Email',
+	                    name: 'email',
+	                    errorText: errors.email,
+	                    onChange: onChange,
+	                    value: user.email
+	                })
+	            ),
+	            _react2.default.createElement(
+	                'div',
+	                { className: 'field-line' },
+	                _react2.default.createElement(_TextField2.default, {
+	                    floatingLabelText: 'Password',
+	                    type: 'password',
+	                    name: 'password',
+	                    onChange: onChange,
+	                    errorText: errors.password,
+	                    value: user.password
+	                })
+	            ),
+	            _react2.default.createElement(
+	                'div',
+	                { className: 'field-line' },
+	                _react2.default.createElement(_TextField2.default, {
+	                    floatingLabelText: 'Confirm Password',
+	                    type: 'password',
+	                    name: 'confirm',
+	                    onChange: onChange,
+	                    errorText: errors.confirm,
+	                    value: user.confirm
+	                })
+	            ),
+	            _react2.default.createElement(
+	                'div',
+	                { className: 'button-line' },
+	                _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Update', primary: true })
+	            )
+	        )
+	    );
 	};
-	ActionDeleteForever = (0, _pure2.default)(ActionDeleteForever);
-	ActionDeleteForever.displayName = 'ActionDeleteForever';
-	ActionDeleteForever.muiName = 'SvgIcon';
 
-	exports.default = ActionDeleteForever;
+	Account.propTypes = {
+	    onSubmit: _react.PropTypes.func.isRequired,
+	    onChange: _react.PropTypes.func.isRequired,
+	    error: _react.PropTypes.bool.isRequired,
+	    errors: _react.PropTypes.object.isRequired,
+	    success: _react.PropTypes.bool.isRequired,
+	    user: _react.PropTypes.object.isRequired
+	};
+
+	exports.default = Account;
 
 /***/ }
 /******/ ]);
