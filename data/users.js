@@ -43,6 +43,18 @@ var exportedMethods = {
             });
         });
     },
+
+    saveUserPreferences(userId, preferences) {
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: userId }, { $set: preferences }).then(function () {
+                return userId;
+            }).then(id => {
+                return this.getUserById(id);
+            }).catch((error) => {
+                return error;
+            });
+        });
+    },
     //verify password is correct
     verifyLogin(password, hashedPwd) {
         if (!password) throw ("A password must be provided");
@@ -151,6 +163,10 @@ var exportedMethods = {
 
     //update user
     updateUserById(id, obj) {
+        if (obj.password) {
+            obj.password = passwordHash.generate(obj.password);
+            console.log(obj);
+        }
         return Users().then((userCollection) => {
             return userCollection.update({ _id: id }, { $set: obj }).then(function () {
                 return id;

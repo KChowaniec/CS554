@@ -86,8 +86,7 @@ var exportedMethods = {
                             }
                         }
                     }
-                    movie.rated = rating;
-
+                    movie.rated = rating;s
                     fulfill(movie);
                 });
             });

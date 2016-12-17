@@ -8,6 +8,95 @@ import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 import axios from 'axios';
 import PlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 import PlaylistAddCheck from 'material-ui/svg-icons/av/playlist-add-check';
+import AutoComplete from 'material-ui/AutoComplete';
+
+const genres = [
+    {
+        textKey: 'Action',
+        valueKey: 28
+    },
+    {
+        textKey:'Adventure',
+        valueKey: 12
+    },
+    {
+        textKey:'Animation',
+        valueKey: 16
+    },
+    {
+        textKey:'Comedy',
+        valueKey: 35
+    },
+    {
+        textKey:'Crime',
+        valueKey: 80
+    },
+    {
+        textKey:'Documentary',
+        valueKey: 99
+    },
+    {
+        textKey:'Drama',
+        valueKey: 18
+    },
+    {
+        textKey:'Family',
+        valueKey: 10751
+    },
+    {
+        textKey:'Fantasy',
+        valueKey: 14
+    },
+    {
+        textKey:'Foreign',
+        valueKey: 10769
+    },
+    {
+        textKey:'History',
+        valueKey: 36
+    },
+    {
+        textKey:'Horror',
+        valueKey: 27
+    },
+    {
+        textKey:'Music',
+        valueKey: 10402
+    },
+    {
+        textKey:'Mystery',
+        valueKey: 9648
+    },
+    {
+        textKey:'Romance',
+        valueKey: 10749
+    },
+    {
+        textKey:'Science Fiction',
+        valueKey: 878
+    },
+    {
+        textKey:'TV Movie',
+        valueKey: 10770
+    },
+    {
+        textKey:'Thriller',
+        valueKey: 53
+    },
+    {
+        textKey:'War',
+        valueKey: 10752
+    },
+    {
+        textKey:'Western',
+        valueKey: 37
+    }
+];
+
+const dataSourceConfig = {
+  text: 'textKey',
+  value: 'valueKey',
+};
 
 class SearchBar extends React.Component {
     
@@ -289,8 +378,9 @@ class SearchBar extends React.Component {
         console.log('rendering search bar');
         return (
             <div>
-                <div className="container">
+               <Card className="container">
                     <form onSubmit={this.handleSubmit} id="search" >
+                    <h2 className="card-heading">Search for Movies</h2>
                         <div className="form-group">
                             <label>Movie :</label>
                             <input
@@ -315,17 +405,20 @@ class SearchBar extends React.Component {
                         </div>
                         <div className="form-group">
                             <label>Genre :</label> 
-                            <input type="text" 
-                            className="form-control"
-                            placeholder="Genre" value={this.state.parameters.genre} 
-                                onChange={this.handleGenreChange} />
+                             <AutoComplete
+                                floatingLabelText="Genres"
+                                filter={AutoComplete.fuzzyFilter}
+                                openOnFocus={true}
+                                dataSource={genres}
+                                dataSourceConfig={dataSourceConfig}
+                        />
                         </div>
                         <div className="form-group"> 
                             <input type="submit" placeholder="Search" />
                         </div>
                         
                     </form>
-                </div>
+                </Card>
                 <div>
                     <div style={this.state.styles.root}>
                         <GridList className="container" style={this.state.styles.gridList} cols={2.2}>

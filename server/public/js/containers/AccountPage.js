@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Account from '../components/Account.js';
 import { browserHistory } from 'react-router';
-
+import axios from 'axios';
 class AccountPage extends React.Component {
 
     /**
@@ -26,6 +26,20 @@ class AccountPage extends React.Component {
         this.changeUser = this.changeUser.bind(this);
     }
 
+    componentDidMount() {
+        //prepopulate user info 
+        axios.get('/user')
+            .then(res => {
+                let userInfo = {};
+                let data = JSON.parse(res.data.user);
+                console.log(data);
+                userInfo.email = data.profile.email;
+                userInfo.password = '';
+                userInfo.confirm = '';
+                return this.setState({ user: userInfo });
+            });
+    }
+
     /**
      * Process the form.
      *
@@ -40,39 +54,50 @@ class AccountPage extends React.Component {
         const password = this.state.user.password;
         const confirm = this.state.user.confirm;
 
-        var errors = {};
-        if (!email) {
-            errors.username = "This field is required";
-        }
-        if (!password) {
+        let errors = {};
+        if (confirm && !password) {
             errors.password = "This field is required";
         }
-        if (!confirm) {
+        if (password && !confirm) {
             errors.confirm = "This field is required";
         }
         if (confirm && password && (confirm != password)) {
-            errors.confirm = "The confirmed password must match the original password";
+            errors.confirm = "The confirmed password must match the entered password";
         }
         if (!jQuery.isEmptyObject(errors)) {
+            errors.message = "Please correct the errors";
             return this.setState({ errors })
         }
+
         else {
+            let newData = {};
+            if (email) {
+                newData.email = email;
+            }
+            if (password) {
+                newData.password = password;
+            }
+            if (confirm) {
+                newData.confirm = confirm;
+            }
+            console.log(newData);
             //change account information
             var requestConfig = {
                 method: "PUT",
                 url: "/user",
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    password: password,
-                    email: email,
-                    confirm: confirm
+                    newData: newData
                 })
             };
+            let reactThis = this;
             $.ajax(requestConfig).then((responseMessage) => {
                 if (responseMessage.success) {
-                    return this.setState({ success: true, user: responseMessage.user })
+                    return reactThis.setState({ success: true, user: responseMessage.user })
                 } else {
-                    return this.setState({ error: true })
+                    let errors = {};
+                    errors.message = "An error occurred";
+                    return reactThis.setState({ error: true, errors: errors })
                 }
             });
         }

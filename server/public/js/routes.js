@@ -10,23 +10,26 @@ import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
 import AccountPage from './containers/AccountPage';
 import axios from 'axios';
-
 // import HomePage from './containers/HomePage.js';
 
 function redirectToLogin(nextState, replace) {
   if (!auth.loggedIn()) {
-    replace('/login');
+    replace('/login')
+  }
+}
+
+function redirectToLoginorHome(nextState, replace) {
+  if (!auth.loggedIn()) {
+    replace('/login')
+  }
+  else {
+    replace('/home')
   }
 }
 
 function getAnalytics(nextState, replace) {
-  var requestConfig = {
-    method: "GET",
-    url: "/analytics",
-    contentType: 'application/json'
-  };
-  $.ajax(requestConfig).then((responseMessage) => {
-    window.location.reload();
+  axios.get('/analytics').then(res => {
+    // replace('/');
   });
 }
 
@@ -49,7 +52,7 @@ const routes = {
     {
       path: '/',
       component: HomePage,
-      onEnter: redirectToLogin
+      onEnter: redirectToLoginorHome
     },
 
     {
@@ -83,7 +86,7 @@ const routes = {
     },
     {
       path: '/analytics',
-      component: AnalyticsPage,
+      // component: AnalyticsPage,
       onEnter: getAnalytics
     },
     {
@@ -100,7 +103,7 @@ const routes = {
     {
       path: '/*',
       component: HomePage,
-      onEnter: redirectToLogin
+      onEnter: redirectToLoginorHome
     }
 
   ]

@@ -26,10 +26,10 @@ redisConnection.on('get-all-reviews:*', (data, channel) => {
     var movieId = data.movieId;
     //get all reviews
     var fullyComposeMovie = movieData.getAllReviews(movieId).then((reviews) => {
-            redisConnection.emit(`all-reviews-retrieved:${messageId}`, reviews);
-         }).catch(error => {
+        redisConnection.emit(`all-reviews-retrieved:${messageId}`, reviews);
+    }).catch(error => {
         redisConnection.emit(`all-reviews-retrieved-failed:${messageId}`, error);
-        });
+    });
 });
 
 
@@ -42,7 +42,7 @@ redisConnection.on('add-review:*', (data, channel) => {
     reviewData.date = new Date();
     var postReview = movieData.addReviewToMovie(movieId, userId, reviewData.rating, reviewData.date, reviewData.comment);
     postReview.then((movieInfo) => {
-            redisConnection.emit(`added-review:${messageId}`, movieInfo);
+        redisConnection.emit(`added-review:${messageId}`, movieInfo);
     }).catch(error => {
         redisConnection.emit(`added-review-failed:${messageId}`, error);
     });
@@ -54,26 +54,30 @@ redisConnection.on('remove-review:*', (data, channel) => {
     var movieId = data.movieId;
     var reviewId = data.reviewId;
     var removeReview = movieData.removeReviewByReviewId(movieId, reviewId).then((movie) => {
-            redisConnection.emit(`removed-review:${messageId}`, movie);
-        }).catch(error => {
-            redisConnection.emit(`removed-review-failed:${messageId}`, error);
+        redisConnection.emit(`removed-review:${messageId}`, movie);
+    }).catch(error => {
+        redisConnection.emit(`removed-review-failed:${messageId}`, error);
     });
 });
 
 //GET MOVIE DETAILS WORKER
 redisConnection.on('get-details:*', (data, channel) => {
-    var messageId = data.requestId;
-    var movieId = data.movieId;
-    var entryExists = client.getAsync(movieId);
+    console.log("in movie details");
+    let messageId = data.requestId;
+    let movieId = data.movieId;
+    console.log(movieId);
+    let entryExists = client.getAsync(movieId);
     entryExists.then((movieInfo) => {
         if (movieInfo) { //retrieve cached data
-            redisConnection.emit(`details-retrieved:${messageId}`,JSON.parse(movieInfo) );
+            redisConnection.emit(`details-retrieved:${messageId}`, JSON.parse(movieInfo));
         }
         else { //retrieve from db
-            var fullyComposeMovie = apiData
+            console.log("getting from db");
+            let fullyComposeMovie = apiData
                 .getMovieDetails(movieId)
                 .then((details) => {
-                    var cacheMovie = client.setAsync(movieId,JSON.stringify(details));
+                    console.log(details);
+                    let cacheMovie = client.setAsync(movieId, JSON.stringify(details));
                     cacheMovie.then(() => {
                         redisConnection.emit(`details-retrieved:${messageId}`, details);
                     }).catch(error => {
@@ -92,7 +96,7 @@ redisConnection.on('get-recommendations:*', (data, channel) => {
     var fullyComposeMovie = apiData
         .getMovieRecommendations(movieId)
         .then((movies) => {
-            redisConnection.emit(`recommendations-retrieved:${messageId}`,movies);
+            redisConnection.emit(`recommendations-retrieved:${messageId}`, movies);
         }).catch(error => {
             console.log(error);
             redisConnection.emit(`recommendations-retrieved-failed:${messageId}`, error);
@@ -106,7 +110,7 @@ redisConnection.on('get-reviews:*', (data, channel) => {
     var fullyComposeMovie = apiData
         .getMovieReviews(movieId)
         .then((movies) => {
-            redisConnection.emit(`reviews-retrieved:${messageId}`,movies);
+            redisConnection.emit(`reviews-retrieved:${messageId}`, movies);
         }).catch(error => {
             console.log(error);
             redisConnection.emit(`reviews-retrieved-failed:${messageId}`, error);
