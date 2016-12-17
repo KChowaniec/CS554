@@ -113,17 +113,18 @@ var exportedMethods = {
         });
     },
 
-    addReviewToMovie(id, poster, rating, date, comment) {   //add review to the allreviews array by providing movie id and the review object.Note: the review id should be added in the obj first
+    addReviewToMovie(id,name, date, comment) {   //add review to the allreviews array by providing movie id and the review object.Note: the review id should be added in the obj first
         var reviewId = uuid.v4();
         var obj = {
             _id: reviewId,
-            poster: poster,
-            rating: rating,
+            //poster: poster,
+            //rating: rating,
+            name:name,
             date: date,
             comment: comment
         }
         return movie().then((movieCollection) => {
-            return movieCollection.update({ _id: id }, { $addToSet: { "allReviews": obj } }).then(function () {
+            return movieCollection.update({ _id: parseInt(id) }, { $set:{"id":parseInt(id)} ,$addToSet: { "allReviews": obj } }, {upsert:true}).then(function () {
                 return id;
             }).then(id => {
                 return this.getMovieById(id);
@@ -135,11 +136,21 @@ var exportedMethods = {
 
     getAllReviews(movieId) {
         return movie().then((movieCollection) => {
-            return movieCollection.find({ _id: movieId }).toArray().then((movieObj) => {
+            return movieCollection.find({ id: parseInt(movieId) }).toArray().then((res) => {
+              if (res.length > 0) {
+                return res[0].allReviews;
+              } else {
+                return {};
+              }
+                
+            });
+    /*then((movieObj) => {
+                console.log("all");console.log(movieObj.allReviews);
                 return movieObj.allReviews;
             }).catch((error) => {
+                 console.log("error");
                 return { error: error };
-            });
+            });*/
         });
     },
 
