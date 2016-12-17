@@ -34,7 +34,6 @@ class MovieDetailsPage extends React.Component {
       });
     axios.get('/movies/allreviews/' + this.props.params.id)
       .then(res => {
-        debugger;
         this.setState({ internalReviews: res.data});
       });
   }
