@@ -41,8 +41,8 @@ redisConnection.on('add-review:*', (data, channel) => {
     let reviewData = data.reviewData;
     let commentdate = new Date();
     var postReview = movieData.addReviewToMovie(movieId, userId,commentdate, reviewData);
-    postReview.then((movieInfo) => {
-            redisConnection.emit(`added-review:${messageId}`, movieInfo);
+    postReview.then((postReview) => {
+            redisConnection.emit(`added-review:${messageId}`, postReview);
     }).catch(error => {
         redisConnection.emit(`added-review-failed:${messageId}`, error);
     });
