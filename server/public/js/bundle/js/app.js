@@ -34457,17 +34457,22 @@
 	// import HomePage from './containers/HomePage.js';
 
 	function redirectToLogin(nextState, replace) {
+	  //   return axios.get('/user/authorized').then(res => {
+	  //      let data = res.data;
+	  //      console.log(data.authorized);
+	  //      console.log(auth.loggedIn());
+	  //      if(!data.authorized ||!auth.loggedIn()) {
+	  //        console.log("should redirect");
+	  //        replace('/login')
+	  //      }
+	  // });
 	  if (!_auth2.default.loggedIn()) {
 	    replace('/login');
 	  }
 	}
 
-	function redirectToLoginorHome(nextState, replace) {
-	  if (!_auth2.default.loggedIn()) {
-	    replace('/login');
-	  } else {
-	    replace('/home');
-	  }
+	function replaceWithHome(nextState, replace) {
+	  replace('/home');
 	}
 
 	function getAnalytics(nextState, replace) {
@@ -34492,8 +34497,7 @@
 	  component: _Base2.default,
 	  childRoutes: [{
 	    path: '/',
-	    component: _HomePage2.default,
-	    onEnter: redirectToLoginorHome
+	    onEnter: replaceWithHome
 	  }, {
 	    path: '/login',
 	    component: _LoginPage2.default
@@ -34526,13 +34530,6 @@
 	    path: '/account',
 	    component: _AccountPage2.default,
 	    onEnter: redirectToLogin
-	  },
-
-	  //match any other routes - redirect to home page
-	  {
-	    path: '/*',
-	    component: _HomePage2.default,
-	    onEnter: redirectToLoginorHome
 	  }]
 	};
 
@@ -34648,13 +34645,11 @@
 
 /***/ },
 /* 391 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	"use strict";
 
 	// var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-	var loggedIn = false;
-	var axios = __webpack_require__(461);
 
 	module.exports = {
 	  login: function login(username, password, cb) {
@@ -34709,40 +34704,8 @@
 	    this.onChange(false);
 	  },
 
-	  setLogin: function setLogin() {
-	    loggedIn = true;
-	  },
-	  unsetLogin: function unsetLogin() {
-	    loggedIn: false;
-	  },
-
-
 	  loggedIn: function loggedIn() {
 	    return !!localStorage.token;
-	    //  axios.get('/user/authorized').then(res => {
-	    //   //  let data = JSON.parse(res.data);
-	    //    let data = res.data;
-	    //    console.log(data.authorized);
-	    //   //    console.log(localStorage.token);
-	    //      if(data.authorized && localStorage.token){
-	    //        return true;
-	    //      }
-	    //      else{
-	    //        return false;
-	    //      }
-	    //   //  return !!localStorage.token
-	    // });
-
-	    // $.ajax(requestConfig).then((response) => {
-	    //   console.log(response);
-	    //   if (response.authorized && localStorage.token) {
-	    //     return true;
-	    //   }
-	    //   else {
-	    //     return false;
-	    //   }
-	    // });
-	    //return !!localStorage.token
 	  },
 
 	  onChange: function onChange() {}

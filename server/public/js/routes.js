@@ -13,18 +13,24 @@ import axios from 'axios';
 // import HomePage from './containers/HomePage.js';
 
 function redirectToLogin(nextState, replace) {
-  if (!auth.loggedIn()) {
-    replace('/login')
-  }
+  //   return axios.get('/user/authorized').then(res => {
+  //      let data = res.data;
+  //      console.log(data.authorized);
+  //      console.log(auth.loggedIn());
+  //      if(!data.authorized ||!auth.loggedIn()) {
+  //        console.log("should redirect");
+  //        replace('/login')
+  //      }
+  // });
+      if(!auth.loggedIn()) {
+         replace('/login')
+       }
+
+   
 }
 
-function redirectToLoginorHome(nextState, replace) {
-  if (!auth.loggedIn()) {
-    replace('/login')
-  }
-  else {
-    replace('/home')
-  }
+function replaceWithHome(nextState, replace){
+  replace('/home')
 }
 
 function getAnalytics(nextState, replace) {
@@ -51,8 +57,7 @@ const routes = {
 
     {
       path: '/',
-      component: HomePage,
-      onEnter: redirectToLoginorHome
+      onEnter: replaceWithHome
     },
 
     {
@@ -100,11 +105,10 @@ const routes = {
     },
 
     //match any other routes - redirect to home page
-    {
-      path: '/*',
-      component: HomePage,
-      onEnter: redirectToLoginorHome
-    }
+    // {
+    //   path: '/*',
+    //   onEnter: replaceWithHome
+    // }
 
   ]
 };

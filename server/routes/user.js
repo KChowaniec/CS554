@@ -21,7 +21,6 @@ var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 router.get('/user/authorized', function (req, res) {
     // check header parameters for token
     var token = req.session.token;
-    console.log(token);
     // decode token
     if (token) {
         // verifies secret
