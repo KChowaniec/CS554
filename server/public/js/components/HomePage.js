@@ -9,6 +9,7 @@ import axios from 'axios';
 import PlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 import PlaylistAddCheck from 'material-ui/svg-icons/av/playlist-add-check';
 import AutoComplete from 'material-ui/AutoComplete';
+import TextField from 'material-ui/TextField';
 
 const genres = [
     {
@@ -154,22 +155,6 @@ class SearchBar extends React.Component {
         }
     }
     additem(index){
-        // var _url = "/playlist/" + id;
-        // var add_movie = {
-        //     url: _url,
-        //     method: "POST",
-        //     contentType: "application/json"
-        // };
-        // $.ajax(add_movie).then(function(response){
-        //     if(response.success){
-        //         alert("Success : Movie added.");
-        //     }else{
-        //         alert("error : " + err);
-        //     }
-        // },function(err){
-        //     alert("error : " + err);
-        // });
-        // --------------------------------------------------------------
         if (!this.state.data[index].isAdded) {
             console.log("Add Movie Clicked "+this.state.data[index].id);
             var react_component = this;
@@ -292,18 +277,27 @@ class SearchBar extends React.Component {
             contentType: "application/json; charset=utf-8"
 
         };
+
         $.ajax(get_playlist).then(function(res){
             myplayList = res;            
         },function(err){
             console.log("error while getting user playlist : " + JSON.stringify(err));
         });
         var params = {
-            title : this.state.parameters.movie
+            title : this.state.parameters.movie,
+            actor : this.state.parameters.actor,
+            director : this.state.parameters.director,
+            genre : this.state.parameters.genre,
+            keywords : this.state.parameters.keywords
         };
         console.log('Getting query search : ' + JSON.stringify(params));
         var _url = "/search?";
-        _url += params.title ? ("title=" +params.title) +"&" : "";
-        
+        _url += params.title ? ("title=" + params.title) +"&" : "";
+        _url += params.actor ? ("actor=" + params.actor) +"&" : "";
+        _url += params.director ? ("director=" + params.director) +"&" : "";
+        _url += params.genre ? ("genre=" + params.genre) +"&" : "";
+        _url += params.keywords ? ("keywords=" + params.keywords) +"&" : "";
+        console.log('Search string : ' + _url);
         var getQueryStr = {
             url: _url,
             method: "GET",
@@ -311,35 +305,25 @@ class SearchBar extends React.Component {
         };
         var react_com = this;
         $.ajax(getQueryStr).then(function(response){
-            //console.log(' ************* Query String  ************** ');
+            
             
             if(response.success){
                 var qry_str = "/search/results/"+ react_com.state.currentPage + "?" + response.query;
-                //console.log(qry_str);
+                console.log(' ************* Query String  ************** ');
+                console.log(qry_str);
+                console.log(' ************* Query String  ************** ');
                 var getSearch_result = {
                     url : qry_str,
                     method :"GET",
                     contentType : "application/json"
                 };
                 $.ajax(getSearch_result).then(function(res){
-                    //console.log('Movies : ' + JSON.stringify(res));
-                    
-                    
+                    console.log('Movies : ' + JSON.stringify(res));
                     var newArr = res.movies;
-                    //console.log(' *************************************** ');
-                    //console.log(' movies list before filter');
-                    //console.log(JSON.stringify(newArr));
                     newArr = react_com.applyfilter(myplayList, newArr);
-                    //console.log("My Playlist : "+ JSON.stringify(myplayList));
-                    //console.log("Search Result : "+ JSON.stringify(newArr));
-                    //console.log(' movies list after filter');
                     console.log(newArr);
-                    //console.log(' *************************************** ');
-                    //console.log('Data size : ' + newArr.length);
                     var page = parseInt(res.page);
                     var totalPages = parseInt(res.total);
-                    //console.log('Current page index : ' + page);
-                    
                     if ((totalPages - page) > 0) {
                         react_com.setState({ currentPage: page });
                         newArr.push({
@@ -348,20 +332,18 @@ class SearchBar extends React.Component {
                             title: "Load More"
                         });
                     }
-                    //console.log('Data size : ' + newArr.length);
-                    //console.log(newArr);
                     react_com.setState({
                         data : newArr
                     });
                 },function(err2){
-                    console.log('Error  : ' + JSON.stringify(err2));    
+                    console.log('Get query string returned error  : ' + JSON.stringify(err2));    
                 });
             }else{
                 console.log('Error  : ' + JSON.stringify(response.error));
             }
             
         },function(err){
-            console.log('Error : ' + JSON.stringify(err));
+            console.log('Error in getting query string : ' + JSON.stringify(err));
         });
     }
 
@@ -374,38 +356,38 @@ class SearchBar extends React.Component {
     
     
     render(){
-
         console.log('rendering search bar');
         return (
             <div>
-               <Card className="container">
+                <Card className="container">
                     <form onSubmit={this.handleSubmit} id="search" >
-                    <h2 className="card-heading">Search for Movies</h2>
-                        <div className="form-group">
-                            <label>Movie :</label>
-                            <input
-                                className="form-control"
+                        <h2 className="card-heading">Matrix Search</h2>
+                        <div className="field-line">
+                            <TextField
+                                floatingLabelText="Movie Name"
+                                name="title"
                                 type="text" 
-                                placeholder="Movie" value={this.state.parameters.movie} 
+                                value={this.state.parameters.movie} 
                                 onChange={this.handleMovieNameChange} />
                         </div>
-                        <div className="form-group">
-                            <label>Actor :</label> 
-                            <input type="text" 
-                            className="form-control"
-                            placeholder="Actor" value={this.state.parameters.actor} 
+                        <div className="field-line">
+                            <TextField  
+                                floatingLabelText="Actor"
+                                name="actor"
+                                type="text" 
+                                value={this.state.parameters.actor} 
                                 onChange={this.handleActorChange}/>
                         </div>
-                        <div className="form-group">
-                            <label>Director :</label> 
-                            <input type="text" 
-                            className="form-control"
-                            placeholder="Director" value={this.state.parameters.director} 
+                        <div className="field-line">
+                            <TextField 
+                                type="text" 
+                                name="director"
+                                floatingLabelText="Director"
+                                value={this.state.parameters.director} 
                                 onChange={this.handleDirectorChange} />
                         </div>
-                        <div className="form-group">
-                            <label>Genre :</label> 
-                             <AutoComplete
+                        <div className="field-line">
+                                                   <AutoComplete
                                 floatingLabelText="Genres"
                                 filter={AutoComplete.fuzzyFilter}
                                 openOnFocus={true}
@@ -413,7 +395,15 @@ class SearchBar extends React.Component {
                                 dataSourceConfig={dataSourceConfig}
                         />
                         </div>
-                        <div className="form-group"> 
+                        <div className="field-line"> 
+                            <TextField 
+                                type="text" 
+                                name="keywords"
+                                floatingLabelText="Keywords" 
+                                value={this.state.parameters.keywords} 
+                                onChange={this.handleGenreChange} />
+                        </div>
+                        <div className="button-line">
                             <input type="submit" placeholder="Search" />
                         </div>
                         
