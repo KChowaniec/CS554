@@ -13,7 +13,6 @@ import axios from 'axios';
 // import HomePage from './containers/HomePage.js';
 
 function redirectToLogin(nextState, replace) {
-  let reacThis = this;
   axios.get('/user/authorized').then(res => {
     let data = res.data;
     if (!data.authorized || !auth.loggedIn()) {

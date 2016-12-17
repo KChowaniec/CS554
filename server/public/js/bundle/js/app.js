@@ -34457,7 +34457,6 @@
 	// import HomePage from './containers/HomePage.js';
 
 	function redirectToLogin(nextState, replace) {
-	  var reacThis = this;
 	  _axios2.default.get('/user/authorized').then(function (res) {
 	    var data = res.data;
 	    if (!data.authorized || !_auth2.default.loggedIn()) {
