@@ -8,6 +8,7 @@ import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 import axios from 'axios';
 import PlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 import PlaylistAddCheck from 'material-ui/svg-icons/av/playlist-add-check';
+import TextField from 'material-ui/TextField';
 
 class SearchBar extends React.Component {
     
@@ -194,13 +195,20 @@ class SearchBar extends React.Component {
             console.log("error while getting user playlist : " + JSON.stringify(err));
         });
         var params = {
-            title : this.state.parameters.movie
-
+            title : this.state.parameters.movie,
+            actor : this.state.parameters.actor,
+            director : this.state.parameters.director,
+            genre : this.state.parameters.genre,
+            keywords : this.state.parameters.keywords
         };
         console.log('Getting query search : ' + JSON.stringify(params));
         var _url = "/search?";
-        _url += params.title ? ("title=" +params.title) +"&" : "";
-        
+        _url += params.title ? ("title=" + params.title) +"&" : "";
+        _url += params.actor ? ("actor=" + params.actor) +"&" : "";
+        _url += params.director ? ("director=" + params.director) +"&" : "";
+        _url += params.genre ? ("genre=" + params.genre) +"&" : "";
+        _url += params.keywords ? ("keywords=" + params.keywords) +"&" : "";
+        console.log('Search string : ' + _url);
         var getQueryStr = {
             url: _url,
             method: "GET",
@@ -208,20 +216,20 @@ class SearchBar extends React.Component {
         };
         var react_com = this;
         $.ajax(getQueryStr).then(function(response){
-            //console.log(' ************* Query String  ************** ');
+            
             
             if(response.success){
                 var qry_str = "/search/results/"+ react_com.state.currentPage + "?" + response.query;
-                //console.log(qry_str);
+                console.log(' ************* Query String  ************** ');
+                console.log(qry_str);
+                console.log(' ************* Query String  ************** ');
                 var getSearch_result = {
                     url : qry_str,
                     method :"GET",
                     contentType : "application/json"
                 };
                 $.ajax(getSearch_result).then(function(res){
-                    //console.log('Movies : ' + JSON.stringify(res));
-                    
-                    
+                    console.log('Movies : ' + JSON.stringify(res));
                     var newArr = res.movies;
                     newArr = react_com.applyfilter(myplayList, newArr);
                     console.log(newArr);
@@ -239,14 +247,14 @@ class SearchBar extends React.Component {
                         data : newArr
                     });
                 },function(err2){
-                    console.log('Error  : ' + JSON.stringify(err2));    
+                    console.log('Get query string returned error  : ' + JSON.stringify(err2));    
                 });
             }else{
                 console.log('Error  : ' + JSON.stringify(response.error));
             }
             
         },function(err){
-            console.log('Error : ' + JSON.stringify(err));
+            console.log('Error in getting query string : ' + JSON.stringify(err));
         });
     }
 
@@ -259,54 +267,58 @@ class SearchBar extends React.Component {
     
     
     render(){
-
         console.log('rendering search bar');
         return (
             <div>
-                <div className="container">
+                <Card className="container">
                     <form onSubmit={this.handleSubmit} id="search" >
-                        <div className="form-group">
-                            <label>Movie :</label>
-                            <input
-                                className="form-control"
+                        <h2 className="card-heading">Matrix Search</h2>
+                        <div className="field-line">
+                            <TextField
+                                floatingLabelText="Movie Name"
+                                name="title"
                                 type="text" 
-                                placeholder="Movie" value={this.state.parameters.movie} 
+                                value={this.state.parameters.movie} 
                                 onChange={this.handleMovieNameChange} />
                         </div>
-                        <div className="form-group">
-                            <label>Actor :</label> 
-                            <input type="text" 
-                            className="form-control"
-                            placeholder="Actor" value={this.state.parameters.actor} 
+                        <div className="field-line">
+                            <TextField  
+                                floatingLabelText="Actor"
+                                name="actor"
+                                type="text" 
+                                value={this.state.parameters.actor} 
                                 onChange={this.handleActorChange}/>
                         </div>
-                        <div className="form-group">
-                            <label>Director :</label> 
-                            <input type="text" 
-                            className="form-control"
-                            placeholder="Director" value={this.state.parameters.director} 
+                        <div className="field-line">
+                            <TextField 
+                                type="text" 
+                                name="director"
+                                floatingLabelText="Director"
+                                value={this.state.parameters.director} 
                                 onChange={this.handleDirectorChange} />
                         </div>
-                        <div className="form-group">
-                            <label>Genre :</label> 
-                            <input type="text" 
-                            className="form-control"
-                            placeholder="Genre" value={this.state.parameters.genre} 
+                        <div className="field-line">
+                            <TextField 
+                                type="text" 
+                                name="genre"
+                                floatingLabelText="Genre" 
+                                value={this.state.parameters.genre} 
                                 onChange={this.handleGenreChange} />
                         </div>
-                        <div className="form-group">
-                            <label>Keywords :</label> 
-                            <input type="text" 
-                            className="form-control"
-                            placeholder="Keywords" value={this.state.parameters.keywords} 
+                        <div className="field-line"> 
+                            <TextField 
+                                type="text" 
+                                name="keywords"
+                                floatingLabelText="Keywords" 
+                                value={this.state.parameters.keywords} 
                                 onChange={this.handleGenreChange} />
                         </div>
-                        <div className="form-group"> 
+                        <div className="button-line">
                             <input type="submit" placeholder="Search" />
                         </div>
                         
                     </form>
-                </div>
+                </Card>
                 <div>
                     <div style={this.state.styles.root}>
                         <GridList className="container" style={this.state.styles.gridList} cols={2.2}>

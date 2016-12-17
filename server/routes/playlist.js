@@ -36,9 +36,9 @@ router.get("/", (req, res) => {
         redisConnection.off(`playlist-retrieved-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        console.log('response from get all playlist ');
-        if (playlist) {
-            console.log('Playlist : ' + playlist);
+        //console.log('response from get all playlist ');
+        if (playlist && playlist.playlistMovies) {
+            //console.log('Playlist : ' + playlist);
             var viewed = [];
             var unviewed = [];
             if (playlist.playlistMovies) {
