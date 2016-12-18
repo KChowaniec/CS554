@@ -8,7 +8,6 @@ import AnalyticsPage from './containers/AnalyticsPage.js';
 import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
-import AccountPage from './containers/AccountPage';
 import PreferencePage from './containers/PreferencePage'
 // import HomePage from './containers/HomePage.js';
 import AccountPage from './containers/AccountPage';
