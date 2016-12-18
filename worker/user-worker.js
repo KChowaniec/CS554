@@ -20,7 +20,7 @@ bluebird.promisifyAll(redis.Multi.prototype);
 
 const redisConnection = new NRP(config); // This is the NRP client
 
-//REGISTRATION WORKER 
+//REGISTRATION WORKER
 redisConnection.on('register-user:*', (data, channel) => {
     var messageId = data.requestId;
     var username = data.username;
@@ -168,10 +168,10 @@ redisConnection.on('login-user:*', (data, channel) => {
 
 //USER PREFERENCES WORKER
 redisConnection.on('get-preferences:*', (data, channel) => {
-  
+
     var messageId = data.requestId;
     var userId = data.userId;
-    //get preferences 
+    //get preferences
     var fullyComposeUser = userData
         .getUserPreferences(userId)
         .then((preferences) => {
@@ -298,16 +298,15 @@ redisConnection.on('update-year:*', (data, channel) => {
         }).catch((error) => {
             console.log(error)
             redisConnection.emit(`update-year-failed:${messageId}`, error);
-         
-        }
-                 
-                 });
-//SAVE USER PREFERENCES WORKER  
+
+        })
+});
+//SAVE USER PREFERENCES WORKER
 redisConnection.on('save-preferences:*', (data, channel) => {
     let messageId = data.requestId;
     let userId = data.userId;
     let preferences = data.preferences;
-    //get preferences 
+    //get preferences
     let fullyComposeUser = userData
         .saveUserPreferences(userId, preferences)
         .then((user) => {
