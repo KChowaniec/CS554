@@ -34454,18 +34454,21 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// import HomePage from './containers/HomePage.js';
-
-	function redirectToLogin(nextState, replace) {
+	function redirectToLogin(nextState, replace, callback) {
 	  _axios2.default.get('/user/authorized').then(function (res) {
 	    var data = res.data;
 	    if (!data.authorized || !_auth2.default.loggedIn()) {
+	      _auth2.default.logout();
 	      _reactRouter.browserHistory.push('/login');
+	      callback();
+	    } else {
+	      callback();
 	    }
 	  });
 	}
 
 	function replaceWithHome(nextState, replace) {
+
 	  replace('/home');
 	}
 
@@ -34650,7 +34653,6 @@
 	"use strict";
 
 	// var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-
 	module.exports = {
 	  login: function login(username, password, cb) {
 	    var _this = this;
@@ -34672,7 +34674,7 @@
 	      }
 	    });
 	  },
-	  register: function register(username, password, confirm, email, name, cb) {
+	  register: function register(token, cb) {
 	    var _this2 = this;
 
 	    cb = arguments[arguments.length - 1];
@@ -34681,21 +34683,32 @@
 	      this.onChange(true);
 	      return;
 	    }
-	    registerRequest(username, password, confirm, email, name, function (res) {
-	      if (res.authenticated) {
-	        localStorage.token = res.token;
-	        if (cb) cb(true);
-	        _this2.onChange(true);
-	      } else {
-	        if (cb) cb(false);
-	        _this2.onChange(false);
-	      }
+	    registration(token, function (res) {
+	      localStorage.token = res.token;
+	      if (cb) cb(true);
+	      _this2.onChange(true);
 	    });
+	    // registerRequest(username, password, confirm, email, name, (res) => {
+	    //   if (res.authenticated) {
+	    //     localStorage.token = res.token
+	    //     if (cb) cb(true)
+	    //     this.onChange(true)
+	    //   } else {
+	    //     if (cb) cb(false)
+	    //     this.onChange(false)
+	    //   }
+	    // })
 	  },
 
 
 	  getToken: function getToken() {
 	    return localStorage.token;
+	  },
+
+	  setToken: function setToken(token, cb) {
+	    localStorage.token = token;
+	    if (cb) cb(true);
+	    this.onChange(true);
 	  },
 
 	  logout: function logout(cb) {
@@ -34704,7 +34717,7 @@
 	    this.onChange(false);
 	  },
 
-	  loggedIn: function loggedIn() {
+	  loggedIn: function loggedIn(cb) {
 	    return !!localStorage.token;
 	  },
 
@@ -34744,6 +34757,14 @@
 	    }
 	  });
 	}
+
+	function registration(token, cb) {
+	  cb({
+	    authenticated: true,
+	    token: token
+	  });
+	}
+
 	function registerRequest(username, password, confirm, email, name, cb) {
 	  if (!username || !password || !confirm || !name || !email) {
 	    return cb({
@@ -34772,9 +34793,7 @@
 	    } else {
 	      cb({
 	        authenticated: false
-
 	      });
-	      //return responseMessage.errors;
 	    }
 	  });
 	}
@@ -51361,24 +51380,20 @@
 	        password: ''
 	      }
 	    };
+
 	    _this.processForm = _this.processForm.bind(_this);
 	    _this.changeUser = _this.changeUser.bind(_this);
 	    return _this;
 	  }
 
+	  /**
+	   * Process the form.
+	   *
+	   * @param {object} event - the JavaScript event object
+	   */
+
+
 	  _createClass(LoginPage, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      _auth2.default.logout();
-	    }
-
-	    /**
-	     * Process the form.
-	     *
-	     * @param {object} event - the JavaScript event object
-	     */
-
-	  }, {
 	    key: 'processForm',
 	    value: function processForm(event) {
 	      var _this2 = this;
@@ -51397,11 +51412,14 @@
 	        errors.password = "This field is required";
 	      }
 	      if (!jQuery.isEmptyObject(errors)) {
+	        errors.message = "Please correct the errors";
 	        return this.setState({ errors: errors });
 	      } else {
 	        _auth2.default.login(username, password, function (loggedIn) {
 	          if (!loggedIn) {
-	            return _this2.setState({ error: true });
+	            var _errors = {};
+	            _errors.message = "Invalid login";
+	            return _this2.setState({ error: true, errors: _errors });
 	          } else {
 	            _reactRouter.browserHistory.push('/home');
 	          }
@@ -51499,7 +51517,7 @@
 	      error && _react2.default.createElement(
 	        'p',
 	        { className: 'error-message' },
-	        'Invalid login credentials'
+	        errors.message
 	      ),
 	      _react2.default.createElement(
 	        'div',
@@ -51579,6 +51597,10 @@
 	var _auth = __webpack_require__(391);
 
 	var _auth2 = _interopRequireDefault(_auth);
+
+	var _axios = __webpack_require__(461);
+
+	var _axios2 = _interopRequireDefault(_axios);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51676,14 +51698,29 @@
 	        errors.confirm = "The confirmed password must match the original password";
 	      }
 	      if (!jQuery.isEmptyObject(errors)) {
+	        errors.message = "Please correct the errors";
 	        return this.setState({ errors: errors });
 	      } else {
-	        _auth2.default.register(username, password, confirm, email, name, function (loggedIn) {
-	          if (!loggedIn) {
-	            return _this2.setState({ error: true });
+	        _axios2.default.post('/user/register', {
+	          username: username,
+	          password: password,
+	          name: name,
+	          email: email,
+	          confirm: confirm
+	        }).then(function (res) {
+	          var data = res.data;
+	          if (data.success) {
+	            _auth2.default.register(data.token, function (loggedIn) {
+	              if (loggedIn) {
+	                _this2.setState({ error: false });
+	                _reactRouter.browserHistory.push('/home');
+	              }
+	            });
 	          } else {
-	            _this2.setState({ error: false });
-	            _reactRouter.browserHistory.push('/home');
+	            var _errors = {};
+	            _errors.message = data.errors;
+
+	            _this2.setState({ error: true, errors: _errors });
 	          }
 	        });
 	      }
@@ -51761,7 +51798,7 @@
 	      error && _react2.default.createElement(
 	        'p',
 	        { className: 'error-message' },
-	        'Please correct the errors'
+	        errors.message
 	      ),
 	      _react2.default.createElement(
 	        'div',
@@ -51976,7 +52013,9 @@
 	            _axios2.default.get('/user').then(function (res) {
 	                var userInfo = {};
 	                var data = JSON.parse(res.data.user);
-	                userInfo.email = data.profile.email;
+	                if (data.profile.email) {
+	                    userInfo.email = data.profile.email;
+	                }
 	                userInfo.password = '';
 	                userInfo.confirm = '';
 	                return _this2.setState({ user: userInfo });

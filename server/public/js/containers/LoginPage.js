@@ -20,11 +20,9 @@ class LoginPage extends React.Component {
         password: ''
       }
     };
+
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
-  }
-  componentDidMount() {
-    auth.logout();
   }
 
   /**
@@ -39,7 +37,7 @@ class LoginPage extends React.Component {
     // create a string for an HTTP body message
     const username = this.state.user.username;
     const password = this.state.user.password;
-    var errors = {};
+    let errors = {};
     if (!username) {
       errors.username = "This field is required";
     }
@@ -47,13 +45,15 @@ class LoginPage extends React.Component {
       errors.password = "This field is required";
     }
     if (!jQuery.isEmptyObject(errors)) {
+      errors.message = "Please correct the errors";
       return this.setState({ errors })
     }
     else {
       auth.login(username, password, (loggedIn) => {
         if (!loggedIn) {
-          return this.setState({ error: true })
-
+          let errors = {};
+          errors.message = "Invalid login";
+          return this.setState({ error: true, errors: errors })
         }
         else {
           browserHistory.push('/home');

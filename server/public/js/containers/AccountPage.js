@@ -32,7 +32,9 @@ class AccountPage extends React.Component {
             .then(res => {
                 let userInfo = {};
                 let data = JSON.parse(res.data.user);
-                userInfo.email = data.profile.email;
+                if (data.profile.email) {
+                    userInfo.email = data.profile.email;
+                }
                 userInfo.password = '';
                 userInfo.confirm = '';
                 return this.setState({ user: userInfo });

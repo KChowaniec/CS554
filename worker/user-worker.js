@@ -20,7 +20,7 @@ bluebird.promisifyAll(redis.Multi.prototype);
 
 const redisConnection = new NRP(config); // This is the NRP client
 
-//REGISTRATION WORKER  - add token information to session
+//REGISTRATION WORKER 
 redisConnection.on('register-user:*', (data, channel) => {
     var messageId = data.requestId;
     var username = data.username;
@@ -34,7 +34,7 @@ redisConnection.on('register-user:*', (data, channel) => {
         name: name,
         email: email
     };
-    
+
     var title = "My Playlist";
     var verifyUsername = userData.checkUserExist(username);
     verifyUsername.then((result) => {
@@ -53,8 +53,7 @@ redisConnection.on('register-user:*', (data, channel) => {
                 });
         }
         else {
-            var error = {};
-            error.username = "Username already exists";
+            let error = "Username '" + username + "' already exists";
             redisConnection.emit(`user-registered-failed:${messageId}`, error);
         }
     }).catch((error) => {

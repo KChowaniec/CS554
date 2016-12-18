@@ -10,19 +10,24 @@ import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
 import AccountPage from './containers/AccountPage';
 import axios from 'axios';
-// import HomePage from './containers/HomePage.js';
 
-function redirectToLogin(nextState, replace) {
+function redirectToLogin(nextState, replace, callback) {
   axios.get('/user/authorized').then(res => {
     let data = res.data;
     if (!data.authorized || !auth.loggedIn()) {
+      auth.logout();
       browserHistory.push('/login');
+      callback();
+    }
+    else {
+      callback();
     }
   });
 }
 
 function replaceWithHome(nextState, replace) {
-  replace('/home')
+  
+  replace('/home');
 }
 
 function getAnalytics(nextState, replace) {
