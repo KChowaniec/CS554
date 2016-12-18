@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import SignUpForm from '../components/SignUpForm.js';
 import { browserHistory } from 'react-router';
 import auth from '../utils/auth.js';
+import axios from 'axios';
 
 class SignUpPage extends React.Component {
 
@@ -78,17 +79,33 @@ class SignUpPage extends React.Component {
       errors.confirm = "The confirmed password must match the original password";
     }
     if (!jQuery.isEmptyObject(errors)) {
+      errors.message = "Please correct the errors";
       return this.setState({ errors })
     }
     else {
-      auth.register(username, password, confirm, email, name, (loggedIn) => {
-        if (!loggedIn) {
-          return this.setState({ error: true })
+      axios.post('/user/register', {
+        username: username,
+        password: password,
+        name: name,
+        email: email,
+        confirm: confirm
+      }).then(res => {
+        let data = res.data;
+        if (data.success) {
+          auth.register(data.token, (loggedIn) => {
+            if (loggedIn) {
+              this.setState({ error: false })
+              browserHistory.push('/home');
+            }
+
+          });
+        } else {
+          let errors = {};
+          errors.message = data.errors;
+
+          this.setState({ error: true, errors: errors })
         }
-        else {
-          this.setState({error: false})
-          browserHistory.push('/home');
-        }
+
       });
     }
   }

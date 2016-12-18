@@ -45,13 +45,15 @@ class LoginPage extends React.Component {
       errors.password = "This field is required";
     }
     if (!jQuery.isEmptyObject(errors)) {
+      errors.message = "Please correct the errors";
       return this.setState({ errors })
     }
     else {
       auth.login(username, password, (loggedIn) => {
         if (!loggedIn) {
-          return this.setState({ error: true })
-
+          let errors = {};
+          errors.message = "Invalid login";
+          return this.setState({ error: true, errors: errors })
         }
         else {
           browserHistory.push('/home');

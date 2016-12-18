@@ -22,7 +22,7 @@ const redisConnection = new NRP(config); // This is the NRP client
 //QUERY STRING FOR MOVIE API WORKER
 redisConnection.on('create-query:*', (data, channel) => {
     var messageId = data.requestId;
-    //console.log('received message @create-query with message id : ' + messageId);
+    console.log('received message @create-query with message id : ' + messageId);
     var query = data.query;
     var title = data.title;
     //helper functions
@@ -82,8 +82,18 @@ redisConnection.on('create-query:*', (data, channel) => {
         }
         else {
             //SEARCH BY CRITERIA
-            var criteriaString = formData.createQueryString(actorList, query.genre, crewList, query.rating, query.evaluation, query.year, keywordList);
-            redisConnection.emit(`query-created:${messageId}`, criteriaString);
+            try{
+                console.log('@ create-query : Search by criteria');
+
+                var criteriaString = formData.createQueryString(actorList, query.genre, crewList, query.rating, query.evaluation, query.year, keywordList);
+                
+                console.log('@ Criteria string : ' + criteriaString);
+                
+                redisConnection.emit(`query-created:${messageId}`, criteriaString);
+            }catch(e){
+                console.log('Error : ' + e );
+            }
+            
         }
     }).catch(error => {
         redisConnection.emit(`query-created-failed:${messageId}`, error);
@@ -92,12 +102,14 @@ redisConnection.on('create-query:*', (data, channel) => {
 
 //SEARCH MOVIES API WORKER
 redisConnection.on('search-movies:*', (data, channel) => {
+    console.log('in search worker function');
     var messageId = data.requestId;
     var pageId = data.page;
     var queryString = data.queryString;
     var title = data.title;
 
-    if (title !== undefined) { //search by title
+    if (title !== undefined && title != "") { //search by title
+        console.log('Search by title');
         var result = apiData.searchByTitle(title, pageId);
         result.then((movies) => {
             var movielist = formData.formatReleaseDate(movies.results);
@@ -114,6 +126,7 @@ redisConnection.on('search-movies:*', (data, channel) => {
         });
     }
     else { //search by criteria
+        console.log('Search by criteria');
         var result = apiData.searchByCriteria(queryString, pageId);
         result.then((movies) => {
             var pages = movies.total_pages;
@@ -124,8 +137,10 @@ redisConnection.on('search-movies:*', (data, channel) => {
                 total: total,
                 pages: pages
             };
+            console.log('Result : ' + movieObj);
             redisConnection.emit(`movies-retrieved:${messageId}`, movieObj);
         }).catch(error => {
+            console.log('Error : ' + error);
             redisConnection.emit(`movies-retrieved-failed:${messageId}`, error);
         });
     }

@@ -39,7 +39,7 @@ var exportedMethods = {
         if (!release) return Promise.reject("Release date must be provided");
         // if (!review) return Promise.reject("User rating must be provided");
         return history().then((historyCollection) => {
-            let movieObj = {
+            var movieObj = {
                 _id: movieId,
                 genre: genre,
                 rated: rating,

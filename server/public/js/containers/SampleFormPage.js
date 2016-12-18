@@ -79,7 +79,7 @@ class HomePage extends React.Component {
                 parseWords: keywords
             })
         };
-        let reactThis = this;
+        var reactThis = this;
         $.ajax(requestConfig).then((responseMessage) => {
             if (responseMessage.success) {
                 console.log(responseMessage);

@@ -32,6 +32,7 @@ const Base = React.createClass({
               <div>
                 <Link to="/account">My Account</Link>
                 <Link to="/preference">Preferences</Link>
+                <Link to="/">Movie Search</Link>
                 <Link to="/playlist">My Playlist</Link>
                 <Link to="/analytics">Movie Analytics</Link>
                 <Link to="/logout">Log out</Link>

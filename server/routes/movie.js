@@ -11,6 +11,7 @@ var movies = data.movie;
 var uuid = require('node-uuid');
 var api = data.api;
 var router = express.Router();
+var xss = require('xss'); 
 
 //get movie details
 router.get('/detail/:id', function (req, res) {
@@ -138,11 +139,10 @@ router.get('/reviews/:id', function (req, res) {
 });
 
 //ADD REVIEW TO MOVIE
-router.post("/reviews/add/:movieId", (req, res) => {
-    let movieId = req.params.movieId;
-	let reviewData = xss(req.body);
-    let userId = req.session.userId;
-
+router.post("/reviews/add/", (req, res) => {
+    let movieId = req.body.movieId;
+	let reviewData = xss(req.body.review);
+    let userId = req.session.name;
     let redisConnection = req
         .app
         .get("redis");

@@ -1,5 +1,4 @@
 // var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-
 module.exports = {
   login(username, password, cb) {
     cb = arguments[arguments.length - 1]
@@ -20,27 +19,38 @@ module.exports = {
     })
   },
 
-  register(username, password, confirm, email, name, cb) {
+  register(token, cb) {
     cb = arguments[arguments.length - 1]
     if (localStorage.token) {
       if (cb) cb(true)
       this.onChange(true)
       return
     }
-    registerRequest(username, password, confirm, email, name, (res) => {
-      if (res.authenticated) {
-        localStorage.token = res.token
-        if (cb) cb(true)
-        this.onChange(true)
-      } else {
-        if (cb) cb(false)
-        this.onChange(false)
-      }
+    registration(token, (res) => {
+      localStorage.token = res.token
+      if (cb) cb(true)
+      this.onChange(true)
     })
+    // registerRequest(username, password, confirm, email, name, (res) => {
+    //   if (res.authenticated) {
+    //     localStorage.token = res.token
+    //     if (cb) cb(true)
+    //     this.onChange(true)
+    //   } else {
+    //     if (cb) cb(false)
+    //     this.onChange(false)
+    //   }
+    // })
   },
 
   getToken: function () {
     return localStorage.token
+  },
+
+  setToken: function (token, cb) {
+    localStorage.token = token;
+    if (cb) cb(true)
+    this.onChange(true)
   },
 
   logout: function (cb) {
@@ -49,20 +59,8 @@ module.exports = {
     this.onChange(false)
   },
 
-  loggedIn: function () {
- //   if (localStorage.token) {
-    //   jwt.verify(token, 'secretkey', function (err, decoded) {
-    //     if (err) {
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    //   });
-    // }
-    // else {
-    //   return false;
-    // }
-     return !!localStorage.token
+  loggedIn: function (cb) {
+    return !!localStorage.token
   },
 
 
@@ -103,6 +101,14 @@ function loginRequest(username, password, cb) {
   });
 
 }
+
+function registration(token, cb) {
+  cb({
+    authenticated: true,
+    token: token
+  })
+}
+
 function registerRequest(username, password, confirm, email, name, cb) {
   if (!username || !password || !confirm || !name || !email) {
     return cb({
@@ -132,7 +138,7 @@ function registerRequest(username, password, confirm, email, name, cb) {
       cb({
         authenticated: false
       })
-      return responseMessage.errors;
     }
   });
 }
+

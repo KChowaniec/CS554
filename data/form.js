@@ -23,8 +23,8 @@ var exportedMethods = {
             query = query + "&primary_release_year=" + year;
         }
         else if (!year) { //reformat release date
-            let currentDate = new Date();
-            let formatDate = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate();
+            var currentDate = new Date();
+            var formatDate = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate();
             query = query + "&primary_release_date.lte=" + formatDate;
         }
 

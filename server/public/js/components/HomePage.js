@@ -1,68 +1,104 @@
 import React from 'react';
-import { Card, CardTitle } from 'material-ui/Card';
+import { Card, CardTitle, CardText } from 'material-ui/Card';
 import { browserHistory, Router, Route, Link, withRouter } from 'react-router'
+import { GridList, GridTile } from 'material-ui/GridList';
+import IconButton from 'material-ui/IconButton';
+import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
+import axios from 'axios';
+import RaisedButton from 'material-ui/RaisedButton';
+import PlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
+import PlaylistAddCheck from 'material-ui/svg-icons/av/playlist-add-check';
+import AutoComplete from 'material-ui/AutoComplete';
+import TextField from 'material-ui/TextField';
 
-
-
-class Banner extends React.Component {
-    constructor(){
-        super();
-        this.state = {
-            item : {}
-        };
+const genres = [
+    {
+        textKey: 'Action',
+        valueKey: 28
+    },
+    {
+        textKey: 'Adventure',
+        valueKey: 12
+    },
+    {
+        textKey: 'Animation',
+        valueKey: 16
+    },
+    {
+        textKey: 'Comedy',
+        valueKey: 35
+    },
+    {
+        textKey: 'Crime',
+        valueKey: 80
+    },
+    {
+        textKey: 'Documentary',
+        valueKey: 99
+    },
+    {
+        textKey: 'Drama',
+        valueKey: 18
+    },
+    {
+        textKey: 'Family',
+        valueKey: 10751
+    },
+    {
+        textKey: 'Fantasy',
+        valueKey: 14
+    },
+    {
+        textKey: 'Foreign',
+        valueKey: 10769
+    },
+    {
+        textKey: 'History',
+        valueKey: 36
+    },
+    {
+        textKey: 'Horror',
+        valueKey: 27
+    },
+    {
+        textKey: 'Music',
+        valueKey: 10402
+    },
+    {
+        textKey: 'Mystery',
+        valueKey: 9648
+    },
+    {
+        textKey: 'Romance',
+        valueKey: 10749
+    },
+    {
+        textKey: 'Science Fiction',
+        valueKey: 878
+    },
+    {
+        textKey: 'TV Movie',
+        valueKey: 10770
+    },
+    {
+        textKey: 'Thriller',
+        valueKey: 53
+    },
+    {
+        textKey: 'War',
+        valueKey: 10752
+    },
+    {
+        textKey: 'Western',
+        valueKey: 37
     }
+];
 
-    render() {
-        const banner_style = {
-            maxWidth: '20%',
-            flexGrow : '1'
-        };
-
-        return (
-            <div className="col-md-3">
-            <div className="ca-hover">
-                <div className="carouselAvatar av4">
-                  <div className="carouselImg">
-                    <img  src={this.props.item.avatar} alt = {this.props.item.avatar} />
-                  </div>
-                </div>
-                <div className="carouselContent">
-                    <h3>{this.props.item.original_title}</h3>
-                    <p>{this.props.item.overview}</p>
-                </div>
-                <div className="overlay"></div>
-            </div>
-            </div>
-        )
-    }
-}
-
-class Banners extends React.Component {
-    constructor(){
-        super();
-        this.state = {
-            playlist : []
-        };
-    }
-    changeplaylist(_playlist){
-      console.log('In changeplaylist');
-      console.log('New Playlist : ' + JSON.stringify(_playlist));
-        this.setState({playlist : _playlist});
-    }
-    render() {
-        //const playlist = [];
-        return (
-
-            <div className ="container carousel flexcontainer">
-                <div className="row">
-                    {this.props.playlist.map(function(item_element) {
-                        return <Banner item={item_element}/>;
-                    })}
-                </div>
-            </div>
-        );
-    }
-}
+const dataSourceConfig = {
+    text: 'textKey',
+    value: 'valueKey',
+};
 
 class SearchBar extends React.Component {
 
@@ -72,19 +108,78 @@ class SearchBar extends React.Component {
         // set the initial component state
         this.state = {
             errors: {},
-            data :[],
+            data: [],
+            styles: {
+
+                titleStyle: {
+                    color: 'rgb(0, 0, 0)',
+                    fontWeight: 'bold'
+                },
+                root: {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-around',
+                },
+                gridList: {
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                },
+                imageStyle: {
+                    height: '200px',
+                    width: '200px',
+                }
+            },
             parameters: {
                 movie: '',
                 actor: '',
-                director:'',
-                genre:''
-            }
+                director: '',
+                genre: ''
+            },
+            currentPage: 1
         };
+
         this.handleMovieNameChange = this.handleMovieNameChange.bind(this);
         this.handleActorChange = this.handleActorChange.bind(this);
         this.handleDirectorChange = this.handleDirectorChange.bind(this);
         this.handleGenreChange = this.handleGenreChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    itemClicked(id) {
+        console.log("itemClicked Clicked");
+        if (id !== "next") {
+            console.log("Item Clicked: " + id);
+            browserHistory.push('/movie/' + id);
+        } else {
+            console.log("Next Clicked");
+            this.getQueryStr_Movies();
+        }
+    }
+    additem(index) {
+        if (!this.state.data[index].isAdded) {
+            console.log("Add Movie Clicked " + this.state.data[index].id);
+            var react_component = this;
+            var movie_index = index;
+
+            axios.post('/playlist/' + this.state.data[index].id)
+                .then(res => {
+                    if (res.data.success === true) {
+                        console.log("Movie Added");
+                        //[movie_index].isAdded = true;
+                        var arr_search = react_component.state.data;
+                        arr_search[movie_index].isAdded = true;
+                        react_component.setState({
+                            data: arr_search
+                        });
+                        alert("Success : Movie added.");
+                    } else {
+                        console.log("Movie NOT Added");
+                        alert("There was some problem in adding movie to the playlist.");
+                    }
+                });
+        } else {
+            alert("Movie Already Added");
+        }
     }
 
     handleMovieNameChange(event) {
@@ -96,7 +191,7 @@ class SearchBar extends React.Component {
         //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
 
-        this.setState({parameters});
+        this.setState({ parameters });
     }
 
     handleActorChange(event) {
@@ -108,7 +203,7 @@ class SearchBar extends React.Component {
         //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
 
-        this.setState({parameters});
+        this.setState({ parameters });
     }
 
     handleDirectorChange(event) {
@@ -120,7 +215,7 @@ class SearchBar extends React.Component {
         //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
 
-        this.setState({parameters});
+        this.setState({ parameters });
     }
 
     handleGenreChange(event) {
@@ -131,227 +226,259 @@ class SearchBar extends React.Component {
         const parameters = this.state.parameters;
         //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
-
-        this.setState({parameters});
+        console.log(event.target.value);
+        this.setState({ parameters });
     }
 
-    applyfilter(playlist){
-        var parameters = this.state.parameters;
-        var filtered_datasource = [];
-        if(parameters.movie){
+    handleUpdateInput(value) {
+        //map text value to id
+        var result = genres.filter(function (key) { return (key.textKey === value) });
+        let genreId = result[0].valueKey;
+    };
 
-            playlist.forEach(function(movie) {
-                if(toString(movie.original_title).toLowerCase() == toString(parameters.movie).toLowerCase())
-                    filtered_datasource.push(movie);
+
+    applyfilter(playlist, searchResult) {
+
+        var ids = [];
+        var filter_indexes = [];
+
+        console.log('Playlist Ids : ' + ids);
+        var index = 0;
+        var isFound = false;
+
+        console.log('Pre Filter');
+        searchResult.forEach(function (element) {
+            //if(element.title == "300")
+            console.log('Id: ' + element.id + ' title' + element.title + ' isAdded' + element.isAdded);
+        }, this);
+
+        var counter = 0;
+        searchResult.forEach(function (search_item) {
+            //console.log('id : ' + element.id + 'is in ids array @ : ' + ids.indexOf(element.id));
+            playlist.forEach(function (pl_item) {
+                console.log('Search Item id : ' + search_item.id + " is compared with pl item id : " + pl_item._id + ' and the result is : ' + search_item.id == pl_item._id);
+                if (search_item.id == pl_item._id)
+                    filter_indexes.push(counter);
             }, this);
+            counter++;
+        }, this);
 
-        }else{
+        filter_indexes.forEach(function (index) {
+            searchResult[index].isAdded = true;
+        }, this);
 
-        }
-        return filtered_datasource;
+        //console.log('filtered Indexes : ' + filter_indexes);
+        console.log('Post Filter');
+        searchResult.forEach(function (element) {
+            //if(element.title == "300")
+            console.log('Id: ' + element.id + ' title' + element.title + ' isAdded' + element.isAdded);
+        }, this);
+        return searchResult;
     }
 
-    handleSubmit(event) {
 
-        event.preventDefault();
+    getQueryStr_Movies() {
+        var myplayList = [];
+        var get_playlist = {
+            url: "/playlist",
+            method: "GET",
+            contentType: "application/json; charset=utf-8"
+
+        };
+
+        $.ajax(get_playlist).then(function (res) {
+            myplayList = res;
+        }, function (err) {
+            console.log("error while getting user playlist : " + JSON.stringify(err));
+        });
         var params = {
-            title : this.state.parameters.movie
+            title: this.state.parameters.movie,
+            actor: this.state.parameters.actor,
+            director: this.state.parameters.director,
+            genre: this.state.parameters.genre,
+            keywords: this.state.parameters.keywords
         };
         console.log('Getting query search : ' + JSON.stringify(params));
         var _url = "/search?";
-        _url += params.title ? ("title=" +params.title) +"&" : "";
-
+        _url += params.title ? ("title=" + params.title) + "&" : "";
+        _url += params.actor ? ("actor=" + params.actor) + "&" : "";
+        _url += params.director ? ("director=" + params.director) + "&" : "";
+        _url += params.genre ? ("genre=" + params.genre) + "&" : "";
+        _url += params.keywords ? ("keywords=" + params.keywords) + "&" : "";
+        console.log('Search string : ' + _url);
         var getQueryStr = {
             url: _url,
             method: "GET",
             contentType: "application/json; charset=utf-8"
         };
         var react_com = this;
-        $.ajax(getQueryStr).then(function(response){
-            console.log(' ************* Query String  ************** ');
+        $.ajax(getQueryStr).then(function (response) {
 
 
-            if(response.success){
-                var qry_str = "/search/results/1?" + response.query;
+            if (response.success) {
+                var qry_str = "/search/results/" + react_com.state.currentPage + "?" + response.query;
+                console.log(' ************* Query String  ************** ');
                 console.log(qry_str);
+                console.log(' ************* Query String  ************** ');
                 var getSearch_result = {
-                    url : qry_str,
-                    method :"GET",
-                    contentType : "application/json"
+                    url: qry_str,
+                    method: "GET",
+                    contentType: "application/json"
                 };
-                $.ajax(getSearch_result).then(function(res){
+                $.ajax(getSearch_result).then(function (res) {
                     console.log('Movies : ' + JSON.stringify(res));
-
+                    var newArr = res.movies;
+                    newArr = react_com.applyfilter(myplayList, newArr);
+                    console.log(newArr);
+                    var page = parseInt(res.page);
+                    var totalPages = parseInt(res.total);
+                    if ((totalPages - page) > 0) {
+                        react_com.setState({ currentPage: page });
+                        newArr.push({
+                            id: "next",
+                            poster_path: "/public/images/next.png",
+                            title: "Load More"
+                        });
+                    }
                     react_com.setState({
-                        data : res.movies
+                        data: newArr
                     });
-                },function(err2){
-                    console.log('Error  : ' + JSON.stringify(err2));
+                }, function (err2) {
+                    console.log('Get query string returned error  : ' + JSON.stringify(err2));
                 });
-            }else{
+            } else {
                 console.log('Error  : ' + JSON.stringify(response.error));
             }
 
-        },function(err){
-            console.log('Error : ' + JSON.stringify(err));
-        })
-        /*
+        }, function (err) {
+            console.log('Error in getting query string : ' + JSON.stringify(err));
+        });
+    }
 
-        var query_str = {
-            movie : this.state.parameters.movie,
-            actor : this.state.parameters.actor,
-            director : this.state.parameters.director,
-            genre : this.state.parameters.genre
-        };
-        var get_myPL = {
-            url: "/results/0",
-            method: "GET",
-            contentType: "application/json"
+    handleSubmit(event) {
 
-        };
-        var react_comp = this;
-        $.ajax(get_myPL).then(function(response) {
-        console.log("handleSubmit : " + JSON.stringify(response));
-            //console.log('User Info : ' + JSON.stringify(response));
-            var data = response;
-            console.log("Playlist from Server : " + data);
+        event.preventDefault();
+        this.getQueryStr_Movies();
 
-            // following has to be uncommented
-            //this.setState({ data : data });
-            this.setState({data : playlist_fake});
-        },function(err){
-        console.log("handleSubmit : " + err);
-        console.log("error : " + err);
-        react_comp.setState({
-            data : []
-            });
-        });*/
     }
 
 
-    render(){
-
+    render() {
         console.log('rendering search bar');
         return (
             <div>
-                <div className="container">
-                    <form
-                      onSubmit={this.handleSubmit} id="search" >
-                        <div className="form-group">
-                            <label>Movie :</label>
-                            <input
-                                className="form-control"
+                <Card className="container">
+                    <form onSubmit={this.handleSubmit} id="search" >
+                        <h2 className="card-heading">Matrix Search</h2>
+                        <div className="field-line">
+                            <TextField
+                                floatingLabelText="Movie Name"
+                                name="title"
                                 type="text"
-                                placeholder="Movie" value={this.state.parameters.movie}
+                                value={this.state.parameters.movie}
                                 onChange={this.handleMovieNameChange} />
                         </div>
-                        <div className="form-group">
-                            <label>Actor :</label>
-                            <input type="text"
-                                   className="form-control"
-                            placeholder="Actor" value={this.state.parameters.actor}
-                                onChange={this.handleActorChange}/>
+                        <div className="field-line">
+                            <TextField
+                                floatingLabelText="Actor"
+                                name="actor"
+                                type="text"
+                                value={this.state.parameters.actor}
+                                onChange={this.handleActorChange} />
                         </div>
-                        <div className="form-group">
-                            <label>Director :</label>
-                            <input type="text"
-                                   className="form-control"
-                            placeholder="Director" value={this.state.parameters.director}
+                        <div className="field-line">
+                            <TextField
+                                type="text"
+                                name="director"
+                                floatingLabelText="Crew"
+                                value={this.state.parameters.director}
                                 onChange={this.handleDirectorChange} />
                         </div>
-                        <div className="form-group">
-                            <label>Genre :</label>
-                            <input type="text"
-                                   className="form-control"
-                            placeholder="Genre" value={this.state.parameters.genre}
+                        <div className="field-line">
+                            <AutoComplete
+                                floatingLabelText="Genres"
+                                filter={AutoComplete.fuzzyFilter}
+                                openOnFocus={true}
+                                dataSource={genres}
+                                onUpdateInput={this.handleUpdateInput}
+                                dataSourceConfig={dataSourceConfig}
+                                />
+                        </div>
+                        <div className="field-line">
+                            <TextField
+                                type="text"
+                                name="keywords"
+                                floatingLabelText="Keywords"
+                                value={this.state.parameters.keywords}
                                 onChange={this.handleGenreChange} />
                         </div>
-                        <div className="form-group">
-                            <input type="submit" placeholder="Search" />
+                        <div className="button-line">
+                            <RaisedButton type="submit" label="Submit" primary />
+                            <CardText>Save preferences? <RaisedButton type="button" label="Save" secondary /></CardText>
                         </div>
 
                     </form>
-                </div>
+                </Card>
                 <div>
-                    <Banners playlist={this.state.data}/>
+                    <div style={this.state.styles.root}>
+                        <GridList className="container" style={this.state.styles.gridList} cols={2.2}>
+                            {this.state.data.map((tile, i) => (
+                                <GridTile
+                                    key={i}
+                                    title={tile.title}
+                                    actionIcon={tile.id === "next" ? null : <IconButton onClick={this.additem.bind(this, i)}>{tile.isAdded ? (<PlaylistAddCheck color="rgb(0, 0, 0)" />) : (<PlaylistAdd color="rgb(0, 0, 0)" />)}</IconButton>}
+                                    titleStyle={this.state.styles.titleStyle}
+                                    titleBackground="linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)"
+                                    >
+                                    <img style={this.state.styles.imageStyle}
+                                        onClick={this.itemClicked.bind(this, tile.id)}
+                                        src={tile.id == "next" ? tile.poster_path : (
+                                            tile.poster_path === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path
+                                        )} />
+                                </GridTile>
+                            ))}
+                        </GridList>
+                    </div>
                 </div>
             </div>
         );
     }
 }
 
-const HomePage =  withRouter(React.createClass({
-  api:"e443ee14fb107feee75db8b448e6a13e",
-  getInitialState: function() {
-		return {data: [], mounted: false};
-	},
-  // getInitialState : function() {
-  //   console.log('Initial State');
-  //   return {title : "Title is Null"}
-  // },
-  // <Banners playlist={this.state.data}/>);
-  componentWillReceiveProps : function(nextProps){
+const HomePage = withRouter(React.createClass({
+    api: "e443ee14fb107feee75db8b448e6a13e",
+    getInitialState: function () {
+        return { data: [], mounted: false };
+    },
+    // getInitialState : function() {
+    //   console.log('Initial State');
+    //   return {title : "Title is Null"}
+    // },
+    // <Banners playlist={this.state.data}/>);
+    componentWillReceiveProps: function (nextProps) {
 
-	this.setState({ mounted: false });
-  },
-  componentDidMount : function(){
+        this.setState({ mounted: false });
+    },
+    componentDidMount: function () {
 
-	this.setState({ mounted: true });
-  },
+        this.setState({ mounted: true });
+    },
 
 
-  render: function(){
-    console.log('In Home Page Component');
-    // return (<Card className="container">
-    //           <CardTitle title={this.state.title} subtitle="This is the home page." />
-    //         </Card>  );
-    //return ( <Banners playlist={playlist_fake}/>);
-    //if(this.state.data) {
-    return (<div>
-                <SearchBar />
-            </div>);
-    //}
-  }
+    render: function () {
+        console.log('In Home Page Component');
+        // return (<Card className="container">
+        //           <CardTitle title={this.state.title} subtitle="This is the home page." />
+        //         </Card>  );
+        //return ( <Banners playlist={playlist_fake}/>);
+        //if(this.state.data) {
+        return (<div>
+            <SearchBar />
+        </div>);
+        //}
+    }
 }
+
 ));
-
-
-var playlist_fake = [{
-      poster_path: "/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg",
-      adult: false,
-      overview: "Framed in the 1940s for the double murder of his wife and her lover, upstanding banker Andy Dufresne begins a new life at the Shawshank prison, where he puts his accounting skills to work for an amoral warden. During his long stretch in prison, Dufresne comes to be admired by the other inmates -- including an older prisoner named Red -- for his integrity and unquenchable sense of hope.",
-      "release_date": "1994-09-10",
-      genre_ids: [
-        18,
-        80
-      ],
-      id: 278,
-      original_title: "The Shawshank Redemption",
-      original_language: "en",
-      title: "The Shawshank Redemption",
-      backdrop_path: "/xBKGJQsAIeweesB79KC89FpBrVr.jpg",
-      popularity: 8.301492,
-      vote_count: 5636,
-      video: false,
-      vote_average: 8.4
-    },{
-      poster_path: "/jLRllZsubY8UWpeMyDLVXdRyEWi.jpg",
-      adult: false,
-      overview: "The short centers on a young sandpiper, the eponymous Piper, who is afraid of the water. She meets a young hermit crab who \"teaches her the way of the waves\".",
-      "release_date": "2016-06-16",
-      genre_ids: [
-        10751,
-        16
-      ],
-      id: 399106,
-      original_title: "Piper",
-      original_language: "en",
-      title: "Piper",
-      backdrop_path: "/w1WqcS6hT0PUWC3adG37NSUOGX5.jpg",
-      popularity: 3.233301,
-      vote_count: 118,
-      video: false,
-      vote_average: 8.3
-    }]
 
 export default HomePage;

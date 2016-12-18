@@ -1,4 +1,5 @@
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+var auth = require('../public/js/utils/auth.js');
 //middleware function to determine if user is authenticated
 
 module.exports = function isAuthorized(req, res, next) {
@@ -9,20 +10,22 @@ module.exports = function isAuthorized(req, res, next) {
         // verifies secret
         jwt.verify(token, 'secretkey', function (err, decoded) {
             if (err) {
-                return res.status(400).end();
+                  auth.setUnauthorized();
             } else {
                 //make sure token exists in session
-                if (req.session && req.session.token === token) {
-                    return next();
+                if (req.session) {
+                      auth.setAuthorized();
+                    //return next();
                 }
                 else {
-                    return res.status(400).end();
+                    // return res.status(400).end();
+                      auth.setUnauthorized();
                 }
             }
         });
     }
-    // } else {
-    //     // if there is no token
-    //     return res.status(400).end();
-    // }
+    else {
+        auth.setUnauthorized();
+    }
+    return next();
 };
