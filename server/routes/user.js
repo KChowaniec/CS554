@@ -195,8 +195,8 @@ router.post('/user/register', function (req, res) {
 
 //get user information
 router.get('/user', function (req, res) {
+    let redisConnection = req
 
-    var redisConnection = req
         .app
         .get("redis");
     var userId = req.session.userId;
@@ -346,6 +346,283 @@ router.post('/user/login', function (req, res, next) {
         }
     })(req, res, next);
 });
+
+//update user
+router.post('/user/update_genre', function (req, res) {
+    let userId = req.session.userId;
+    let genreList = xss(req.body.genreList);
+
+    let redisConnection = req
+        .app
+        .get("redis");
+
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`update-genre-success:${messageId}`, (updatedUser, channel) => {
+        redisConnection.off(`update-genre-success:${messageId}`);
+        redisConnection.off(`update-genre-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({ success: true, user: updatedUser });
+    });
+
+    redisConnection.on(`update-genre-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`update-genre-success:${messageId}`);
+        redisConnection.off(`update-genre-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({
+            success: false,
+            errors: error
+        });
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`update-genre-success:${messageId}`);
+        redisConnection.off(`update-genre-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`update-genre:${messageId}`, {
+        requestId: messageId,
+        genreList: genreList,
+        userId: userId
+    });
+});
+
+router.post('/user/add_person',function (req, res) {
+    let userId = req.session.userId;
+    let person = req.body.value;
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+    redisConnection.on(`get-person-byID-success:${messageId}`, (result, channel) => {
+        redisConnection.off(`get-person-byID-success:${messageId}`);
+        redisConnection.off(`get-person-byID-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        console.log(result);
+        if (result) {
+             return res.json({ success: true, results: result });
+        }
+        else {
+             return res.json({ success: false, message: "Person not found" });
+        }
+    });
+
+    redisConnection.on(`get-person-byID-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`get-person-byID-success:${messageId}`);
+        redisConnection.off(`get-person-byID-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`get-person-byID-success:${messageId}`);
+        redisConnection.off(`get-person-byID-failed:${messageId}`);
+         return res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`get-person-byID:${messageId}`, {
+        requestId: messageId,
+        person: person,
+        userId: userId
+    });
+
+})
+
+router.post('/user/update_person',function (req, res) {
+    let userId = req.session.userId;
+    let actor = req.body.actor;
+    let crew = req.body.crew;
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+    redisConnection.on(`update-person-success:${messageId}`, (result, channel) => {
+        redisConnection.off(`update-person-success:${messageId}`);
+        redisConnection.off(`update-person-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({ success: true, results: result });
+    });
+
+    redisConnection.on(`update-person-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`update-person-success:${messageId}`);
+        redisConnection.off(`update-person-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`update-person-success:${messageId}`);
+        redisConnection.off(`update-person-failed:${messageId}`);
+        return res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`update-person:${messageId}`, {
+        requestId: messageId,
+        actor: actor,
+        crew: crew,
+        userId: userId
+    });
+
+})
+
+router.get('/user/get_preferences',function (req, res) {
+    let userId = req.session.userId;
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`get-preference-success:${messageId}`, (updatedUser, channel) => {
+        redisConnection.off(`get-preference-success:${messageId}`);
+        redisConnection.off(`get-preference-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({ success: true, user: updatedUser });
+    });
+
+    redisConnection.on(`get-preference-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`get-preference-success:${messageId}`);
+        redisConnection.off(`get-preference-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({
+            success: false,
+            errors: error
+        });
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`get-preference-success:${messageId}`);
+        redisConnection.off(`get-preference-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`get-preference:${messageId}`, {
+        requestId: messageId,
+        userId: userId
+    });
+});
+
+
+
+
+
+//update age rating
+router.post('/user/update_ageRating', function (req, res) {
+    let userId = req.session.userId;
+    let ageRating = xss(req.body.ageRating);
+    let redisConnection = req
+        .app
+        .get("redis");
+
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`update-ageRating-success:${messageId}`, (updatedUser, channel) => {
+        redisConnection.off(`update-ageRating-success:${messageId}`);
+        redisConnection.off(`update-ageRating-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({ success: true, user: updatedUser });
+    });
+
+    redisConnection.on(`update-ageRating-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`update-ageRating-success:${messageId}`);
+        redisConnection.off(`update-ageRating-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({
+            success: false,
+            errors: error
+        });
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`update-ageRating-success:${messageId}`);
+        redisConnection.off(`update-ageRating-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`update-ageRating:${messageId}`, {
+        requestId: messageId,
+        ageRating: ageRating,
+        userId: userId
+    });
+});
+
+
+
+//update year
+router.post('/user/update_year', function (req, res) {
+    let userId = req.session.userId;
+    let year = xss(req.body.year);
+    let redisConnection = req
+        .app
+        .get("redis");
+
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`update-year-success:${messageId}`, (updatedUser, channel) => {
+        redisConnection.off(`update-year-success:${messageId}`);
+        redisConnection.off(`update-year-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({ success: true, user: updatedUser });
+    });
+
+    redisConnection.on(`update-year-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`update-year-success:${messageId}`);
+        redisConnection.off(`update-year-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({
+            success: false,
+            errors: error
+        });
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`update-year-success:${messageId}`);
+        redisConnection.off(`update-year-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`update-year:${messageId}`, {
+        requestId: messageId,
+        year: year,
+        userId: userId
+    });
+});
+
+
 
 // //get user's password
 // router.get('/forgot/:username', function (req, res) {

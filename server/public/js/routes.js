@@ -8,8 +8,11 @@ import AnalyticsPage from './containers/AnalyticsPage.js';
 import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
+import PreferencePage from './containers/PreferencePage'
+// import HomePage from './containers/HomePage.js';
 import AccountPage from './containers/AccountPage';
 import axios from 'axios';
+
 
 function redirectToLogin(nextState, replace, callback) {
   axios.get('/user/authorized').then(res => {
@@ -26,7 +29,7 @@ function redirectToLogin(nextState, replace, callback) {
 }
 
 function replaceWithHome(nextState, replace) {
-  
+
   replace('/home');
 }
 
@@ -99,6 +102,11 @@ const routes = {
       path: '/account',
       component: AccountPage,
       onEnter: redirectToLogin
+    },
+
+    {
+      path: '/preference',
+      component: PreferencePage
     },
 
     //match any other routes - redirect to home page

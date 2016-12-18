@@ -1,4 +1,5 @@
 const dbCollection = require("data");
+const userData = dbCollection.users;
 const apiData = dbCollection.api;
 const formData = dbCollection.form;
 const fetch = require('node-fetch');
@@ -170,4 +171,49 @@ redisConnection.on('get-person:*', (data, channel) => {
             redisConnection.emit(`person-retrieved-failed:${messageId}`, error);
         });
 });
+
+//get person by ID
+redisConnection.on('get-person-byID:*', (data, channel) => {
+    console.log("d");
+    var messageId = data.requestId;
+    var userId = data.userId
+    var personId = data.person;
+    var person = {};
+    var user = null;
+
+    userData.getUserById(userId).then((data) => {
+      user = data;
+        apiData.getCreditByPersonId(personId).then((data) => {
+            if (data.id == null || data.id == undefined) {
+                console.log("failed");
+                redisConnection.emit(`get-person-byID-failed:${messageId}`, { success: false, message: "Person doesn't exist!" });
+            }
+            person.name = data.name;
+            if (data.movie_credits.cast.length > 0 && data.movie_credits.cast.length > data.movie_credits.crew.length) {
+                person.type = "actor";
+                if(user.preferences.Actor.indexOf(person.name) === -1){
+                    user.preferences.Actor.push(person.name);
+                }
+            }else if (data.movie_credits.crew.length > 0) {
+                person.type = "crew";
+                if(user.preferences.Crew.indexOf(person.name) === -1){
+                    user.preferences.Crew.push(person.name);
+                }
+            }
+            userData.updateUserById(userId,user).then((data) => {
+                console.log("test",data.preferences);
+                redisConnection.emit(`get-person-byID-success:${messageId}`, data.preferences);
+            });
+
+        }).catch(error => {
+            redisConnection.emit(`get-person-byID-failed:${messageId}`, error);
+        })
+    })
+
+
+
+});
+
+
+
 

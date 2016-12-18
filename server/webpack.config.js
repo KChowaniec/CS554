@@ -18,9 +18,7 @@ module.exports = {
       test: /\.jsx?$/,
       include: path.join(__dirname, '/public/js'),
       loader: 'babel',
-      query: {
-        presets: ["react", "es2015"]
-      }
+      query: {presets: ["es2015", "react", "stage-0"], cacheDirectory: true}
     }],
   },
 

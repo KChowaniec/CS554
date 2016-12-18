@@ -68,6 +68,13 @@ a:hover {
   color: green;
 }
 
+.hidden{
+  display: none;
+}
+
+.visible{
+  display: block;
+}
 .grid-img:hover{
   cursor: pointer;
 }
