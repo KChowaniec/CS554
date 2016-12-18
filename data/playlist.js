@@ -172,6 +172,21 @@ var exportedMethods = {
         });
     },
 
+
+    updateMoviePlaylistArray(id, obj) {
+        return Playlist().then((playlistCollection) => {
+            return playlistCollection.update({ user_id: id }, { $set: { "playlistMovies": obj } }).then(function () {
+                return id;
+            }).then(id => {
+                return this.getPlaylistByUserId(id);
+            }).catch((error) => {
+                return { error: error };
+            });
+        }, (err) => {
+            return { error: error };
+        })
+    },
+
     getMovieByMovieId(pid, mid) {     //get the movie from the playlist by providing the specified playlist id and the movie id
         return Playlist().then((playlistCollection) => {
             return playlistCollection.findOne({ _id: pid }).then((playlistObj) => {
