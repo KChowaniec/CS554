@@ -31,7 +31,7 @@ const Base = React.createClass({
             {this.state.loggedIn ? (
               <div>
                 <Link to="/account">My Account</Link>
-                <Link to="/preference">Preferences</Link>
+                <Link to="/preference">My Movie Preferences</Link>
                 <Link to="/">Movie Search</Link>
                 <Link to="/playlist">My Playlist</Link>
                 <Link to="/analytics">Movie Analytics</Link>
