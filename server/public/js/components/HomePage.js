@@ -11,6 +11,8 @@ import PlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 import PlaylistAddCheck from 'material-ui/svg-icons/av/playlist-add-check';
 import AutoComplete from 'material-ui/AutoComplete';
 import TextField from 'material-ui/TextField';
+import Snackbar from 'material-ui/Snackbar';
+
 
 const genres = [
     {
@@ -109,6 +111,8 @@ class SearchBar extends React.Component {
         this.state = {
             errors: {},
             data: [],
+            errorText:'',
+            errorVisibility: false,
             styles: {
 
                 titleStyle: {
@@ -172,14 +176,17 @@ class SearchBar extends React.Component {
                         react_component.setState({
                             data: arr_search,
                         });
-                        alert("Success : Movie added.");
+                        this.setState({errorVisibility:true});
+                        this.setState({errorText:'Movie added to your playlist!'});
                     } else {
                         console.log("Movie NOT Added");
-                        alert("There was some problem in adding movie to the playlist.");
+                        this.setState({errorVisibility:true});
+                        this.setState({errorText:'There was some problem in adding movie to the playlist.'});
                     }
                 });
         } else {
-            alert("Movie Already Added");
+            this.setState({errorVisibility:true});
+            this.setState({errorText:'Movie Already Added!'});
         }
     }
 
@@ -451,6 +458,11 @@ class SearchBar extends React.Component {
                     )}
 
                 </div>
+                <Snackbar
+                    open={this.state.errorVisibility}
+                    message={this.state.errorText}
+                    autoHideDuration={4000}
+                />
             </div>
         );
     }
@@ -478,7 +490,7 @@ const HomePage = withRouter(React.createClass({
 
 
     render: function () {
-        console.log('In Home Page Component');
+        // console.log('In Home Page Component');
         // return (<Card className="container">
         //           <CardTitle title={this.state.title} subtitle="This is the home page." />
         //         </Card>  );

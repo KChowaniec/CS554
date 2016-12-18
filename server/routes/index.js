@@ -21,7 +21,7 @@ module.exports = function(app) {
     app.use("/movies", routerMovie);
     app.use("/playlist", routerPlaylist);
     app.use("/search", routerSearch);
-    app.use("/analytics", routerAnalytics);
+    app.use("/analyticss", routerAnalytics);
       // app.use("*", (req, res) => { //any other routes, redirect to user page
       //   res.redirect("/views/static/index.html");
       // })
