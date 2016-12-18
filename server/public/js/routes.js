@@ -76,7 +76,7 @@ const routes = {
       onEnter: redirectToLogin
     },
     {
-      path: '/playlist',
+      path: '/playlists',
       component: Playlist,
       onEnter: redirectToLogin
     },
@@ -91,7 +91,7 @@ const routes = {
     },
     {
       path: '/analytics',
-      // component: AnalyticsPage,
+      component: AnalyticsPage,
       onEnter: getAnalytics
     },
     {
