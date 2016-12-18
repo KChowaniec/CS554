@@ -136,7 +136,8 @@ class SearchBar extends React.Component {
                 director: '',
                 genre: ''
             },
-            currentPage: 1
+            currentPage: 1,
+            snackbar_open: false
         };
 
         this.handleMovieNameChange = this.handleMovieNameChange.bind(this);
@@ -161,7 +162,7 @@ class SearchBar extends React.Component {
             var react_component = this;
             var movie_index = index;
 
-            axios.post('/playlist/' + this.state.data[index].id)
+            axios.get('/playlist/addmovie/' + this.state.data[index].id)
                 .then(res => {
                     if (res.data.success === true) {
                         console.log("Movie Added");
@@ -169,7 +170,7 @@ class SearchBar extends React.Component {
                         var arr_search = react_component.state.data;
                         arr_search[movie_index].isAdded = true;
                         react_component.setState({
-                            data: arr_search
+                            data: arr_search,
                         });
                         alert("Success : Movie added.");
                     } else {
@@ -181,6 +182,7 @@ class SearchBar extends React.Component {
             alert("Movie Already Added");
         }
     }
+
 
     handleMovieNameChange(event) {
         //console.log('@ search bar : handleChange');
@@ -420,30 +422,40 @@ class SearchBar extends React.Component {
                     </form>
                 </Card>
                 <div>
-                    <div style={this.state.styles.root}>
-                        <GridList className="container" style={this.state.styles.gridList} cols={2.2}>
-                            {this.state.data.map((tile, i) => (
-                                <GridTile
-                                    key={i}
-                                    title={tile.title}
-                                    actionIcon={tile.id === "next" ? null : <IconButton onClick={this.additem.bind(this, i)}>{tile.isAdded ? (<PlaylistAddCheck color="rgb(0, 0, 0)" />) : (<PlaylistAdd color="rgb(0, 0, 0)" />)}</IconButton>}
-                                    titleStyle={this.state.styles.titleStyle}
-                                    titleBackground="linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)"
-                                    >
-                                    <img style={this.state.styles.imageStyle}
-                                        onClick={this.itemClicked.bind(this, tile.id)}
-                                        src={tile.id == "next" ? tile.poster_path : (
-                                            tile.poster_path === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path
-                                        )} />
-                                </GridTile>
-                            ))}
-                        </GridList>
-                    </div>
+                    <br /><br />
+                    {this.state.data.length > 0 && (
+                        <Card className="container">
+                            <CardTitle title="Search Results" />
+                            <br />
+                            <div style={this.state.styles.root}>
+                                <GridList className="container" style={this.state.styles.gridList} cols={2.2}>
+                                    {this.state.data.map((tile, i) => (
+                                        <GridTile
+                                            key={i}
+                                            title={tile.title}
+                                            actionIcon={tile.id === "next" ? null : <IconButton onClick={this.additem.bind(this, i)}>{tile.isAdded ? (<PlaylistAddCheck color="rgb(0, 0, 0)" />) : (<PlaylistAdd color="rgb(0, 0, 0)" />)}</IconButton>}
+                                            titleStyle={this.state.styles.titleStyle}
+                                            titleBackground="linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)"
+                                            >
+                                            <img className="grid-img" style={this.state.styles.imageStyle}
+                                                onClick={this.itemClicked.bind(this, tile.id)}
+                                                src={tile.id == "next" ? tile.poster_path : (
+                                                    tile.poster_path === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path
+                                                )} />
+                                        </GridTile>
+                                    ))}
+                                </GridList>
+                                <br /><br />
+                            </div>
+                        </Card>
+                    )}
+
                 </div>
             </div>
         );
     }
 }
+
 
 const HomePage = withRouter(React.createClass({
     api: "e443ee14fb107feee75db8b448e6a13e",
