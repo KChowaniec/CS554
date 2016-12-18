@@ -394,6 +394,55 @@ router.post('/user/update_genre', function (req, res) {
     });
 });
 
+
+
+//update user
+router.post('/user/update_keywords', function (req, res) {
+    let userId = req.session.userId;
+    let keywords = xss(req.body.keywords);
+
+    let redisConnection = req
+        .app
+        .get("redis");
+
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`update-keywords-success:${messageId}`, (updatedUser, channel) => {
+        redisConnection.off(`update-keywords-success:${messageId}`);
+        redisConnection.off(`update-keywords-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({ success: true, user: updatedUser });
+    });
+
+    redisConnection.on(`update-keywords-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`update-keywords-success:${messageId}`);
+        redisConnection.off(`update-keywords-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({
+            success: false,
+            errors: error
+        });
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`update-keywords-success:${messageId}`);
+        redisConnection.off(`update-keywords-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`update-keywords:${messageId}`, {
+        requestId: messageId,
+        keywords: keywords,
+        userId: userId
+    });
+});
+
 router.post('/user/add_person',function (req, res) {
     let userId = req.session.userId;
     let person = req.body.value;

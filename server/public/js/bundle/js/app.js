@@ -53561,7 +53561,6 @@
 	            var _this5 = this;
 
 	            e.preventDefault();
-	            console.log(this.state.personForm);
 	            $.ajax({
 	                url: '/search/person',
 	                dataType: 'json',
@@ -53779,6 +53778,95 @@
 	            );
 	        }
 	    }, {
+	        key: 'handleKeyword',
+	        value: function handleKeyword(event) {
+	            this.setState({ keywordsForm: event.target.value });
+	        }
+	    }, {
+	        key: 'addKeywords',
+	        value: function addKeywords(data) {
+	            var keywords = this.state.keywords;
+	            if (!keywords.includes(data.name)) {
+	                keywords.push(data.name);
+	            }
+	            var keywordsSearchResult = this.state.keywordsSearchResult;
+	            keywordsSearchResult = removeByKey(keywordsSearchResult, { id: data.id, name: data.name });
+	            this.setState({ keywordsSearchResult: keywordsSearchResult });
+
+	            _axios2.default.post('/user/update_keywords', {
+	                keywords: this.state.keywords
+	            }).then(function (response) {
+	                console.log(response);
+	            }).catch(function (error) {
+	                console.log(error);
+	            });
+	        }
+	    }, {
+	        key: 'deleteKeywords',
+	        value: function deleteKeywords(data) {
+	            console.log(data);
+	            var keywords = this.state.keywords;
+	            var index = keywords.indexOf(data);
+	            if (index > -1) {
+	                keywords.splice(index, 1);
+	            }
+	            this.setState({ keywords: keywords });
+
+	            _axios2.default.post('/user/update_keywords', {
+	                keywords: this.state.keywords
+	            }).then(function (response) {
+	                console.log(response);
+	            }).catch(function (error) {
+	                console.log(error);
+	            });
+	        }
+	    }, {
+	        key: 'renderKeywords',
+	        value: function renderKeywords(data) {
+	            var _this13 = this;
+
+	            return _react2.default.createElement(
+	                _Chip2.default,
+	                { key: data, onRequestDelete: function onRequestDelete() {
+	                        return _this13.deleteKeywords(data);
+	                    }, style: this.styles.chip },
+	                data
+	            );
+	        }
+	    }, {
+	        key: 'renderKeywordsSearchResult',
+	        value: function renderKeywordsSearchResult(data) {
+	            var _this14 = this;
+
+	            return _react2.default.createElement(
+	                _Chip2.default,
+	                { key: data.id, onTouchTap: function onTouchTap() {
+	                        return _this14.addKeywords(data);
+	                    }, style: this.styles.chip },
+	                data.name
+	            );
+	        }
+	    }, {
+	        key: 'keywordSearch',
+	        value: function keywordSearch(e) {
+	            var _this15 = this;
+
+	            e.preventDefault();
+	            $.ajax({
+	                url: '/search/keywords',
+	                dataType: 'json',
+	                method: "GET",
+	                data: "value=" + this.state.keywordsForm,
+	                cache: false,
+	                success: function success(response) {
+	                    _this15.setState({ keywordsSearchResult: response.results });
+	                },
+	                error: function error(xhr, status, err) {
+	                    console.error(status, err.toString());
+	                }
+	            });
+	        }
+	    }, {
 	        key: 'addYear',
 	        value: function addYear(event) {
 	            event.preventDefault();
@@ -53921,16 +54009,49 @@
 	                        { label: 'Keywords' },
 	                        _react2.default.createElement(
 	                            'div',
-	                            null,
+	                            { className: this.state.keywords.length ? 'visible' : 'hidden' },
 	                            _react2.default.createElement(
-	                                'h2',
+	                                'h3',
 	                                null,
-	                                'Tab Two'
+	                                'Keywords'
 	                            ),
 	                            _react2.default.createElement(
-	                                'p',
-	                                null,
-	                                'This is another example tab.'
+	                                'div',
+	                                { style: this.styles.wrapper },
+	                                this.state.keywords.map(this.renderKeywords, this)
+	                            ),
+	                            _react2.default.createElement('hr', null)
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            null,
+	                            _react2.default.createElement(
+	                                'form',
+	                                { className: 'preference-keyword', onSubmit: this.keywordSearch.bind(this) },
+	                                _react2.default.createElement(_TextField2.default, {
+	                                    hintText: 'Keyword',
+	                                    name: 'keyword',
+	                                    floatingLabelText: 'Search for Keyword',
+	                                    onChange: this.handleKeyword.bind(this),
+	                                    value: this.state.keywordsForm,
+	                                    required: true
+	                                }),
+	                                _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Search', primary: true, style: this.styles.personForm })
+	                            ),
+	                            _react2.default.createElement(
+	                                'div',
+	                                { className: this.state.keywordsSearchResult.length > 0 ? 'visible' : 'hidden' },
+	                                _react2.default.createElement('hr', null),
+	                                _react2.default.createElement(
+	                                    'h3',
+	                                    null,
+	                                    'Options:'
+	                                ),
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { style: this.styles.wrapper },
+	                                    this.state.keywordsSearchResult.map(this.renderKeywordsSearchResult, this)
+	                                )
 	                            )
 	                        )
 	                    ),

@@ -11,3 +11,6 @@ data/node_modules/
 data/npm-debug.log
 server/node_modules/
 worker/node_modules/
+
+.idea
+.idea/*
