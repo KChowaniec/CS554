@@ -186,7 +186,7 @@ redisConnection.on('get-person-byID:*', (data, channel) => {
                 }
             }
             userData.updateUserById(userId,user).then((data) => {
-                console.log(data.preferences);
+                console.log("test",data.preferences);
                 redisConnection.emit(`get-person-byID-success:${messageId}`, data.preferences);
             });
 

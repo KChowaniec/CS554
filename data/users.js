@@ -177,6 +177,42 @@ var exportedMethods = {
         })
     },
 
+    updateAgeRating(id,ageRating){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.ageRating":ageRating} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
+    updateReleaseYear(id,releaseYear){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.releaseYear":releaseYear} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
+    updateKeywords(id,keywords){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.keywords":keywords} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
     updateActor(id,actorList){
         return Users().then((userCollection) => {
             return userCollection.update({ _id: id }, { $set: {"preferences.Actor":actorList} }).then(function () {

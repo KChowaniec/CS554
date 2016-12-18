@@ -5,12 +5,16 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import Chip from 'material-ui/Chip';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import Snackbar from 'material-ui/Snackbar';
+
 
 import axios from 'axios';
 
 
 var genre = ["Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family", "Foreign", "History", "Horror", "Music",
     "Mystery", "Romance", "Science Fiction", "TV Movie", "Thriller", "War", "Western"];
+
+var ageRating = ["NR", "G", "PG", "PG-13", "R", "NC-17"]
 
 function difference(a1, a2) {
     var a2Set = new Set(a2);
@@ -19,6 +23,18 @@ function difference(a1, a2) {
 
 function symmetricDifference(a1, a2) {
     return difference(a1, a2).concat(difference(a2, a1));
+}
+
+function removeByKey(array, params){
+    array.some(function(item, index) {
+        if(array[index][params.key] === params.value){
+            // found it!
+            array.splice(index, 1);
+            return true; // stops the loop
+        }
+        return false;
+    });
+    return array;
 }
 
 class PreferencePage extends React.Component {
@@ -36,7 +52,15 @@ class PreferencePage extends React.Component {
             crew: [],
             allGenre : genre,
             personSearchResult: [],
-            keywordSearchResult: [],
+            keywords: [],
+            keywordsSearchResult: [],
+            keywordsForm: '',
+            selectedAgeRating: [],
+            allAgeRating: ageRating,
+            year: [],
+            yearForm: '',
+            errorText:'',
+            errorVisibility: false,
         };
         this.styles = {
             chip: {
@@ -65,6 +89,9 @@ class PreferencePage extends React.Component {
                 this.setState({allGenre:symmetricDifference(response.user.Genre,genre)});
                 this.setState({actor:response.user.Actor})
                 this.setState({crew:response.user.Crew})
+                this.setState({selectedAgeRating:response.user.ageRating})
+                this.setState({keywords:response.user.keywords})
+                this.setState({year:response.user.releaseYear})
             },
             error: (xhr, status, err) => {
                 console.error(status, err.toString());
@@ -108,6 +135,8 @@ class PreferencePage extends React.Component {
             selected.splice(index, 1);
         }
         this.setState({selectedGenre: selected});
+
+        console.log(selected);
 
         axios.post('/user/update_genre', {
             genreList: this.state.selectedGenre
@@ -165,17 +194,22 @@ class PreferencePage extends React.Component {
             cache: false,
             data: "value="+id,
             success: (response) => {
-                console.log(this.state.actor);
-                this.setState({actor:response.Actor})
-                this.setState({crew:response.Crew});
+                this.setState({actor:response.results.Actor});
+                this.setState({crew:response.results.Crew});
             },
             error: (xhr, status, err) => {
                 console.error(status, err.toString());
             }
         });
+
+
+        var personSearchResult = this.state.personSearchResult;
+        personSearchResult = removeByKey(personSearchResult,{id:data.id,name:data.name})
+        this.setState({personSearchResult:personSearchResult});
     }
 
     deletePerson(data,type){
+
         let actor = this.state.actor;
         let crew = this.state.crew;
         switch(type)
@@ -183,6 +217,9 @@ class PreferencePage extends React.Component {
             case 'actor' : actor = actor.filter(item => item !== data); break;
             case 'crew' : crew = crew.filter(item => item !== data); break;
         }
+
+        console.log(actor)
+        console.log(crew)
 
         this.setState({actor:actor,crew:crew});
         $.ajax({
@@ -199,7 +236,6 @@ class PreferencePage extends React.Component {
             }
         });
         this.forceUpdate();
-
     }
 
     renderCrew(data){
@@ -226,6 +262,126 @@ class PreferencePage extends React.Component {
         );
     }
 
+    addAgeRating(key){
+        var selectedAgeRating = this.state.selectedAgeRating;
+        selectedAgeRating.push(key);
+        this.setState({selectedAgeRating: selectedAgeRating});
+
+        var allAgeRating = this.state.allAgeRating;
+        var index = allAgeRating.indexOf(key);
+        if (index > -1) {
+            allAgeRating.splice(index, 1);
+        }
+        this.setState({allAgeRating: allAgeRating});
+
+        axios.post('/user/update_ageRating', {
+            ageRating: this.state.selectedAgeRating
+        }).then(function (response) {
+            console.log(response);
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    deleteAgeRating(key){
+        var allAgeRating = this.state.allAgeRating;
+        allAgeRating.push(key);
+        this.setState({allAgeRating: allAgeRating});
+
+        var selectedAgeRating = this.state.selectedAgeRating;
+        var index = selectedAgeRating.indexOf(key);
+        if (index > -1) {
+            selectedAgeRating.splice(index, 1);
+        }
+        this.setState({selectedAgeRating: selectedAgeRating});
+
+        axios.post('/user/update_ageRating', {
+            ageRating: this.state.selectedAgeRating
+        }).then(function (response) {
+            console.log(response);
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    renderOptionsForAgeRating(data){
+        return (
+            <Chip key={data} onTouchTap={() => this.addAgeRating(data)} style={this.styles.chip}>
+                {data}
+            </Chip>
+        );
+    }
+
+    renderSelectedAgeRating(data){
+        return (
+            <Chip key={data} onRequestDelete={() => this.deleteAgeRating(data)} style={this.styles.chip}>
+                {data}
+            </Chip>
+        );
+    }
+
+    deleteYear(key){
+        console.log(key);
+        var allYear = this.state.year;
+        var index = allYear.indexOf(key)
+        if (index > -1) {
+            allYear.splice(index,1);
+        }
+        this.setState({year:allYear});
+
+        axios.post('/user/update_year', {
+            year: this.state.year
+        }).then(function (response) {
+            console.log(response);
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+    }
+
+    renderYear(data){
+        return (
+            <Chip key={data} onRequestDelete={() => this.deleteYear(data)} style={this.styles.chip}>
+                {data}
+            </Chip>
+        );
+    }
+
+    addYear(event){
+        event.preventDefault();
+
+        let allYear = this.state.year
+        let year = this.state.yearForm
+
+        if(year.length != 4){
+            this.setState({errorVisibility:true});
+            this.setState({errorText:'Not a valid year'});
+        }
+
+        var index = allYear.indexOf(year);
+        if (index > -1) {
+            this.setState({errorVisibility:true});
+            this.setState({errorText:'Year Already Exist'});
+        }else{
+            allYear.push(year);
+            this.setState({yearForm:''});
+        }
+        this.setState({year:allYear})
+
+        axios.post('/user/update_year', {
+            year: this.state.year
+        }).then(function (response) {
+            console.log(response);
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+    }
+
+    handleYear(event){
+        this.setState({yearForm: event.target.value})
+    }
+
 
     render(){
         return (
@@ -237,11 +393,10 @@ class PreferencePage extends React.Component {
                 <Tabs>
                     <Tab label="Genre" >
                         <div>
-                            <h3></h3>
-                            <div style={this.styles.wrapper}>
+                            <div className={this.state.selectedGenre.length?'visible':'hidden'} style={this.styles.wrapper}>
                                 {this.state.selectedGenre.map(this.renderSelectedGenre,this)}
+                                <hr/>
                             </div>
-                            <hr/>
                             <h3>Options:</h3>
                             <div style={this.styles.wrapper}>
                                 {this.state.allGenre.map(this.renderOptionsForGenre,this)}
@@ -249,15 +404,14 @@ class PreferencePage extends React.Component {
                         </div>
                     </Tab>
                     <Tab label="Person" >
-                        {this.state.actor.length}
-                        <div className={this.state.actor.length>0?'visible':'hidden'}>
+                        <div className={this.state.actor.length?'visible':'hidden'}>
                             <h3>Actors:</h3>
                             <div style={this.styles.wrapper}>
                                 {this.state.actor.map(this.renderActor,this)}
                             </div>
                             <hr/>
                         </div>
-                        <div className={this.state.crew.length>0?'visible':'hidden'}>
+                        <div className={this.state.crew.length?'visible':'hidden'}>
                             <h3>Crew</h3>
                             <div style={this.styles.wrapper}>
                                 {this.state.crew.map(this.renderCrew,this)}
@@ -293,22 +447,46 @@ class PreferencePage extends React.Component {
                         </div>
                     </Tab>
                     <Tab label="Year" >
+                        <div className={this.state.year.length?'visible':'hidden'}>
+                            <div style={this.styles.wrapper}>
+                                {this.state.year.map(this.renderYear,this)}
+                            </div>
+                            <hr/>
+                        </div>
                         <div>
-                            <h2>Tab Two</h2>
-                            <p>
-                                This is another example tab.
-                            </p>
+                            <form className="preference-year" onSubmit={this.addYear.bind(this)}>
+                                <TextField
+                                    hintText="2016"
+                                    name="year"
+                                    floatingLabelText="Release Year"
+                                    onChange={this.handleYear.bind(this)}
+                                    value={this.state.yearForm}
+                                    required
+                                />
+                                <RaisedButton type="submit" label="Add" primary={true}  style={this.styles.personForm} />
+                            </form>
                         </div>
                     </Tab>
                     <Tab label="Age Rating" >
                         <div>
-                            <h2>Tab Two</h2>
-                            <p>
-                                This is another example tab.
-                            </p>
+                            <div className={this.state.selectedAgeRating.length?'visible':'hidden'} style={this.styles.wrapper}>
+                                {this.state.selectedAgeRating.map(this.renderSelectedAgeRating,this)}
+                                <hr/>
+                            </div>
+                            <div className={this.state.allAgeRating.length?'visible':'hidden'}>
+                                <h3>Options:</h3>
+                                <div style={this.styles.wrapper} >
+                                    {this.state.allAgeRating.map(this.renderOptionsForAgeRating,this)}
+                                </div>
+                            </div>
                         </div>
                     </Tab>
                 </Tabs>
+                <Snackbar
+                    open={this.state.errorVisibility}
+                    message={this.state.errorText}
+                    autoHideDuration={4000}
+                />
             </Card>
         )
     }

@@ -176,7 +176,12 @@ redisConnection.on('update-genre:*', (data, channel) => {
     let messageId = data.requestId;
     let userId = data.userId;
     let genreList = data.genreList;
-    genreList = genreList.split(",");
+    if(genreList!="")
+    {
+        genreList = genreList.split(",");
+    }else{
+        genreList = [];
+    }
     //update genre in preference
     let fullyComposeUser = userData
         .updateGenre(userId,genreList)
@@ -196,8 +201,16 @@ redisConnection.on('update-person:*', (data, channel) => {
     let crew = data.crew;
     let actor = data.actor;
 
-    console.log(crew)
-    console.log(actor)
+    if(crew==null)
+    {
+        crew = []
+    }
+    if(actor == null)
+    {
+        actor = []
+    }
+    console.log("crew",crew)
+    console.log("actor",actor)
     // update actor/crew in preference
     let fullyComposeUser = userData
         .updateActor(userId,actor)
@@ -228,3 +241,51 @@ redisConnection.on('get-preference:*', (data, channel) => {
         });
 });
 
+
+
+//Update age rating
+redisConnection.on('update-ageRating:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let ageRating = data.ageRating;
+    if(ageRating!="")
+    {
+        ageRating = ageRating.split(",");
+    }else{
+        ageRating = [];
+    }
+    //update genre in preference
+    let fullyComposeUser = userData
+        .updateAgeRating(userId,ageRating)
+        .then((data) => {
+            client.setAsync(userId, JSON.stringify(data));
+            redisConnection.emit(`update-ageRating-success:${messageId}`, data);
+        }).catch((error) => {
+            console.log(error)
+            redisConnection.emit(`update-ageRating-failed:${messageId}`, error);
+        });
+});
+
+
+//Update release year
+redisConnection.on('update-year:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let year = data.year;
+    if(year!="")
+    {
+        year = year.split(",");
+    }else{
+        year = [];
+    }
+    //update genre in preference
+    let fullyComposeUser = userData
+        .updateReleaseYear(userId,year)
+        .then((data) => {
+            client.setAsync(userId, JSON.stringify(data));
+            redisConnection.emit(`update-year-success:${messageId}`, data);
+        }).catch((error) => {
+            console.log(error)
+            redisConnection.emit(`update-year-failed:${messageId}`, error);
+        });
+});
