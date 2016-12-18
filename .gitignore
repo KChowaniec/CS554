@@ -1,5 +1,3 @@
-data/all-config.json
-server/views/layouts/main.handlebars
 server/node_modules/*
 data/node_modules/*
 worker/node_modules/*
@@ -9,3 +7,7 @@ worker/node_modules/*
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
 
+data/node_modules/
+data/npm-debug.log
+server/node_modules/
+worker/node_modules/

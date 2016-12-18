@@ -11,7 +11,7 @@ class Banner extends React.Component {
             item : {}
         };
     }
-    
+
     render() {
         const banner_style = {
             maxWidth: '20%',
@@ -20,7 +20,7 @@ class Banner extends React.Component {
 
         return (
             <div className="col-md-3">
-            <div className="ca-hover">                   
+            <div className="ca-hover">
                 <div className="carouselAvatar av4">
                   <div className="carouselImg">
                     <img  src={this.props.item.avatar} alt = {this.props.item.avatar} />
@@ -51,8 +51,8 @@ class Banners extends React.Component {
     }
     render() {
         //const playlist = [];
-        return ( 
-            
+        return (
+
             <div className ="container carousel flexcontainer">
                 <div className="row">
                     {this.props.playlist.map(function(item_element) {
@@ -65,7 +65,7 @@ class Banners extends React.Component {
 }
 
 class SearchBar extends React.Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -89,7 +89,7 @@ class SearchBar extends React.Component {
 
     handleMovieNameChange(event) {
         //console.log('@ search bar : handleChange');
-        
+
         const field = 'movie';
         //console.log('@ search bar : target property : ' + field);
         const parameters = this.state.parameters;
@@ -101,7 +101,7 @@ class SearchBar extends React.Component {
 
     handleActorChange(event) {
         //console.log('@ search bar : handleChange');
-        
+
         const field = 'actor';
         //console.log('@ search bar : target property : ' + field);
         const parameters = this.state.parameters;
@@ -110,10 +110,10 @@ class SearchBar extends React.Component {
 
         this.setState({parameters});
     }
-    
+
     handleDirectorChange(event) {
         //console.log('@ search bar : handleChange');
-        
+
         const field = 'director';
         //console.log('@ search bar : target property : ' + field);
         const parameters = this.state.parameters;
@@ -122,10 +122,10 @@ class SearchBar extends React.Component {
 
         this.setState({parameters});
     }
-    
+
     handleGenreChange(event) {
         //console.log('@ search bar : handleChange');
-        
+
         const field = 'genre';
         //console.log('@ search bar : target property : ' + field);
         const parameters = this.state.parameters;
@@ -144,7 +144,7 @@ class SearchBar extends React.Component {
                 if(toString(movie.original_title).toLowerCase() == toString(parameters.movie).toLowerCase())
                     filtered_datasource.push(movie);
             }, this);
-            
+
         }else{
 
         }
@@ -160,7 +160,7 @@ class SearchBar extends React.Component {
         console.log('Getting query search : ' + JSON.stringify(params));
         var _url = "/search?";
         _url += params.title ? ("title=" +params.title) +"&" : "";
-        
+
         var getQueryStr = {
             url: _url,
             method: "GET",
@@ -169,8 +169,8 @@ class SearchBar extends React.Component {
         var react_com = this;
         $.ajax(getQueryStr).then(function(response){
             console.log(' ************* Query String  ************** ');
-            
-            
+
+
             if(response.success){
                 var qry_str = "/search/results/1?" + response.query;
                 console.log(qry_str);
@@ -181,22 +181,22 @@ class SearchBar extends React.Component {
                 };
                 $.ajax(getSearch_result).then(function(res){
                     console.log('Movies : ' + JSON.stringify(res));
-                    
+
                     react_com.setState({
                         data : res.movies
                     });
                 },function(err2){
-                    console.log('Error  : ' + JSON.stringify(err2));    
+                    console.log('Error  : ' + JSON.stringify(err2));
                 });
             }else{
                 console.log('Error  : ' + JSON.stringify(response.error));
             }
-            
+
         },function(err){
             console.log('Error : ' + JSON.stringify(err));
         })
         /*
-        
+
         var query_str = {
             movie : this.state.parameters.movie,
             actor : this.state.parameters.actor,
@@ -215,8 +215,8 @@ class SearchBar extends React.Component {
             //console.log('User Info : ' + JSON.stringify(response));
             var data = response;
             console.log("Playlist from Server : " + data);
-            
-            // following has to be uncommented 
+
+            // following has to be uncommented
             //this.setState({ data : data });
             this.setState({data : playlist_fake});
         },function(err){
@@ -227,49 +227,49 @@ class SearchBar extends React.Component {
             });
         });*/
     }
-    
-    
+
+
     render(){
 
         console.log('rendering search bar');
         return (
             <div>
                 <div className="container">
-                    <form 
+                    <form
                       onSubmit={this.handleSubmit} id="search" >
-                        <div class="form-group">
+                        <div className="form-group">
                             <label>Movie :</label>
                             <input
-                                class="form-control"
-                                type="text" 
-                                placeholder="Movie" value={this.state.parameters.movie} 
+                                className="form-control"
+                                type="text"
+                                placeholder="Movie" value={this.state.parameters.movie}
                                 onChange={this.handleMovieNameChange} />
                         </div>
-                        <div class="form-group">
-                            <label>Actor :</label> 
-                            <input type="text" 
-                            class="form-control"
-                            placeholder="Actor" value={this.state.parameters.actor} 
+                        <div className="form-group">
+                            <label>Actor :</label>
+                            <input type="text"
+                                   className="form-control"
+                            placeholder="Actor" value={this.state.parameters.actor}
                                 onChange={this.handleActorChange}/>
                         </div>
-                        <div class="form-group">
-                            <label>Director :</label> 
-                            <input type="text" 
-                            class="form-control"
-                            placeholder="Director" value={this.state.parameters.director} 
+                        <div className="form-group">
+                            <label>Director :</label>
+                            <input type="text"
+                                   className="form-control"
+                            placeholder="Director" value={this.state.parameters.director}
                                 onChange={this.handleDirectorChange} />
                         </div>
-                        <div class="form-group">
-                            <label>Genre :</label> 
-                            <input type="text" 
-                            class="form-control"
-                            placeholder="Genre" value={this.state.parameters.genre} 
+                        <div className="form-group">
+                            <label>Genre :</label>
+                            <input type="text"
+                                   className="form-control"
+                            placeholder="Genre" value={this.state.parameters.genre}
                                 onChange={this.handleGenreChange} />
                         </div>
-                        <div class="form-group"> 
+                        <div className="form-group">
                             <input type="submit" placeholder="Search" />
                         </div>
-                        
+
                     </form>
                 </div>
                 <div>
@@ -280,7 +280,7 @@ class SearchBar extends React.Component {
     }
 }
 
-const HomePage =  withRouter(React.createClass({ 
+const HomePage =  withRouter(React.createClass({
   api:"e443ee14fb107feee75db8b448e6a13e",
   getInitialState: function() {
 		return {data: [], mounted: false};
@@ -291,16 +291,16 @@ const HomePage =  withRouter(React.createClass({
   // },
   // <Banners playlist={this.state.data}/>);
   componentWillReceiveProps : function(nextProps){
-    
+
 	this.setState({ mounted: false });
   },
   componentDidMount : function(){
-    
+
 	this.setState({ mounted: true });
   },
-  
 
-  render: function(){  
+
+  render: function(){
     console.log('In Home Page Component');
     // return (<Card className="container">
     //           <CardTitle title={this.state.title} subtitle="This is the home page." />
@@ -352,6 +352,6 @@ var playlist_fake = [{
       vote_count: 118,
       video: false,
       vote_average: 8.3
-    }] 
+    }]
 
 export default HomePage;

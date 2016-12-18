@@ -166,7 +166,6 @@ router.post('/user/register', function (req, res) {
 
 //get user information
 router.get('/user', function (req, res) {
-
     let redisConnection = req
         .app
         .get("redis");
@@ -314,6 +313,142 @@ router.post('/user/login', function (req, res, next) {
         }
     })(req, res, next);
 });
+
+//update user
+router.post('/user/update_genre', function (req, res) {
+    let userId = req.session.userId;
+    let genreList = xss(req.body.genreList);
+
+    let redisConnection = req
+        .app
+        .get("redis");
+
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`update-genre-success:${messageId}`, (updatedUser, channel) => {
+        redisConnection.off(`update-genre-success:${messageId}`);
+        redisConnection.off(`update-genre-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({ success: true, user: updatedUser });
+    });
+
+    redisConnection.on(`update-genre-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`update-genre-success:${messageId}`);
+        redisConnection.off(`update-genre-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({
+            success: false,
+            errors: error
+        });
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`update-genre-success:${messageId}`);
+        redisConnection.off(`update-genre-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`update-genre:${messageId}`, {
+        requestId: messageId,
+        genreList: genreList,
+        userId: userId
+    });
+});
+
+router.get('/user/add_person',function (req, res) {
+    console.log("add_person");
+    let userId = req.session.userId;
+    let person = req.body.value;
+    console.log(req.body.value);
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+    redisConnection.on(`get-person-byID-success:${messageId}`, (updatedUser, channel) => {
+        redisConnection.off(`get-person-byID-success:${messageId}`);
+        redisConnection.off(`get-person-byID-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({ success: true, user: updatedUser });
+    });
+
+    redisConnection.on(`get-person-byID-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`get-person-byID-success:${messageId}`);
+        redisConnection.off(`get-person-byID-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+         res.json({
+            success: false,
+            errors: error
+        });
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`get-person-byID-success:${messageId}`);
+        redisConnection.off(`get-person-byID-failed:${messageId}`);
+        return res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`get-person-byID:${messageId}`, {
+        requestId: messageId,
+        userId: userId,
+        personId: person
+    });
+
+})
+
+router.get('/user/get_preferences',function (req, res) {
+    let userId = req.session.userId;
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+
+    redisConnection.on(`get-preference-success:${messageId}`, (updatedUser, channel) => {
+        redisConnection.off(`get-preference-success:${messageId}`);
+        redisConnection.off(`get-preference-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({ success: true, user: updatedUser });
+    });
+
+    redisConnection.on(`get-preference-failed:${messageId}`, (error, channel) => {
+        redisConnection.off(`get-preference-success:${messageId}`);
+        redisConnection.off(`get-preference-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+        return res.json({
+            success: false,
+            errors: error
+        });
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`get-preference-success:${messageId}`);
+        redisConnection.off(`get-preference-failed:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`get-preference:${messageId}`, {
+        requestId: messageId,
+        userId: userId
+    });
+});
+
 
 // //get user's password
 // router.get('/forgot/:username', function (req, res) {

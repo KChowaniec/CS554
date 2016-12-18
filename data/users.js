@@ -7,9 +7,12 @@ This module exports methods related to the user collection
 
 mongoCollections = require("./config/mongoCollections");
 Users = mongoCollections.users;
+ObjectId = require('mongodb').ObjectID;
+
 var playlist = require('./playlist');
 var uuid = require('node-uuid');
 var passwordHash = require("password-hash");
+
 // var bcrypt = require('bcrypt');
 // const saltRounds = 10;
 
@@ -27,7 +30,7 @@ var exportedMethods = {
                 if (!userObj) throw "Users not found";
                 return userObj;
             }).catch((error) => {
-                return error;
+                return "some error happened";
             });
         });
     },
@@ -162,6 +165,18 @@ var exportedMethods = {
         })
     },
 
+    updateGenre(id,genreList){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.Genre":genreList} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
     //add user without preferences
     addUser(username, pwd, name, email) {
         return Users().then((userCollection) => {
@@ -258,6 +273,7 @@ var exportedMethods = {
             if (password != confirmedPassword) { reject("Entered password and confirmed password must match") };
         });
     }
+
 }
 
 module.exports = exportedMethods;

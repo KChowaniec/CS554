@@ -156,11 +156,11 @@ redisConnection.on('login-user:*', (data, channel) => {
     });
 });
 
-//USER PREFERENCES WORKER  
+//USER PREFERENCES WORKER
 redisConnection.on('get-preferences:*', (data, channel) => {
     let messageId = data.requestId;
     let userId = data.userId;
-    //get preferences 
+    //get preferences
     let fullyComposeUser = userData
         .getUserPreferences(userId)
         .then((preferences) => {
@@ -169,3 +169,41 @@ redisConnection.on('get-preferences:*', (data, channel) => {
             redisConnection.emit(`preferences-retrieved-failed:${messageId}`, error);
         });
 });
+
+
+//Update Genre
+redisConnection.on('update-genre:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let genreList = data.genreList;
+    genreList = genreList.split(",");
+    //update genre in preference
+    let fullyComposeUser = userData
+        .updateGenre(userId,genreList)
+        .then((preferences) => {
+            client.setAsync(userId, JSON.stringify(preferences));
+            redisConnection.emit(`update-genre-success:${messageId}`, preferences);
+        }).catch((error) => {
+            console.log(error)
+            redisConnection.emit(`update-genre-failed:${messageId}`, error);
+        });
+});
+
+
+redisConnection.on('get-preference:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+
+    console.log(userId);
+    //update genre in preference
+    let fullyComposeUser = userData
+        .getUserById(userId)
+        .then((data) => {
+            // client.setAsync(user._id, JSON.stringify(data));
+            redisConnection.emit(`get-preference-success:${messageId}`, data.preferences);
+        }).catch((error) => {
+            console.log(error);
+            redisConnection.emit(`get-preference-failed:${messageId}`, error);
+        });
+});
+
