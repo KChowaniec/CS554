@@ -12,7 +12,6 @@ const exphbs = require('express-handlebars');
 var config = require('../data/all-config.json');
 const Handlebars = require('handlebars');
 const path = require("path");
-const authCheckMiddleware = require('./middleware/auth-check');
 
 const handlebarsInstance = exphbs.create({
     defaultLayout: 'main',
@@ -64,7 +63,6 @@ app.set('view engine', 'handlebars');
 configRoutes(app, passport);
 app.use(express.static('./views/static/'));
 app.use(express.static('./public/js/bundle/'));
-// app.use('*', authCheckMiddleware);
 app.get('*', function (request, response) {
     response.sendFile(path.resolve(__dirname, 'views/static', 'index.html'))
 })

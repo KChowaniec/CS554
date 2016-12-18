@@ -8,13 +8,10 @@ This module exports methods related to the user collection
 mongoCollections = require("./config/mongoCollections");
 Users = mongoCollections.users;
 ObjectId = require('mongodb').ObjectID;
-
 var playlist = require('./playlist');
 var uuid = require('node-uuid');
-var passwordHash = require("password-hash");
+var bcrypt = require('bcryptjs');
 
-// var bcrypt = require('bcrypt');
-// const saltRounds = 10;
 
 var exportedMethods = {
     //get all users
@@ -62,8 +59,7 @@ var exportedMethods = {
     verifyLogin(password, hashedPwd) {
         if (!password) throw ("A password must be provided");
         if (!hashedPwd) throw ("A hashed password must be provided");
-        if (passwordHash.verify(password, hashedPwd)) {
-            // if (bcrypt.compareSync(password, hashedPwd)) {
+        if (bcrypt.compareSync(password, hashedPwd)) {
             return true;
         }
         else {
@@ -98,11 +94,12 @@ var exportedMethods = {
     //add user using speciifc parameters
     addUsers(username, password, profile, preferences) {
         var userid = uuid.v4();
-        //var hash = bcrypt.hashSync(password, saltRounds);
         profile["_id"] = userid;
+        var salt = bcrypt.genSaltSync(10);
+        var hashedPassword = bcrypt.hashSync(password, salt);
         var obj = {
             _id: userid,
-            password: passwordHash.generate(password),
+            password: hashedPassword,
             profile: profile,
             preferences: preferences
         };
@@ -121,10 +118,11 @@ var exportedMethods = {
     //the profile attribute doesn't contain the _id and the _id will be created by this function
     addUsersAndPlaylist(title, userObj) {
         var userId = uuid.v4();
-        //var hash = bcrypt.hashSync(userObj.password, saltRounds);
+        var salt = bcrypt.genSaltSync(10);
+        var hashedPassword = bcrypt.hashSync(userObj.password, salt);
         var obj = {
             _id: userId,
-            password: passwordHash.generate(userObj.password),
+            password: hashedPassword,
             profile: {
                 _id: userId,
                 username: userObj.username,
@@ -170,7 +168,9 @@ var exportedMethods = {
     updateUserById(id, obj) {
         let newData = {};
         if (obj.password) {
-            newData.password = passwordHash.generate(obj.password);
+            var salt = bcrypt.genSaltSync(10);
+            var hashedPassword = bcrypt.hashSync(obj.password, salt);
+            newData.password = hashedPassword;
         }
         if (obj.email) {
             newData['profile.email'] = obj.email;
@@ -189,9 +189,9 @@ var exportedMethods = {
         })
     },
 
-    updateGenre(id,genreList){
+    updateGenre(id, genreList) {
         return Users().then((userCollection) => {
-            return userCollection.update({ _id: id }, { $set: {"preferences.Genre":genreList} }).then(function () {
+            return userCollection.update({ _id: id }, { $set: { "preferences.Genre": genreList } }).then(function () {
                 return id;
             });
         }).then(id => {
@@ -201,9 +201,9 @@ var exportedMethods = {
         })
     },
 
-    updateAgeRating(id,ageRating){
+    updateAgeRating(id, ageRating) {
         return Users().then((userCollection) => {
-            return userCollection.update({ _id: id }, { $set: {"preferences.ageRating":ageRating} }).then(function () {
+            return userCollection.update({ _id: id }, { $set: { "preferences.ageRating": ageRating } }).then(function () {
                 return id;
             });
         }).then(id => {
@@ -213,9 +213,9 @@ var exportedMethods = {
         })
     },
 
-    updateReleaseYear(id,releaseYear){
+    updateReleaseYear(id, releaseYear) {
         return Users().then((userCollection) => {
-            return userCollection.update({ _id: id }, { $set: {"preferences.releaseYear":releaseYear} }).then(function () {
+            return userCollection.update({ _id: id }, { $set: { "preferences.releaseYear": releaseYear } }).then(function () {
                 return id;
             });
         }).then(id => {
@@ -225,9 +225,9 @@ var exportedMethods = {
         })
     },
 
-    updateKeywords(id,keywords){
+    updateKeywords(id, keywords) {
         return Users().then((userCollection) => {
-            return userCollection.update({ _id: id }, { $set: {"preferences.keywords":keywords} }).then(function () {
+            return userCollection.update({ _id: id }, { $set: { "preferences.keywords": keywords } }).then(function () {
                 return id;
             });
         }).then(id => {
@@ -237,9 +237,9 @@ var exportedMethods = {
         })
     },
 
-    updateActor(id,actorList){
+    updateActor(id, actorList) {
         return Users().then((userCollection) => {
-            return userCollection.update({ _id: id }, { $set: {"preferences.Actor":actorList} }).then(function () {
+            return userCollection.update({ _id: id }, { $set: { "preferences.Actor": actorList } }).then(function () {
                 return id;
             });
         }).then(id => {
@@ -249,9 +249,9 @@ var exportedMethods = {
         })
     },
 
-    updateCrew(id,crewList){
+    updateCrew(id, crewList) {
         return Users().then((userCollection) => {
-            return userCollection.update({ _id: id }, { $set: {"preferences.Crew":crewList} }).then(function () {
+            return userCollection.update({ _id: id }, { $set: { "preferences.Crew": crewList } }).then(function () {
                 return id;
             });
         }).then(id => {
@@ -265,9 +265,11 @@ var exportedMethods = {
     addUser(username, pwd, name, email) {
         return Users().then((userCollection) => {
             var userId = uuid.v4();
+            var salt = bcrypt.genSaltSync(10);
+            var hashedPassword = bcrypt.hashSync(pwd, salt);
             var obj = {
                 _id: userId,
-                password: passwordHash.generate(pwd),
+                password: hashedPassword,
                 profile: {
                     _id: userId,
                     username: username,

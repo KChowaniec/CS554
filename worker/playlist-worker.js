@@ -2,7 +2,6 @@ const dbCollection = require("data");
 const playlistData = dbCollection.playlist;
 const movieData = dbCollection.movie;
 const apiData = dbCollection.api;
-const historyData = dbCollection.history;
 const fetch = require('node-fetch');
 const bluebird = require("bluebird");
 const flat = require("flat");
