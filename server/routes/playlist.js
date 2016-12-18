@@ -17,11 +17,64 @@ var path = require('path');
 var mime = require('mime');
 var fs = require('fs');
 var jsonfile = require('jsonfile');
-//dialog.setContext(document)
+
+
+
 router.get('/download', function (req, res) {
     var file = __dirname + '/../public/json/playlist_file.json';
     res.download(file);
 });
+
+// CHANGES BY SUVEER
+router.post('/import', function (req, res) {
+    console.log("In playlist Import");
+    //console.log(req.body.playlist_data);
+    let userId = req.session.userId;
+    // REMOVE IT
+    // if (userId === undefined) {
+    //     userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
+    // }
+    let redisConnection = req
+        .app
+        .get("redis");
+    let messageId = uuid.v4();
+    let killswitchTimeoutId = undefined;
+
+    redisConnection.on(`import-playlist-success:${messageId}`, (playlist, channel) => {
+
+        redisConnection.off(`import-playlist-success:${messageId}`);
+        redisConnection.off(`import-playlist-failed:${messageId}`);
+        res.json({ success: true });
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    redisConnection.on(`import-playlist-failed:${messageId}`, (error, channel) => {
+        res
+            .status(500)
+            .json(error);
+        redisConnection.off(`import-playlist-success:${messageId}`);
+        redisConnection.off(`import-playlist-failed:${messageId}`);
+
+        clearTimeout(killswitchTimeoutId);
+    });
+
+    killswitchTimeoutId = setTimeout(() => {
+        redisConnection.off(`import-playlist-success:${messageId}`);
+        redisConnection.off(`import-playlist-success:${messageId}`);
+        res
+            .status(500)
+            .json({ error: "Timeout error" })
+    }, 5000);
+
+    redisConnection.emit(`import-playlist:${messageId}`, {
+        requestId: messageId,
+        userId: userId,
+        playlist_data: req.body.playlist_data
+    });
+});
+
+
 //GET PLAYLIST
 router.get("/", (req, res) => {
     //get playlist information
@@ -221,6 +274,8 @@ router.put("/title/:playlistId", (req, res) => {
         , title: newTitle
     });
 });
+
+
 //REMOVE MOVIE FROM PLAYLIST
 router.delete("/delete/:movieId", (req, res) => {
     let movieId = req.params.movieId;
@@ -272,6 +327,8 @@ router.delete("/delete/:movieId", (req, res) => {
         , userId: userId
     });
 });
+
+
 //ADD MOVIE TO PLAYLIST
 router.get("/addmovie/:movieId", (req, res) => {
     let movieId = req.params.movieId;
