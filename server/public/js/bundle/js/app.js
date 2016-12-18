@@ -34511,7 +34511,7 @@
 	    component: _HomePage2.default,
 	    onEnter: redirectToLogin
 	  }, {
-	    path: '/playlist',
+	    path: '/playlists',
 	    component: _Playlist2.default,
 	    onEnter: redirectToLogin
 	  }, {
@@ -34523,7 +34523,7 @@
 	    component: _Logout2.default
 	  }, {
 	    path: '/analytics',
-	    // component: AnalyticsPage,
+	    component: _AnalyticsPage2.default,
 	    onEnter: getAnalytics
 	  }, {
 	    path: '/detailm',
@@ -34623,7 +34623,7 @@
 	            ),
 	            _react2.default.createElement(
 	              _reactRouter.Link,
-	              { to: '/playlist' },
+	              { to: '/playlists' },
 	              'My Playlist'
 	            ),
 	            _react2.default.createElement(

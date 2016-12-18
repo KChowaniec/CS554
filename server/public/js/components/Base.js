@@ -33,7 +33,7 @@ const Base = React.createClass({
                 <Link to="/account">My Account</Link>
                 <Link to="/preference">My Movie Preferences</Link>
                 <Link to="/">Movie Search</Link>
-                <Link to="/playlist">My Playlist</Link>
+                <Link to="/playlists">My Playlist</Link>
                 <Link to="/analytics">Movie Analytics</Link>
                 <Link to="/logout">Log out</Link>
               </div>
