@@ -33,23 +33,6 @@ function replaceWithHome(nextState, replace) {
   replace('/home');
 }
 
-function getAnalytics(nextState, replace) {
-  axios.get('/analytics').then(res => {
-    // replace('/');
-  });
-}
-
-function getMovieById(nextState, replace) {
-  var requestConfig = {
-    method: "GET",
-    url: "/detail/5",
-    contentType: 'application/json'
-  };
-  $.ajax(requestConfig).then((responseMessage) => {
-    window.location.reload();
-  });
-}
-
 const routes = {
   // base component (wrapper for the whole application).
   component: Base,
@@ -76,7 +59,7 @@ const routes = {
       onEnter: redirectToLogin
     },
     {
-      path: '/playlists',
+      path: '/playlist',
       component: Playlist,
       onEnter: redirectToLogin
     },
@@ -91,12 +74,7 @@ const routes = {
     },
     {
       path: '/analytics',
-      component: AnalyticsPage,
-      onEnter: getAnalytics
-    },
-    {
-      path: '/detailm',
-      onEnter: getMovieById
+      component: AnalyticsPage
     },
     {
       path: '/account',
