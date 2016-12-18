@@ -415,7 +415,7 @@ class SearchBar extends React.Component {
                                 onChange={this.handleGenreChange} />
                         </div>
                         <div className="button-line">
-                            <RaisedButton type="submit" label="Submit" primary />
+                            <RaisedButton type="submit" label="Search" primary />
                             <CardText>Save preferences? <RaisedButton type="button" label="Save" secondary /></CardText>
                         </div>
 

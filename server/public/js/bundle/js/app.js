@@ -35293,7 +35293,7 @@
 	                        _react2.default.createElement(
 	                            'div',
 	                            { className: 'button-line' },
-	                            _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Submit', primary: true }),
+	                            _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Search', primary: true }),
 	                            _react2.default.createElement(
 	                                _Card.CardText,
 	                                null,
