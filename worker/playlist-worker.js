@@ -210,16 +210,19 @@ redisConnection.on('export-playlist:*', (data, channel) => {
         });
 });
 
-//IMPORT PLAYLIST WORKER
 redisConnection.on('import-playlist:*', (data, channel) => {
-    var messageId = data.requestId;
-    var filePath = data.filePath;
-
-    var fullyComposePlaylist = playlistData
-        .importPlaylist(filePath)
-        .then((data) => {
-            redisConnection.emit(`playlist-imported:${messageId}`, data);
+    console.log("In playlist worker Import");
+    let messageId = data.requestId;
+    let playlist = data.playlist_data;
+    let user_id = data.userId
+    //add user to database, set of all users in cache and own cache entry
+    let fullyComposePlaylist = playlistData
+        .updateMoviePlaylistArray(user_id, playlist)
+        .then((newPlaylist) => {
+            console.log("new playlist received");
+            redisConnection.emit(`import-playlist-success:${messageId}`, newPlaylist);
         }).catch(error => {
-            redisConnection.emit(`playlist-imported-failed:${messageId}`, error);
+
+            redisConnection.emit(`import-playlist-failed:${messageId}`, error);
         });
 });
