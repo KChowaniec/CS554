@@ -122,7 +122,6 @@ class PreferencePage extends React.Component {
         });
     };
 
-
     deleteGenre = (key) => {
         console.log(key);
         var allGenre = this.state.allGenre;
@@ -169,7 +168,6 @@ class PreferencePage extends React.Component {
 
     searchPerson(e){
         e.preventDefault();
-        console.log(this.state.personForm)
         $.ajax({
             url: '/search/person',
             dataType: 'json',
@@ -347,6 +345,80 @@ class PreferencePage extends React.Component {
         );
     }
 
+    handleKeyword(event) {
+        this.setState({keywordsForm: event.target.value});
+    }
+
+    addKeywords(data){
+        var keywords = this.state.keywords;
+        if(!keywords.includes(data.name)){
+            keywords.push(data.name);
+        }
+        var keywordsSearchResult = this.state.keywordsSearchResult;
+        keywordsSearchResult = removeByKey(keywordsSearchResult,{id:data.id,name:data.name})
+        this.setState({keywordsSearchResult:keywordsSearchResult});
+
+        axios.post('/user/update_keywords', {
+            keywords: this.state.keywords
+        }).then(function (response) {
+            console.log(response);
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    deleteKeywords(data){
+        console.log(data)
+        var keywords = this.state.keywords
+        var index = keywords.indexOf(data)
+        if(index>-1)
+        {
+            keywords.splice(index,1)
+        }
+        this.setState({keywords:keywords})
+
+        axios.post('/user/update_keywords', {
+            keywords: this.state.keywords
+        }).then(function (response) {
+            console.log(response);
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    renderKeywords(data){
+        return (
+            <Chip key={data} onRequestDelete={() => this.deleteKeywords(data)} style={this.styles.chip}>
+                {data}
+            </Chip>
+        );
+    }
+
+    renderKeywordsSearchResult(data){
+        return (
+            <Chip key={data.id} onTouchTap={() => this.addKeywords(data)} style={this.styles.chip}>
+                {data.name}
+            </Chip>
+        );
+    }
+
+    keywordSearch(e){
+        e.preventDefault();
+        $.ajax({
+            url: '/search/keywords',
+            dataType: 'json',
+            method: "GET",
+            data: "value="+this.state.keywordsForm,
+            cache: false,
+            success: (response) => {
+                this.setState({keywordsSearchResult:response.results});
+            },
+            error: (xhr, status, err) => {
+                console.error(status, err.toString());
+            }
+        });
+    }
+
     addYear(event){
         event.preventDefault();
 
@@ -356,25 +428,26 @@ class PreferencePage extends React.Component {
         if(year.length != 4){
             this.setState({errorVisibility:true});
             this.setState({errorText:'Not a valid year'});
-        }
-
-        var index = allYear.indexOf(year);
-        if (index > -1) {
-            this.setState({errorVisibility:true});
-            this.setState({errorText:'Year Already Exist'});
         }else{
-            allYear.push(year);
-            this.setState({yearForm:''});
-        }
-        this.setState({year:allYear})
+            var index = allYear.indexOf(year);
+            if (index > -1) {
+                this.setState({errorVisibility:true});
+                this.setState({errorText:'Year Already Exist'});
+            }else{
+                allYear.push(year);
+                this.setState({yearForm:''});
+            }
+            this.setState({year:allYear})
 
-        axios.post('/user/update_year', {
-            year: this.state.year
-        }).then(function (response) {
-            console.log(response);
-        }).catch(function (error) {
-            console.log(error);
-        });
+            axios.post('/user/update_year', {
+                year: this.state.year
+            }).then(function (response) {
+                console.log(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
 
     }
 
@@ -439,11 +512,32 @@ class PreferencePage extends React.Component {
                         </div>
                     </Tab>
                     <Tab label="Keywords" >
+                        <div className={this.state.keywords.length?'visible':'hidden'}>
+                            <h3>Keywords</h3>
+                            <div style={this.styles.wrapper}>
+                                {this.state.keywords.map(this.renderKeywords,this)}
+                            </div>
+                            <hr/>
+                        </div>
                         <div>
-                            <h2>Tab Two</h2>
-                            <p>
-                                This is another example tab.
-                            </p>
+                            <form className="preference-keyword" onSubmit={this.keywordSearch.bind(this)}>
+                                <TextField
+                                    hintText="Keyword"
+                                    name="keyword"
+                                    floatingLabelText="Search for Keyword"
+                                    onChange={this.handleKeyword.bind(this)}
+                                    value={this.state.keywordsForm}
+                                    required
+                                />
+                                <RaisedButton type="submit" label="Search" primary={true}  style={this.styles.personForm} />
+                            </form>
+                            <div className={this.state.keywordsSearchResult.length>0?'visible':'hidden'}>
+                                <hr/>
+                                <h3>Options:</h3>
+                                <div style={this.styles.wrapper}>
+                                    {this.state.keywordsSearchResult.map(this.renderKeywordsSearchResult,this)}
+                                </div>
+                            </div>
                         </div>
                     </Tab>
                     <Tab label="Year" >

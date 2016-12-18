@@ -205,6 +205,30 @@ redisConnection.on('update-genre:*', (data, channel) => {
         });
 });
 
+//update keywords
+redisConnection.on('update-keywords:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let keywords = data.keywords;
+    if(keywords!="")
+    {
+        keywords = keywords.split(",");
+    }else{
+        keywords = [];
+    }
+    //update keywords in preference
+    let fullyComposeUser = userData
+        .updateKeywords(userId,keywords)
+        .then((preferences) => {
+            client.setAsync(userId, JSON.stringify(preferences));
+            redisConnection.emit(`update-keywords-success:${messageId}`, preferences);
+        }).catch((error) => {
+            console.log(error)
+            redisConnection.emit(`update-keywords-failed:${messageId}`, error);
+        });
+});
+
+
 //Update Person - actor/crew
 redisConnection.on('update-person:*', (data, channel) => {
     let messageId = data.requestId;
