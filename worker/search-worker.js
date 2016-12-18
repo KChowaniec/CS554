@@ -86,14 +86,14 @@ redisConnection.on('create-query:*', (data, channel) => {
                 console.log('@ create-query : Search by criteria');
 
                 var criteriaString = formData.createQueryString(actorList, query.genre, crewList, query.rating, query.evaluation, query.year, keywordList);
-                
+
                 console.log('@ Criteria string : ' + criteriaString);
-                
+
                 redisConnection.emit(`query-created:${messageId}`, criteriaString);
             }catch(e){
                 console.log('Error : ' + e );
             }
-            
+
         }
     }).catch(error => {
         redisConnection.emit(`query-created-failed:${messageId}`, error);
@@ -174,7 +174,6 @@ redisConnection.on('get-person:*', (data, channel) => {
 
 //get person by ID
 redisConnection.on('get-person-byID:*', (data, channel) => {
-    console.log("d");
     var messageId = data.requestId;
     var userId = data.userId
     var personId = data.person;
@@ -200,9 +199,11 @@ redisConnection.on('get-person-byID:*', (data, channel) => {
                     user.preferences.Crew.push(person.name);
                 }
             }
-            userData.updateUserById(userId,user).then((data) => {
-                console.log("test",data.preferences);
-                redisConnection.emit(`get-person-byID-success:${messageId}`, data.preferences);
+
+            userData.updateActor(userId,user.preferences.Actor).then((data)=>{
+                userData.updateCrew(userId,user.preferences.Crew).then((data)=>{
+                    redisConnection.emit(`get-person-byID-success:${messageId}`, data.preferences);
+                })
             });
 
         }).catch(error => {
