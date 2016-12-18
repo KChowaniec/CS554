@@ -34970,7 +34970,8 @@
 	                director: '',
 	                genre: ''
 	            },
-	            currentPage: 1
+	            currentPage: 1,
+	            snackbar_open: false
 	        };
 
 	        _this.handleMovieNameChange = _this.handleMovieNameChange.bind(_this);
@@ -35001,7 +35002,7 @@
 	                var react_component = this;
 	                var movie_index = index;
 
-	                _axios2.default.post('/playlist/' + this.state.data[index].id).then(function (res) {
+	                _axios2.default.get('/playlist/addmovie/' + this.state.data[index].id).then(function (res) {
 	                    if (res.data.success === true) {
 	                        console.log("Movie Added");
 	                        //[movie_index].isAdded = true;
@@ -35292,31 +35293,41 @@
 	                _react2.default.createElement(
 	                    'div',
 	                    null,
-	                    _react2.default.createElement(
-	                        'div',
-	                        { style: this.state.styles.root },
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement('br', null),
+	                    this.state.data.length > 0 && _react2.default.createElement(
+	                        _Card.Card,
+	                        { className: 'container' },
+	                        _react2.default.createElement(_Card.CardTitle, { title: 'Search Results' }),
+	                        _react2.default.createElement('br', null),
 	                        _react2.default.createElement(
-	                            _GridList.GridList,
-	                            { className: 'container', style: this.state.styles.gridList, cols: 2.2 },
-	                            this.state.data.map(function (tile, i) {
-	                                return _react2.default.createElement(
-	                                    _GridList.GridTile,
-	                                    {
-	                                        key: i,
-	                                        title: tile.title,
-	                                        actionIcon: tile.id === "next" ? null : _react2.default.createElement(
-	                                            _IconButton2.default,
-	                                            { onClick: _this2.additem.bind(_this2, i) },
-	                                            tile.isAdded ? _react2.default.createElement(_playlistAddCheck2.default, { color: 'rgb(0, 0, 0)' }) : _react2.default.createElement(_playlistAdd2.default, { color: 'rgb(0, 0, 0)' })
-	                                        ),
-	                                        titleStyle: _this2.state.styles.titleStyle,
-	                                        titleBackground: 'linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)'
-	                                    },
-	                                    _react2.default.createElement('img', { style: _this2.state.styles.imageStyle,
-	                                        onClick: _this2.itemClicked.bind(_this2, tile.id),
-	                                        src: tile.id == "next" ? tile.poster_path : tile.poster_path === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path })
-	                                );
-	                            })
+	                            'div',
+	                            { style: this.state.styles.root },
+	                            _react2.default.createElement(
+	                                _GridList.GridList,
+	                                { className: 'container', style: this.state.styles.gridList, cols: 2.2 },
+	                                this.state.data.map(function (tile, i) {
+	                                    return _react2.default.createElement(
+	                                        _GridList.GridTile,
+	                                        {
+	                                            key: i,
+	                                            title: tile.title,
+	                                            actionIcon: tile.id === "next" ? null : _react2.default.createElement(
+	                                                _IconButton2.default,
+	                                                { onClick: _this2.additem.bind(_this2, i) },
+	                                                tile.isAdded ? _react2.default.createElement(_playlistAddCheck2.default, { color: 'rgb(0, 0, 0)' }) : _react2.default.createElement(_playlistAdd2.default, { color: 'rgb(0, 0, 0)' })
+	                                            ),
+	                                            titleStyle: _this2.state.styles.titleStyle,
+	                                            titleBackground: 'linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)'
+	                                        },
+	                                        _react2.default.createElement('img', { className: 'grid-img', style: _this2.state.styles.imageStyle,
+	                                            onClick: _this2.itemClicked.bind(_this2, tile.id),
+	                                            src: tile.id == "next" ? tile.poster_path : tile.poster_path === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path })
+	                                    );
+	                                })
+	                            ),
+	                            _react2.default.createElement('br', null),
+	                            _react2.default.createElement('br', null)
 	                        )
 	                    )
 	                )
