@@ -7,9 +7,12 @@ This module exports methods related to the user collection
 
 mongoCollections = require("./config/mongoCollections");
 Users = mongoCollections.users;
+ObjectId = require('mongodb').ObjectID;
+
 var playlist = require('./playlist');
 var uuid = require('node-uuid');
 var passwordHash = require("password-hash");
+
 // var bcrypt = require('bcrypt');
 // const saltRounds = 10;
 
@@ -27,7 +30,7 @@ var exportedMethods = {
                 if (!userObj) throw "Users not found";
                 return userObj;
             }).catch((error) => {
-                return error;
+                return "some error happened";
             });
         });
     },
@@ -186,6 +189,78 @@ var exportedMethods = {
         })
     },
 
+    updateGenre(id,genreList){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.Genre":genreList} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
+    updateAgeRating(id,ageRating){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.ageRating":ageRating} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
+    updateReleaseYear(id,releaseYear){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.releaseYear":releaseYear} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
+    updateKeywords(id,keywords){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.keywords":keywords} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
+    updateActor(id,actorList){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.Actor":actorList} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
+    updateCrew(id,crewList){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.Crew":crewList} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
     //add user without preferences
     addUser(username, pwd, name, email) {
         return Users().then((userCollection) => {
@@ -282,6 +357,7 @@ var exportedMethods = {
             if (password != confirmedPassword) { reject("Entered password and confirmed password must match") };
         });
     }
+
 }
 
 module.exports = exportedMethods;

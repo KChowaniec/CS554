@@ -9,7 +9,63 @@ import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
 import AccountPage from './containers/AccountPage';
+import PreferencePage from './containers/PreferencePage'
+// import HomePage from './containers/HomePage.js';
+import AccountPage from './containers/AccountPage';
 import axios from 'axios';
+
+
+
+
+function redirectToLogin(nextState, replace) {
+  if (!auth.loggedIn()) {
+    replace('/login')
+  }
+}
+
+function getAnalytics(nextState, replace) {
+  var requestConfig = {
+    method: "GET",
+    url: "/analytics",
+    contentType: 'application/json'
+  };
+  $.ajax(requestConfig).then((responseMessage) => {
+    window.location.reload();
+  });
+}
+
+function getMovieById(nextState, replace) {
+  var requestConfig = {
+    method: "GET",
+    url: "/detail/5",
+    contentType: 'application/json'
+  };
+  $.ajax(requestConfig).then((responseMessage) => {
+    window.location.reload();
+  });
+}
+
+const routes = {
+  // base component (wrapper for the whole application).
+  component: Base,
+  childRoutes: [
+
+    {
+      path: '/',
+      component: HomePage,
+      onEnter: redirectToLogin
+    },
+
+    {
+      path: '/login',
+      component: LoginPage
+    },
+
+    {
+      path: '/signup',
+      component: SignUpPage
+
+
 
 function redirectToLogin(nextState, replace, callback) {
   axios.get('/user/authorized').then(res => {
@@ -99,6 +155,11 @@ const routes = {
       path: '/account',
       component: AccountPage,
       onEnter: redirectToLogin
+    },
+    
+    {
+      path: '/preference',
+      component: PreferencePage
     },
 
     //match any other routes - redirect to home page

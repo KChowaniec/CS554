@@ -166,8 +166,9 @@ redisConnection.on('login-user:*', (data, channel) => {
     });
 });
 
-//USER PREFERENCES WORKER  
+//USER PREFERENCES WORKER
 redisConnection.on('get-preferences:*', (data, channel) => {
+  
     var messageId = data.requestId;
     var userId = data.userId;
     //get preferences 
@@ -180,6 +181,127 @@ redisConnection.on('get-preferences:*', (data, channel) => {
         });
 });
 
+
+//Update Genre
+redisConnection.on('update-genre:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let genreList = data.genreList;
+    if(genreList!="")
+    {
+        genreList = genreList.split(",");
+    }else{
+        genreList = [];
+    }
+    //update genre in preference
+    let fullyComposeUser = userData
+        .updateGenre(userId,genreList)
+        .then((preferences) => {
+            client.setAsync(userId, JSON.stringify(preferences));
+            redisConnection.emit(`update-genre-success:${messageId}`, preferences);
+        }).catch((error) => {
+            console.log(error)
+            redisConnection.emit(`update-genre-failed:${messageId}`, error);
+        });
+});
+
+//Update Person - actor/crew
+redisConnection.on('update-person:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let crew = data.crew;
+    let actor = data.actor;
+
+    if(crew==null)
+    {
+        crew = []
+    }
+    if(actor == null)
+    {
+        actor = []
+    }
+    console.log("crew",crew)
+    console.log("actor",actor)
+    // update actor/crew in preference
+    let fullyComposeUser = userData
+        .updateActor(userId,actor)
+        .then((data) => {
+            userData.updateCrew(userId,crew).then((data) => {
+                redisConnection.emit(`update-person-success:${messageId}`, data);
+            })
+        }).catch((error) => {
+            console.log(error)
+            redisConnection.emit(`update-person-failed:${messageId}`, error);
+        });
+});
+
+redisConnection.on('get-preference:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+
+    console.log(userId);
+    //update genre in preference
+    let fullyComposeUser = userData
+        .getUserById(userId)
+        .then((data) => {
+            // client.setAsync(user._id, JSON.stringify(data));
+            redisConnection.emit(`get-preference-success:${messageId}`, data.preferences);
+        }).catch((error) => {
+            console.log(error);
+            redisConnection.emit(`get-preference-failed:${messageId}`, error);
+        });
+});
+
+
+
+//Update age rating
+redisConnection.on('update-ageRating:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let ageRating = data.ageRating;
+    if(ageRating!="")
+    {
+        ageRating = ageRating.split(",");
+    }else{
+        ageRating = [];
+    }
+    //update genre in preference
+    let fullyComposeUser = userData
+        .updateAgeRating(userId,ageRating)
+        .then((data) => {
+            client.setAsync(userId, JSON.stringify(data));
+            redisConnection.emit(`update-ageRating-success:${messageId}`, data);
+        }).catch((error) => {
+            console.log(error)
+            redisConnection.emit(`update-ageRating-failed:${messageId}`, error);
+        });
+});
+
+
+//Update release year
+redisConnection.on('update-year:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let year = data.year;
+    if(year!="")
+    {
+        year = year.split(",");
+    }else{
+        year = [];
+    }
+    //update genre in preference
+    let fullyComposeUser = userData
+        .updateReleaseYear(userId,year)
+        .then((data) => {
+            client.setAsync(userId, JSON.stringify(data));
+            redisConnection.emit(`update-year-success:${messageId}`, data);
+        }).catch((error) => {
+            console.log(error)
+            redisConnection.emit(`update-year-failed:${messageId}`, error);
+         
+        }
+                 
+                 });
 //SAVE USER PREFERENCES WORKER  
 redisConnection.on('save-preferences:*', (data, channel) => {
     let messageId = data.requestId;
