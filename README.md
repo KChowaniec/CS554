@@ -2,15 +2,18 @@
 Final Project: Matrix Movie Search
 
 In-class technologies used:
+
 1. React
 2. Redis
 3. Worker roles
 
 Independent Technologies Used:
+
 1. Highcharts (used in movie analytics)
 2. Material UI
 
 Setup instructions:
+
 1. Run redis and mongodb
 2. Server port and database configuration can be changed in all-config.json file
 3. In data directory, run 'npm install' and then 'npm link'
