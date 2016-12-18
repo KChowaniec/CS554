@@ -162,36 +162,41 @@ redisConnection.on('get-person-byID:*', (data, channel) => {
     console.log("d");
     var messageId = data.requestId;
     var userId = data.userId
-    var personId = data.personId;
-    console.log(personId);
+    var personId = data.person;
     var person = {};
     var user = null;
 
-    user =  userData.getUserById(userId).then((data) => {
-        return data;
+    userData.getUserById(userId).then((data) => {
+      user = data;
+        apiData.getCreditByPersonId(personId).then((data) => {
+            if (data.id == null || data.id == undefined) {
+                console.log("failed");
+                redisConnection.emit(`get-person-byID-failed:${messageId}`, { success: false, message: "Person doesn't exist!" });
+            }
+            person.name = data.name;
+            if (data.movie_credits.cast.length > 0 && data.movie_credits.cast.length > data.movie_credits.crew.length) {
+                person.type = "actor";
+                if(user.preferences.Actor.indexOf(person.name) === -1){
+                    user.preferences.Actor.push(person.name);
+                }
+            }else if (data.movie_credits.crew.length > 0) {
+                person.type = "crew";
+                if(user.preferences.Crew.indexOf(person.name) === -1){
+                    user.preferences.Crew.push(person.name);
+                }
+            }
+            userData.updateUserById(userId,user).then((data) => {
+                console.log(data.preferences);
+                redisConnection.emit(`get-person-byID-success:${messageId}`, data.preferences);
+            });
+
+        }).catch(error => {
+            redisConnection.emit(`get-person-byID-failed:${messageId}`, error);
+        })
     })
 
-    apiData.getCreditByPersonId(personId).then((data) => {
-        console.log(data);
-        if (person.id == null || person.id == undefined) {
-            redisConnection.emit(`get-person-byID-failed:${messageId}`, { success: false, message: "Person doesn't exist!" });
-        }
-        person.name = data.name;
-        if (person.movie_credits.cast.length > 0 && person.movie_credits.cast.length > person.movie_credits.crew.length) {
-            peron.type = "actor";
-            if(user.preferences.Actor.indexOf(person.name) === -1){
-                user.preferences.Actor.push(person.name);
-            }
-        }else if (person.movie_credits.crew.length > 0) {
-            peron.type = "crew";
-            if(user.preferences.Crew.indexOf(person.name) === -1){
-                user.preferences.Crew.push(person.name);
-            }
-        }
-        redisConnection.emit(`get-person-byID-success:${messageId}`, user.preferences);
-    }).catch(error => {
-        redisConnection.emit(`get-person-byID-failed:${messageId}`, error);
-    })
+
+
 });
 
 

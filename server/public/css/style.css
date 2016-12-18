@@ -67,3 +67,11 @@ a:hover {
   padding: 0 16px;
   color: green;
 }
+
+.hidden{
+  display: none;
+}
+
+.visible{
+  display: block;
+}

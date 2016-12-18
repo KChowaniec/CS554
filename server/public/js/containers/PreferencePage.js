@@ -63,6 +63,8 @@ class PreferencePage extends React.Component {
             success: (response) => {
                 this.setState({selectedGenre: response.user.Genre});
                 this.setState({allGenre:symmetricDifference(response.user.Genre,genre)});
+                this.setState({actor:response.user.Actor})
+                this.setState({crew:response.user.Crew})
             },
             error: (xhr, status, err) => {
                 console.error(status, err.toString());
@@ -147,8 +149,6 @@ class PreferencePage extends React.Component {
             cache: false,
             success: (response) => {
                this.setState({personSearchResult:response.results});
-                console.log(this.state.personSearchResult)
-                console.log(response.results)
             },
             error: (xhr, status, err) => {
                 console.error(status, err.toString());
@@ -157,11 +157,40 @@ class PreferencePage extends React.Component {
     }
 
     addPerson(data){
+        var id = data.id;
         $.ajax({
             url: '/user/add_person',
             dataType: 'json',
+            method: "POST",
             cache: false,
-            data: "value="+data.id,
+            data: "value="+id,
+            success: (response) => {
+                console.log(this.state.actor);
+                this.setState({actor:response.Actor})
+                this.setState({crew:response.Crew});
+            },
+            error: (xhr, status, err) => {
+                console.error(status, err.toString());
+            }
+        });
+    }
+
+    deletePerson(data,type){
+        let actor = this.state.actor;
+        let crew = this.state.crew;
+        switch(type)
+        {
+            case 'actor' : actor = actor.filter(item => item !== data); break;
+            case 'crew' : crew = crew.filter(item => item !== data); break;
+        }
+
+        this.setState({actor:actor,crew:crew});
+        $.ajax({
+            url: '/user/update_person',
+            dataType: 'json',
+            method: "POST",
+            cache: false,
+            data: {actor:actor,crew:crew},
             success: (response) => {
                 console.log(response);
             },
@@ -169,6 +198,24 @@ class PreferencePage extends React.Component {
                 console.error(status, err.toString());
             }
         });
+        this.forceUpdate();
+
+    }
+
+    renderCrew(data){
+        return (
+            <Chip key={data} onRequestDelete={() => this.deletePerson(data,'crew')} style={this.styles.chip}>
+                {data}
+            </Chip>
+        );
+    }
+
+    renderActor(data){
+        return (
+            <Chip key={data} onRequestDelete={() => this.deletePerson(data,'actor')} style={this.styles.chip}>
+                {data}
+            </Chip>
+        );
     }
 
     renderPersonSearchResult(data){
@@ -202,8 +249,22 @@ class PreferencePage extends React.Component {
                         </div>
                     </Tab>
                     <Tab label="Person" >
-                        <div>
+                        {this.state.actor.length}
+                        <div className={this.state.actor.length>0?'visible':'hidden'}>
+                            <h3>Actors:</h3>
+                            <div style={this.styles.wrapper}>
+                                {this.state.actor.map(this.renderActor,this)}
+                            </div>
                             <hr/>
+                        </div>
+                        <div className={this.state.crew.length>0?'visible':'hidden'}>
+                            <h3>Crew</h3>
+                            <div style={this.styles.wrapper}>
+                                {this.state.crew.map(this.renderCrew,this)}
+                            </div>
+                            <hr/>
+                        </div>
+                        <div>
                             <form className="preference-person" onSubmit={this.searchPerson.bind(this)}>
                                 <TextField
                                     hintText="Jim Parson"
@@ -214,8 +275,8 @@ class PreferencePage extends React.Component {
                                 />
                                 <RaisedButton type="submit" label="Search" primary={true}  style={this.styles.personForm} />
                             </form>
-                            <hr/>
-                            <div>
+                            <div className={this.state.personSearchResult.length>0?'visible':'hidden'}>
+                                <hr/>
                                 <h3>Options:</h3>
                                 <div style={this.styles.wrapper}>
                                     {this.state.personSearchResult.map(this.renderPersonSearchResult,this)}

@@ -48697,6 +48697,8 @@
 	                success: function success(response) {
 	                    _this2.setState({ selectedGenre: response.user.Genre });
 	                    _this2.setState({ allGenre: symmetricDifference(response.user.Genre, genre) });
+	                    _this2.setState({ actor: response.user.Actor });
+	                    _this2.setState({ crew: response.user.Crew });
 	                },
 	                error: function error(xhr, status, err) {
 	                    console.error(status, err.toString());
@@ -48749,8 +48751,6 @@
 	                cache: false,
 	                success: function success(response) {
 	                    _this5.setState({ personSearchResult: response.results });
-	                    console.log(_this5.state.personSearchResult);
-	                    console.log(response.results);
 	                },
 	                error: function error(xhr, status, err) {
 	                    console.error(status, err.toString());
@@ -48760,13 +48760,19 @@
 	    }, {
 	        key: 'addPerson',
 	        value: function addPerson(data) {
+	            var _this6 = this;
+
+	            var id = data.id;
 	            $.ajax({
 	                url: '/user/add_person',
 	                dataType: 'json',
+	                method: "POST",
 	                cache: false,
-	                data: "value=" + data.id,
+	                data: "value=" + id,
 	                success: function success(response) {
-	                    console.log(response);
+	                    console.log(_this6.state.actor);
+	                    _this6.setState({ actor: response.Actor });
+	                    _this6.setState({ crew: response.Crew });
 	                },
 	                error: function error(xhr, status, err) {
 	                    console.error(status, err.toString());
@@ -48774,14 +48780,72 @@
 	            });
 	        }
 	    }, {
+	        key: 'deletePerson',
+	        value: function deletePerson(data, type) {
+	            var actor = this.state.actor;
+	            var crew = this.state.crew;
+	            switch (type) {
+	                case 'actor':
+	                    actor = actor.filter(function (item) {
+	                        return item !== data;
+	                    });break;
+	                case 'crew':
+	                    crew = crew.filter(function (item) {
+	                        return item !== data;
+	                    });break;
+	            }
+
+	            this.setState({ actor: actor, crew: crew });
+	            $.ajax({
+	                url: '/user/update_person',
+	                dataType: 'json',
+	                method: "POST",
+	                cache: false,
+	                data: { actor: actor, crew: crew },
+	                success: function success(response) {
+	                    console.log(response);
+	                },
+	                error: function error(xhr, status, err) {
+	                    console.error(status, err.toString());
+	                }
+	            });
+	            this.forceUpdate();
+	        }
+	    }, {
+	        key: 'renderCrew',
+	        value: function renderCrew(data) {
+	            var _this7 = this;
+
+	            return _react2.default.createElement(
+	                _Chip2.default,
+	                { key: data, onRequestDelete: function onRequestDelete() {
+	                        return _this7.deletePerson(data, 'crew');
+	                    }, style: this.styles.chip },
+	                data
+	            );
+	        }
+	    }, {
+	        key: 'renderActor',
+	        value: function renderActor(data) {
+	            var _this8 = this;
+
+	            return _react2.default.createElement(
+	                _Chip2.default,
+	                { key: data, onRequestDelete: function onRequestDelete() {
+	                        return _this8.deletePerson(data, 'actor');
+	                    }, style: this.styles.chip },
+	                data
+	            );
+	        }
+	    }, {
 	        key: 'renderPersonSearchResult',
 	        value: function renderPersonSearchResult(data) {
-	            var _this6 = this;
+	            var _this9 = this;
 
 	            return _react2.default.createElement(
 	                _Chip2.default,
 	                { key: data.id, onTouchTap: function onTouchTap() {
-	                        return _this6.addPerson(data);
+	                        return _this9.addPerson(data);
 	                    }, style: this.styles.chip },
 	                data.name
 	            );
@@ -48827,10 +48891,40 @@
 	                    _react2.default.createElement(
 	                        _Tabs.Tab,
 	                        { label: 'Person' },
+	                        this.state.actor.length,
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: this.state.actor.length > 0 ? 'visible' : 'hidden' },
+	                            _react2.default.createElement(
+	                                'h3',
+	                                null,
+	                                'Actors:'
+	                            ),
+	                            _react2.default.createElement(
+	                                'div',
+	                                { style: this.styles.wrapper },
+	                                this.state.actor.map(this.renderActor, this)
+	                            ),
+	                            _react2.default.createElement('hr', null)
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: this.state.crew.length > 0 ? 'visible' : 'hidden' },
+	                            _react2.default.createElement(
+	                                'h3',
+	                                null,
+	                                'Crew'
+	                            ),
+	                            _react2.default.createElement(
+	                                'div',
+	                                { style: this.styles.wrapper },
+	                                this.state.crew.map(this.renderCrew, this)
+	                            ),
+	                            _react2.default.createElement('hr', null)
+	                        ),
 	                        _react2.default.createElement(
 	                            'div',
 	                            null,
-	                            _react2.default.createElement('hr', null),
 	                            _react2.default.createElement(
 	                                'form',
 	                                { className: 'preference-person', onSubmit: this.searchPerson.bind(this) },
@@ -48843,10 +48937,10 @@
 	                                }),
 	                                _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Search', primary: true, style: this.styles.personForm })
 	                            ),
-	                            _react2.default.createElement('hr', null),
 	                            _react2.default.createElement(
 	                                'div',
-	                                null,
+	                                { className: this.state.personSearchResult.length > 0 ? 'visible' : 'hidden' },
+	                                _react2.default.createElement('hr', null),
 	                                _react2.default.createElement(
 	                                    'h3',
 	                                    null,

@@ -189,6 +189,27 @@ redisConnection.on('update-genre:*', (data, channel) => {
         });
 });
 
+//Update Person - actor/crew
+redisConnection.on('update-person:*', (data, channel) => {
+    let messageId = data.requestId;
+    let userId = data.userId;
+    let crew = data.crew;
+    let actor = data.actor;
+
+    console.log(crew)
+    console.log(actor)
+    // update actor/crew in preference
+    let fullyComposeUser = userData
+        .updateActor(userId,actor)
+        .then((data) => {
+            userData.updateCrew(userId,crew).then((data) => {
+                redisConnection.emit(`update-person-success:${messageId}`, data);
+            })
+        }).catch((error) => {
+            console.log(error)
+            redisConnection.emit(`update-person-failed:${messageId}`, error);
+        });
+});
 
 redisConnection.on('get-preference:*', (data, channel) => {
     let messageId = data.requestId;

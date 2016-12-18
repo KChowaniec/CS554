@@ -177,6 +177,30 @@ var exportedMethods = {
         })
     },
 
+    updateActor(id,actorList){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.Actor":actorList} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
+    updateCrew(id,crewList){
+        return Users().then((userCollection) => {
+            return userCollection.update({ _id: id }, { $set: {"preferences.Crew":crewList} }).then(function () {
+                return id;
+            });
+        }).then(id => {
+            return this.getUserById(id);
+        }).catch((error) => {
+            return error;
+        })
+    },
+
     //add user without preferences
     addUser(username, pwd, name, email) {
         return Users().then((userCollection) => {
