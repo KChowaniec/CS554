@@ -356,25 +356,26 @@ class PreferencePage extends React.Component {
         if(year.length != 4){
             this.setState({errorVisibility:true});
             this.setState({errorText:'Not a valid year'});
-        }
-
-        var index = allYear.indexOf(year);
-        if (index > -1) {
-            this.setState({errorVisibility:true});
-            this.setState({errorText:'Year Already Exist'});
         }else{
-            allYear.push(year);
-            this.setState({yearForm:''});
-        }
-        this.setState({year:allYear})
+            var index = allYear.indexOf(year);
+            if (index > -1) {
+                this.setState({errorVisibility:true});
+                this.setState({errorText:'Year Already Exist'});
+            }else{
+                allYear.push(year);
+                this.setState({yearForm:''});
+            }
+            this.setState({year:allYear})
 
-        axios.post('/user/update_year', {
-            year: this.state.year
-        }).then(function (response) {
-            console.log(response);
-        }).catch(function (error) {
-            console.log(error);
-        });
+            axios.post('/user/update_year', {
+                year: this.state.year
+            }).then(function (response) {
+                console.log(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
 
     }
 
