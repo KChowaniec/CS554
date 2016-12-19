@@ -143,6 +143,7 @@ class SearchBar extends React.Component {
                 genre: ''
             },
             currentPage: 1,
+            snackbar_open: false,
             customWidth: {
                 width: 150,
             }
@@ -185,14 +186,17 @@ class SearchBar extends React.Component {
                         react_component.setState({
                             data: arr_search,
                         });
-                        alert("Success : Movie added.");
+                        this.setState({ errorVisibility: true });
+                        this.setState({ errorText: 'Movie added to your playlist!' });
                     } else {
                         console.log("Movie NOT Added");
-                        alert("There was some problem in adding movie to the playlist.");
+                        this.setState({ errorVisibility: true });
+                        this.setState({ errorText: 'There was some problem in adding movie to the playlist.' });
                     }
                 });
         } else {
-            alert("Movie Already Added");
+            this.setState({ errorVisibility: true });
+            this.setState({ errorText: 'Movie Already Added!' });
         }
     }
 

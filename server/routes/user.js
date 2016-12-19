@@ -210,7 +210,7 @@ router.get('/user', function (req, res) {
 
         clearTimeout(killswitchTimeoutId);
         if (retrievedUser) {
-            return res.json({ success: true, user: retrievedUser });
+            return res.json({ success: true, user: JSON.stringify(retrievedUser) });
         }
     });
 

@@ -34975,6 +34975,7 @@
 	                genre: ''
 	            },
 	            currentPage: 1,
+	            snackbar_open: false,
 	            customWidth: {
 	                width: 150
 	            }
@@ -35006,6 +35007,8 @@
 	    }, {
 	        key: 'additem',
 	        value: function additem(index) {
+	            var _this2 = this;
+
 	            if (!this.state.data[index].isAdded) {
 	                console.log("Add Movie Clicked " + this.state.data[index].id);
 	                var react_component = this;
@@ -35020,14 +35023,17 @@
 	                        react_component.setState({
 	                            data: arr_search
 	                        });
-	                        alert("Success : Movie added.");
+	                        _this2.setState({ errorVisibility: true });
+	                        _this2.setState({ errorText: 'Movie added to your playlist!' });
 	                    } else {
 	                        console.log("Movie NOT Added");
-	                        alert("There was some problem in adding movie to the playlist.");
+	                        _this2.setState({ errorVisibility: true });
+	                        _this2.setState({ errorText: 'There was some problem in adding movie to the playlist.' });
 	                    }
 	                });
 	            } else {
-	                alert("Movie Already Added");
+	                this.setState({ errorVisibility: true });
+	                this.setState({ errorText: 'Movie Already Added!' });
 	            }
 	        }
 	    }, {
@@ -35350,7 +35356,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            //console.log('rendering search bar');
 	            return _react2.default.createElement(
@@ -35473,14 +35479,14 @@
 	                                            title: tile.title,
 	                                            actionIcon: tile.id === "next" ? null : _react2.default.createElement(
 	                                                _IconButton2.default,
-	                                                { onClick: _this2.additem.bind(_this2, i) },
+	                                                { onClick: _this3.additem.bind(_this3, i) },
 	                                                tile.isAdded ? _react2.default.createElement(_playlistAddCheck2.default, { color: 'rgb(0, 0, 0)' }) : _react2.default.createElement(_playlistAdd2.default, { color: 'rgb(0, 0, 0)' })
 	                                            ),
-	                                            titleStyle: _this2.state.styles.titleStyle,
+	                                            titleStyle: _this3.state.styles.titleStyle,
 	                                            titleBackground: 'linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)'
 	                                        },
-	                                        _react2.default.createElement('img', { className: 'grid-img', style: _this2.state.styles.imageStyle,
-	                                            onClick: _this2.itemClicked.bind(_this2, tile.id),
+	                                        _react2.default.createElement('img', { className: 'grid-img', style: _this3.state.styles.imageStyle,
+	                                            onClick: _this3.itemClicked.bind(_this3, tile.id),
 	                                            src: tile.id == "next" ? tile.poster_path : tile.poster_path === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path })
 	                                    );
 	                                })
@@ -56415,6 +56421,8 @@
 	    }, {
 	        key: 'processForm',
 	        value: function processForm(event) {
+	            var _this3 = this;
+
 	            // prevent default action. in this case, action is the form submission event
 	            event.preventDefault();
 
@@ -56436,34 +56444,39 @@
 	                errors.message = "Please correct the errors";
 	                return this.setState({ errors: errors });
 	            } else {
-	                //change account information
-	                var requestConfig = {
-	                    method: "PUT",
-	                    url: "/user",
-	                    contentType: 'application/json',
-	                    data: JSON.stringify({
-	                        email: email,
-	                        password: password
-	                    })
-	                };
-	                var reactThis = this;
-	                $.ajax(requestConfig).then(function (responseMessage) {
-	                    if (responseMessage.success) {
-	                        if (responseMessage.user.profile.email) {
-	                            var newInfo = {};
-	                            newInfo.email = responseMessage.user.profile.email;
-	                            newInfo.password = '';
-	                            newInfo.confirm = '';
-	                            return reactThis.setState({ success: true, user: newInfo });
+	                var requestConfig;
+
+	                (function () {
+	                    //change account information
+	                    requestConfig = {
+	                        method: "PUT",
+	                        url: "/user",
+	                        contentType: 'application/json',
+	                        data: JSON.stringify({
+	                            email: email,
+	                            password: password
+	                        })
+	                    };
+
+	                    var reactThis = _this3;
+	                    $.ajax(requestConfig).then(function (responseMessage) {
+	                        if (responseMessage.success) {
+	                            if (responseMessage.user.profile.email) {
+	                                var newInfo = {};
+	                                newInfo.email = responseMessage.user.profile.email;
+	                                newInfo.password = '';
+	                                newInfo.confirm = '';
+	                                return reactThis.setState({ success: true, user: newInfo });
+	                            } else {
+	                                return reactThis.setState({ success: true });
+	                            }
 	                        } else {
-	                            return reactThis.setState({ success: true });
+	                            var _errors = {};
+	                            _errors.message = "An error occurred";
+	                            return reactThis.setState({ error: true, errors: _errors });
 	                        }
-	                    } else {
-	                        var errors = {};
-	                        errors.message = "An error occurred";
-	                        return reactThis.setState({ error: true, errors: errors });
-	                    }
-	                });
+	                    });
+	                })();
 	            }
 	        }
 
