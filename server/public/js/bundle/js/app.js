@@ -35006,14 +35006,12 @@
 	    }, {
 	        key: 'additem',
 	        value: function additem(index) {
-	            var _this2 = this;
-
 	            if (!this.state.data[index].isAdded) {
-	                //console.log("Add Movie Clicked "+this.state.data[index].id);
+	                console.log("Add Movie Clicked " + this.state.data[index].id);
 	                var react_component = this;
 	                var movie_index = index;
-	                //console.log('Movie is going to be added : ' + this.state.data[index].id);
-	                _axios2.default.post('/playlist/addmovie' + this.state.data[index].id).then(function (res) {
+
+	                _axios2.default.get('/playlist/addmovie/' + this.state.data[index].id).then(function (res) {
 	                    if (res.data.success === true) {
 	                        console.log("Movie Added");
 	                        //[movie_index].isAdded = true;
@@ -35022,17 +35020,14 @@
 	                        react_component.setState({
 	                            data: arr_search
 	                        });
-	                        _this2.setState({ errorVisibility: true });
-	                        _this2.setState({ errorText: 'Movie added to your playlist!' });
+	                        alert("Success : Movie added.");
 	                    } else {
 	                        console.log("Movie NOT Added");
-	                        _this2.setState({ errorVisibility: true });
-	                        _this2.setState({ errorText: 'There was some problem in adding movie to the playlist.' });
+	                        alert("There was some problem in adding movie to the playlist.");
 	                    }
 	                });
 	            } else {
-	                this.setState({ errorVisibility: true });
-	                this.setState({ errorText: 'Movie Already Added!' });
+	                alert("Movie Already Added");
 	            }
 	        }
 	    }, {
@@ -35355,7 +35350,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this3 = this;
+	            var _this2 = this;
 
 	            //console.log('rendering search bar');
 	            return _react2.default.createElement(
@@ -35478,14 +35473,14 @@
 	                                            title: tile.title,
 	                                            actionIcon: tile.id === "next" ? null : _react2.default.createElement(
 	                                                _IconButton2.default,
-	                                                { onClick: _this3.additem.bind(_this3, i) },
+	                                                { onClick: _this2.additem.bind(_this2, i) },
 	                                                tile.isAdded ? _react2.default.createElement(_playlistAddCheck2.default, { color: 'rgb(0, 0, 0)' }) : _react2.default.createElement(_playlistAdd2.default, { color: 'rgb(0, 0, 0)' })
 	                                            ),
-	                                            titleStyle: _this3.state.styles.titleStyle,
+	                                            titleStyle: _this2.state.styles.titleStyle,
 	                                            titleBackground: 'linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)'
 	                                        },
-	                                        _react2.default.createElement('img', { className: 'grid-img', style: _this3.state.styles.imageStyle,
-	                                            onClick: _this3.itemClicked.bind(_this3, tile.id),
+	                                        _react2.default.createElement('img', { className: 'grid-img', style: _this2.state.styles.imageStyle,
+	                                            onClick: _this2.itemClicked.bind(_this2, tile.id),
 	                                            src: tile.id == "next" ? tile.poster_path : tile.poster_path === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path })
 	                                    );
 	                                })
