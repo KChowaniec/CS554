@@ -16,6 +16,7 @@ const uuid = require("node-uuid");
 
 
 router.get("/preferences", (req, res) => {
+
     //get user preferences (if any)
     var userId = req.session.userId;
     var redisConnection = req

@@ -11,6 +11,7 @@ import PlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 import PlaylistAddCheck from 'material-ui/svg-icons/av/playlist-add-check';
 import AutoComplete from 'material-ui/AutoComplete';
 import TextField from 'material-ui/TextField';
+import Snackbar from 'material-ui/Snackbar';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
@@ -20,90 +21,90 @@ const genres = [
         valueKey: 28
     },
     {
-        textKey:'Adventure',
+        textKey: 'Adventure',
         valueKey: 12
     },
     {
-        textKey:'Animation',
+        textKey: 'Animation',
         valueKey: 16
     },
     {
-        textKey:'Comedy',
+        textKey: 'Comedy',
         valueKey: 35
     },
     {
-        textKey:'Crime',
+        textKey: 'Crime',
         valueKey: 80
     },
     {
-        textKey:'Documentary',
+        textKey: 'Documentary',
         valueKey: 99
     },
     {
-        textKey:'Drama',
+        textKey: 'Drama',
         valueKey: 18
     },
     {
-        textKey:'Family',
+        textKey: 'Family',
         valueKey: 10751
     },
     {
-        textKey:'Fantasy',
+        textKey: 'Fantasy',
         valueKey: 14
     },
     {
-        textKey:'Foreign',
+        textKey: 'Foreign',
         valueKey: 10769
     },
     {
-        textKey:'History',
+        textKey: 'History',
         valueKey: 36
     },
     {
-        textKey:'Horror',
+        textKey: 'Horror',
         valueKey: 27
     },
     {
-        textKey:'Music',
+        textKey: 'Music',
         valueKey: 10402
     },
     {
-        textKey:'Mystery',
+        textKey: 'Mystery',
         valueKey: 9648
     },
     {
-        textKey:'Romance',
+        textKey: 'Romance',
         valueKey: 10749
     },
     {
-        textKey:'Science Fiction',
+        textKey: 'Science Fiction',
         valueKey: 878
     },
     {
-        textKey:'TV Movie',
+        textKey: 'TV Movie',
         valueKey: 10770
     },
     {
-        textKey:'Thriller',
+        textKey: 'Thriller',
         valueKey: 53
     },
     {
-        textKey:'War',
+        textKey: 'War',
         valueKey: 10752
     },
     {
-        textKey:'Western',
+        textKey: 'Western',
         valueKey: 37
     }
 ];
 
 const dataSourceConfig = {
-  text: 'textKey',
-  value: 'valueKey',
+    text: 'textKey',
+    value: 'valueKey',
 };
 
 class SearchBar extends React.Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -111,7 +112,9 @@ class SearchBar extends React.Component {
         this.state = {
             GenreSelected : false,
             errors: {},
-            data :[],
+            data: [],
+            errorText:'',
+            errorVisibility: false,
             styles: {
 
                 titleStyle: {
@@ -128,7 +131,7 @@ class SearchBar extends React.Component {
                     flexWrap: 'nowrap',
                     overflowX: 'auto',
                 },
-              imageStyle: {
+                imageStyle: {
                     height: '200px',
                     width: '200px',
                 }
@@ -136,15 +139,16 @@ class SearchBar extends React.Component {
             parameters: {
                 movie: '',
                 actor: '',
-                director:'',
-                genre:''
+                director: '',
+                genre: ''
             },
             currentPage: 1,
             customWidth: {
                 width: 150,
             }
+
         };
-        
+
         this.handleMovieNameChange = this.handleMovieNameChange.bind(this);
         this.handleActorChange = this.handleActorChange.bind(this);
         this.handleCrewChange = this.handleCrewChange.bind(this);
@@ -175,22 +179,26 @@ class SearchBar extends React.Component {
                 .then(res => {
                     if (res.data.success === true) {
                         console.log("Movie Added");
-                         //[movie_index].isAdded = true;
-                         var arr_search = react_component.state.data;
-                         arr_search[movie_index].isAdded = true;
-                          react_component.setState({
-                              data : arr_search
-                          });
-                        alert("Success : Movie added.");
-                    }else{
+                        //[movie_index].isAdded = true;
+                        var arr_search = react_component.state.data;
+                        arr_search[movie_index].isAdded = true;
+                        react_component.setState({
+                            data: arr_search,
+                        });
+                        this.setState({errorVisibility:true});
+                        this.setState({errorText:'Movie added to your playlist!'});
+                    } else {
                         console.log("Movie NOT Added");
-                        alert("There was some problem in adding movie to the playlist.");
+                        this.setState({errorVisibility:true});
+                        this.setState({errorText:'There was some problem in adding movie to the playlist.'});
                     }
                 });
-        }else{
-            alert("Movie Already Added");
+        } else {
+            this.setState({errorVisibility:true});
+            this.setState({errorText:'Movie Already Added!'});
         }
     }
+
 
     handleMovieNameChange(event) {
         //console.log('@ search bar : handleChange');
@@ -203,7 +211,7 @@ class SearchBar extends React.Component {
         //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
 
-        this.setState({parameters});
+        this.setState({ parameters });
     }
 
     handleActorChange(event) {
@@ -217,7 +225,7 @@ class SearchBar extends React.Component {
         //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
 
-        this.setState({parameters});
+        this.setState({ parameters });
     }
     
     handleCrewChange(event) {
@@ -231,7 +239,7 @@ class SearchBar extends React.Component {
         //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
 
-        this.setState({parameters});
+        this.setState({ parameters });
     }
 
     handleKeywordChange(event){
@@ -243,8 +251,8 @@ class SearchBar extends React.Component {
         const parameters = this.state.parameters;
         //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
-
-        this.setState({parameters});
+        console.log(event.target.value);
+        this.setState({ parameters });
     }
 
     handleGenreChange(event, index, value) {
@@ -280,7 +288,7 @@ class SearchBar extends React.Component {
         }, this);
 
         var counter = 0;
-        searchResult.forEach(function(search_item) {
+        searchResult.forEach(function (search_item) {
             //console.log('id : ' + element.id + 'is in ids array @ : ' + ids.indexOf(element.id));
             playlist.forEach(function(pl_item) {
                 //console.log('Search Item id : ' + search_item.id + " is compared with pl item id : " + pl_item._id + ' and the result is : ' + search_item.id == pl_item._id );
@@ -290,8 +298,8 @@ class SearchBar extends React.Component {
             counter++;
         }, this);
 
-        filter_indexes.forEach(function(index) {
-            searchResult[index].isAdded = true; 
+        filter_indexes.forEach(function (index) {
+            searchResult[index].isAdded = true;
         }, this);
 
         //console.log('filtered Indexes : ' + filter_indexes);
@@ -307,16 +315,17 @@ class SearchBar extends React.Component {
     getQueryStr_Movies(isNextOperation){
         var myplayList = [];
         var get_playlist = {
-            url : "/playlist",
-            method : "GET",
+            url: "/playlist",
+            method: "GET",
             contentType: "application/json; charset=utf-8"
         };
 
-        $.ajax(get_playlist).then(function(res){
-            myplayList = res;            
-        },function(err){
+        $.ajax(get_playlist).then(function (res) {
+            myplayList = res;
+        }, function (err) {
             console.log("error while getting user playlist : " + JSON.stringify(err));
         });
+
         let title = this.state.parameters.movie;
         
         let actors = this.state.parameters.actor;
@@ -381,9 +390,9 @@ class SearchBar extends React.Component {
                 console.log(qry_str);
                 console.log(' ************* Query String  ************** ');
                 var getSearch_result = {
-                    url : qry_str,
-                    method :"GET",
-                    contentType : "application/json"
+                    url: qry_str,
+                    method: "GET",
+                    contentType: "application/json"
                 };
                 $.ajax(getSearch_result).then(function(res){
                     //console.log('Movies : ' + JSON.stringify(res));
@@ -418,21 +427,21 @@ class SearchBar extends React.Component {
                         newArr = final_movie_list;
                     }
                     react_com.setState({
-                        data : newArr
+                        data: newArr
                     });
-                },function(err2){
-                    console.log('Get query string returned error  : ' + JSON.stringify(err2));    
+                }, function (err2) {
+                    console.log('Get query string returned error  : ' + JSON.stringify(err2));
                 });
-            }else{
+            } else {
                 console.log('Error  : ' + JSON.stringify(response.error));
             }
-            
-        },function(err){
+
+        }, function (err) {
             console.log('Error in getting query string : ' + JSON.stringify(err));
         });
     }
 
-    handleSubmit(event) {   
+    handleSubmit(event) {
 
         event.preventDefault();
         this.getQueryStr_Movies(false);
@@ -521,17 +530,17 @@ class SearchBar extends React.Component {
                             <TextField
                                 floatingLabelText="Movie Name"
                                 name="title"
-                                type="text" 
-                                value={this.state.parameters.movie} 
+                                type="text"
+                                value={this.state.parameters.movie}
                                 onChange={this.handleMovieNameChange} />
                         </div>
                         <div className="field-line">
-                            <TextField  
+                            <TextField
                                 floatingLabelText="Actor"
                                 name="actor"
-                                type="text" 
-                                value={this.state.parameters.actor} 
-                                onChange={this.handleActorChange}/>
+                                type="text"
+                                value={this.state.parameters.actor}
+                                onChange={this.handleActorChange} />
                         </div>
                         <div className="field-line">
                             <TextField 
@@ -541,9 +550,9 @@ class SearchBar extends React.Component {
                                 value={this.state.parameters.crew} 
                                 onChange={this.handleCrewChange} />
                         </div>
-                        <div className="field-line"> 
-                            <TextField 
-                                type="text" 
+                        <div className="field-line">
+                            <TextField
+                                type="text"
                                 name="keywords"
                                 floatingLabelText="Keywords" 
                                 value={this.state.parameters.keywords} 
@@ -575,70 +584,85 @@ class SearchBar extends React.Component {
                             </SelectField>
                         </div>
                         <div className="button-line">
-                           <RaisedButton type="submit" label="Submit" primary />
+                           <RaisedButton type="submit" label="Search" primary />
                             <CardText>Save this Search? <RaisedButton type="button" label="Save" secondary /></CardText>
                         </div>
-                        
+
                     </form>
                 </Card>
                 <div>
-                    <div style={this.state.styles.root}>
-                        <GridList className="container" style={this.state.styles.gridList} cols={2.2}>
-                            {this.state.data.map((tile, i) => (
-                                <GridTile
-                                    key={i}
-                                    title={tile.title}
-                                    actionIcon={tile.id === "next"?null : <IconButton onClick={this.additem.bind(this, i)}>{tile.isAdded ? (<PlaylistAddCheck color="rgb(0, 0, 0)" />) : (<PlaylistAdd color="rgb(0, 0, 0)" />)}</IconButton>}
-                                    titleStyle={this.state.styles.titleStyle}
-                                    titleBackground="linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)"
-                                    >
-                                    <img style={this.state.styles.imageStyle} 
-                                        onClick={this.itemClicked.bind(this, tile.id)} 
-                                        src={tile.id == "next" ? tile.poster_path : (
-                                                            tile.poster_path === null?"/public/images/movie-icon.png":"https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path
-                                                            )} />
-                                </GridTile>
-                            ))}
-                        </GridList>
-                    </div>
+                    <br /><br />
+                    {this.state.data.length > 0 && (
+                        <Card className="container">
+                            <CardTitle title="Search Results" />
+                            <br />
+                            <div style={this.state.styles.root}>
+                                <GridList className="container" style={this.state.styles.gridList} cols={2.2}>
+                                    {this.state.data.map((tile, i) => (
+                                        <GridTile
+                                            key={i}
+                                            title={tile.title}
+                                            actionIcon={tile.id === "next" ? null : <IconButton onClick={this.additem.bind(this, i)}>{tile.isAdded ? (<PlaylistAddCheck color="rgb(0, 0, 0)" />) : (<PlaylistAdd color="rgb(0, 0, 0)" />)}</IconButton>}
+                                            titleStyle={this.state.styles.titleStyle}
+                                            titleBackground="linear-gradient(to top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.7) 70%,rgba(255,255,255,0.6) 100%)"
+                                            >
+                                            <img className="grid-img" style={this.state.styles.imageStyle}
+                                                onClick={this.itemClicked.bind(this, tile.id)}
+                                                src={tile.id == "next" ? tile.poster_path : (
+                                                    tile.poster_path === null ? "/public/images/movie-icon.png" : "https://image.tmdb.org/t/p/w300_and_h450_bestv2/" + tile.poster_path
+                                                )} />
+                                        </GridTile>
+                                    ))}
+                                </GridList>
+                                <br /><br />
+                            </div>
+                        </Card>
+                    )}
+
                 </div>
+                <Snackbar
+                    open={this.state.errorVisibility}
+                    message={this.state.errorText}
+                    autoHideDuration={4000}
+                />
             </div>
         );
     }
 }
 
-const HomePage =  withRouter(React.createClass({ 
-  api:"e443ee14fb107feee75db8b448e6a13e",
-  getInitialState: function() {
-		return {data: [], mounted: false};
-	},
-  // getInitialState : function() {
-  //   console.log('Initial State');
-  //   return {title : "Title is Null"}
-  // },
-  // <Banners playlist={this.state.data}/>);
-  componentWillReceiveProps : function(nextProps){
-    
-	this.setState({ mounted: false });
-  },
-  componentDidMount : function(){
-    
-	this.setState({ mounted: true });
-  },
-  
 
-  render: function(){  
-    console.log('In Home Page Component');
-    // return (<Card className="container">
-    //           <CardTitle title={this.state.title} subtitle="This is the home page." />
-    //         </Card>  );
-    //return ( <Banners playlist={playlist_fake}/>);
-    //if(this.state.data) {
-    return (<div>
-                <SearchBar />
-            </div>);
-    //}
-  }
+const HomePage = withRouter(React.createClass({
+    api: "e443ee14fb107feee75db8b448e6a13e",
+    getInitialState: function () {
+        return { data: [], mounted: false };
+    },
+    // getInitialState : function() {
+    //   console.log('Initial State');
+    //   return {title : "Title is Null"}
+    // },
+    // <Banners playlist={this.state.data}/>);
+    componentWillReceiveProps: function (nextProps) {
+
+        this.setState({ mounted: false });
+    },
+    componentDidMount: function () {
+
+        this.setState({ mounted: true });
+    },
+
+
+    render: function () {
+        // console.log('In Home Page Component');
+        // return (<Card className="container">
+        //           <CardTitle title={this.state.title} subtitle="This is the home page." />
+        //         </Card>  );
+        //return ( <Banners playlist={playlist_fake}/>);
+        //if(this.state.data) {
+        return (<div>
+            <SearchBar />
+        </div>);
+        //}
+    }
 }
 
 ));

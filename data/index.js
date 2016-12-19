@@ -9,8 +9,6 @@ var users = require("./users");
 var playlist = require("./playlist");
 var movie = require("./movie");
 var api = require("./api");
-var history = require("./history");
-var theaters = require("./theaters");
 var analytics = require("./analytics");
 
 module.exports = {
@@ -19,7 +17,5 @@ module.exports = {
     movie: movie,
     playlist: playlist,
     users: users,
-    history: history,
-    theaters: theaters,
-    analytics:analytics
+    analytics: analytics
 };

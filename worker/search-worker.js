@@ -1,4 +1,5 @@
 const dbCollection = require("data");
+const userData = dbCollection.users;
 const apiData = dbCollection.api;
 const formData = dbCollection.form;
 const fetch = require('node-fetch');
@@ -83,6 +84,7 @@ redisConnection.on('create-query:*', (data, channel) => {
         }   
         else {
             //SEARCH BY CRITERIA
+
             try{
                 //console.log('@ create-query : Search by criteria');
 
@@ -91,10 +93,10 @@ redisConnection.on('create-query:*', (data, channel) => {
                 //console.log('@ Criteria string : ' + criteriaString);
                 console.log('query string created : ' + criteriaString);
                 redisConnection.emit(`query-created:${messageId}`, criteriaString);
-            }catch(e){
-                console.log('Error : ' + e );
+            } catch (e) {
+                console.log('Error : ' + e);
             }
-            
+
         }
     }).catch(error => {
         console.log('Error in creating query string : ' + error);
@@ -109,7 +111,7 @@ redisConnection.on('search-movies:*', (data, channel) => {
     var pageId = data.page;
     var queryString = data.queryString;
     var title = data.title;
-
+    console.log(queryString);
     if (title !== undefined && title != "") { //search by title
         console.log('Search by title');
         var result = apiData.searchByTitle(title, pageId);
@@ -176,4 +178,50 @@ redisConnection.on('get-person:*', (data, channel) => {
             redisConnection.emit(`person-retrieved-failed:${messageId}`, error);
         });
 });
+
+//get person by ID
+redisConnection.on('get-person-byID:*', (data, channel) => {
+    var messageId = data.requestId;
+    var userId = data.userId
+    var personId = data.person;
+    var person = {};
+    var user = null;
+
+    userData.getUserById(userId).then((data) => {
+        user = data;
+        apiData.getCreditByPersonId(personId).then((data) => {
+            if (data.id == null || data.id == undefined) {
+                console.log("failed");
+                redisConnection.emit(`get-person-byID-failed:${messageId}`, { success: false, message: "Person doesn't exist!" });
+            }
+            person.name = data.name;
+            if (data.movie_credits.cast.length > 0 && data.movie_credits.cast.length > data.movie_credits.crew.length) {
+                person.type = "actor";
+                if (user.preferences.Actor.indexOf(person.name) === -1) {
+                    user.preferences.Actor.push(person.name);
+                }
+            } else if (data.movie_credits.crew.length > 0) {
+                person.type = "crew";
+                if (user.preferences.Crew.indexOf(person.name) === -1) {
+                    user.preferences.Crew.push(person.name);
+                }
+            }
+
+            userData.updateActor(userId, user.preferences.Actor).then((data) => {
+                userData.updateCrew(userId, user.preferences.Crew).then((data) => {
+                    redisConnection.emit(`get-person-byID-success:${messageId}`, data.preferences);
+                })
+            });
+
+        }).catch(error => {
+            redisConnection.emit(`get-person-byID-failed:${messageId}`, error);
+        })
+    })
+
+
+
+});
+
+
+
 

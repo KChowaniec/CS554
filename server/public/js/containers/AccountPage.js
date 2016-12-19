@@ -30,9 +30,11 @@ class AccountPage extends React.Component {
         //prepopulate user info 
         axios.get('/user')
             .then(res => {
-                var userInfo = {};
-                var data = JSON.parse(res.data.user);
-                userInfo.email = data.profile.email;
+                let userInfo = {};
+                let data = JSON.parse(res.data.user);
+                if (data.profile.email) {
+                    userInfo.email = data.profile.email;
+                }
                 userInfo.password = '';
                 userInfo.confirm = '';
                 return this.setState({ user: userInfo });

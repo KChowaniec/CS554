@@ -16,7 +16,7 @@ const SignUpForm = ({
       <form action="/" onSubmit={onSubmit}>
         <h2 className="card-heading">Sign Up</h2>
 
-        {error && <p className="error-message">Please correct the errors</p>}
+        {error && <p className="error-message">{errors.message}</p>}
         <div className="field-line">
           <TextField
             floatingLabelText="Username"

@@ -8,38 +8,27 @@ import AnalyticsPage from './containers/AnalyticsPage.js';
 import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
+import PreferencePage from './containers/PreferencePage'
 import AccountPage from './containers/AccountPage';
 import axios from 'axios';
-// import HomePage from './containers/HomePage.js';
 
-function redirectToLogin(nextState, replace) {
+
+function redirectToLogin(nextState, replace, callback) {
   axios.get('/user/authorized').then(res => {
-    var data = res.data;
+    let data = res.data;
     if (!data.authorized || !auth.loggedIn()) {
+      auth.logout();
       browserHistory.push('/login');
+      callback();
+    }
+    else {
+      callback();
     }
   });
 }
 
 function replaceWithHome(nextState, replace) {
-  replace('/home')
-}
-
-function getAnalytics(nextState, replace) {
-  axios.get('/analytics').then(res => {
-    // replace('/');
-  });
-}
-
-function getMovieById(nextState, replace) {
-  var requestConfig = {
-    method: "GET",
-    url: "/detail/5",
-    contentType: 'application/json'
-  };
-  $.ajax(requestConfig).then((responseMessage) => {
-    window.location.reload();
-  });
+  replace('/home');
 }
 
 const routes = {
@@ -68,7 +57,7 @@ const routes = {
       onEnter: redirectToLogin
     },
     {
-      path: '/playlist',
+      path: '/playlists',
       component: Playlist,
       onEnter: redirectToLogin
     },
@@ -83,17 +72,17 @@ const routes = {
     },
     {
       path: '/analytics',
-      // component: AnalyticsPage,
-      onEnter: getAnalytics
-    },
-    {
-      path: '/detailm',
-      onEnter: getMovieById
+      component: AnalyticsPage
     },
     {
       path: '/account',
       component: AccountPage,
       onEnter: redirectToLogin
+    },
+
+    {
+      path: '/preference',
+      component: PreferencePage
     },
 
     //match any other routes - redirect to home page
