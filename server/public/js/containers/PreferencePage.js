@@ -451,8 +451,8 @@ class PreferencePage extends React.Component {
     render(){
         return (
             <Card className="container">
+            <h2 className="card-heading">Movie Preferences</h2>
                 <CardHeader
-                    title="Preferences"
                     subtitle="these will be used as your movie search defaults"
                 />
                 <Tabs>

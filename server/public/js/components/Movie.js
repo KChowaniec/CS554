@@ -18,15 +18,15 @@ class Movie extends React.Component {
     super(props);
     this.state = {
         open: false,
-        intreviews : [],
         errorText:'',
         errorVisibility: false,
     };
     this.addMovie = this.addMovie.bind(this);
-    this.addReview = this.addReview.bind(this);
+    this.clickAddReview = this.clickAddReview.bind(this);
     this.handleTouchTap = this.handleTouchTap.bind(this);
     this.handleRequestClose = this.handleRequestClose.bind(this);
   }
+
 
     handleTouchTap(event){
         event.preventDefault();
@@ -49,39 +49,21 @@ class Movie extends React.Component {
             if (res.data.success)
             {
                 // alert("Movie has been successfully added to your playlist!");
-
                 this.setState({errorVisibility:true});
                 this.setState({errorText:'Movie has been successfully added to your playlist!'});
             }
             else{
-                // alert(res.data.error);
-                this.setState({errorVisibility:true});
-                this.setState({errorText:res.data.error});
+                alert(res.data.error);
             }
         });
     }
 
-    addReview () {
-        axios.post('/movies/reviews/add/',{movieId:this.props.movie._id,review:document.getElementById("review").value})
-            .then(res => {
-                if (res.data.success)
-                {
-                    // alert("Your review has been added!");
-                    this.setState({errorVisibility:true});
-                    this.setState({errorText:"Your review has been added!"});
-                    var idtmp = new Date();
-                    this.props.intreviews.push({id:idtmp.getTime(),name:decodeURI(res.data.result.name),comment:document.getElementById("review").value})
-                    this.setState({intreviews:this.props.intreviews});
-                }
-                else{
-                    this.setState({errorVisibility:true});
-                    this.setState({errorText:res.data.error});
-                }
-                this.setState({
-                  open: false
-                });
-            });
-    }
+   clickAddReview = () => {
+       this.props.addReview();
+       this.setState({
+        open: false
+       });
+   }
 
     render() {
         const styles = {
@@ -125,10 +107,9 @@ class Movie extends React.Component {
             });
         }
         var intrevs = "";
-        if (this.props.intreviews && this.props.intreviews.length > 0)
+        //if (this.props.intreviews.length > 0)
         {
             intrevs = this.props.intreviews.map(function (rec,i){
-
                 return (
                     <ListItem
                       key={Math.floor((Math.random() * 10000000) + 1)}
@@ -139,7 +120,6 @@ class Movie extends React.Component {
                 );
             });
         }
-
 
         return (
                 <Card style={{width:'70%',margin: '0 auto',color:'#1976d2'}}>
@@ -168,23 +148,21 @@ class Movie extends React.Component {
                                   rowsMax={6}
                                   id="review"
                                />
-                                <a href="#" onClick={() => this.addReview()}><RaisedButton label="Submit" primary={true} /></a>
+                                <a href="#" onClick={() => this.clickAddReview()}><RaisedButton label="Submit" primary={true} /></a>
                             </Popover>
                         </div>
                         <div style={{clear:'both',paddingTop:'10px'}}>
-                            <h4>If you loved {this.props.movie.title}, you would like these:</h4>
+                            <h4>If you loved {this.props.movie.title}, you will like these:</h4>
                             <div style={styles.root}>
                                 <GridList style={styles.gridList} cols={2.2}>
                                     {recsTiles}
                                 </GridList>
                             </div>
-                            <List key="internal-reviews">
-                                {intrevs != "" &&
-                                <h3>Internal Reviews</h3>
-                                }
+                            <List>
+                                <h3 id="intReviewsTitle">Internal Reviews</h3>
                                 {intrevs}
                             </List>
-                            <List key="reviews">
+                            <List>
                                 {revs != "" &&
                                 <h3>Movie Reviews From MovieDB.com</h3>
                                 }

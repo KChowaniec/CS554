@@ -9,7 +9,6 @@ import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
 import PreferencePage from './containers/PreferencePage'
-// import HomePage from './containers/HomePage.js';
 import AccountPage from './containers/AccountPage';
 import axios from 'axios';
 
@@ -29,25 +28,7 @@ function redirectToLogin(nextState, replace, callback) {
 }
 
 function replaceWithHome(nextState, replace) {
-
   replace('/home');
-}
-
-function getAnalytics(nextState, replace) {
-  axios.get('/analytics').then(res => {
-    // replace('/');
-  });
-}
-
-function getMovieById(nextState, replace) {
-  var requestConfig = {
-    method: "GET",
-    url: "/detail/5",
-    contentType: 'application/json'
-  };
-  $.ajax(requestConfig).then((responseMessage) => {
-    window.location.reload();
-  });
 }
 
 const routes = {
@@ -91,12 +72,7 @@ const routes = {
     },
     {
       path: '/analytics',
-      component: AnalyticsPage,
-      onEnter: getAnalytics
-    },
-    {
-      path: '/detailm',
-      onEnter: getMovieById
+      component: AnalyticsPage
     },
     {
       path: '/account',

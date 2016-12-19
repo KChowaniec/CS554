@@ -151,7 +151,7 @@ class Playlist extends React.Component {
             <div>
                 {this.state.tilesData.length > 0 ? (
                     <Card className="container">
-                        <CardTitle title="My Playlist" />
+                        <h2 className="card-heading">My Playlist</h2>
                         <FlatButton label="Import"
                             labelPosition="before"
                             icon={<OpenInBrowser />}
@@ -187,7 +187,8 @@ class Playlist extends React.Component {
                     </Card>
                 ) : (
                         <Card className="container">
-                            <CardTitle title="My Playlist" subtitle="No Movies in your playlist" />
+                        <h2 className="card-heading">My Playlist</h2>
+                            <CardTitle subtitle="No Movies in your playlist" />
                             <FlatButton label="Import Playlist"
                                 labelPosition="before"
                                 icon={<OpenInBrowser />}
