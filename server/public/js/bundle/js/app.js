@@ -50864,7 +50864,12 @@
 	                ) : _react2.default.createElement(
 	                    _Card.Card,
 	                    { className: 'container' },
-	                    _react2.default.createElement(_Card.CardTitle, { title: 'My Playlist', subtitle: 'No Movies in your playlist' }),
+	                    _react2.default.createElement(
+	                        'h2',
+	                        { className: 'card-heading' },
+	                        'My Playlist'
+	                    ),
+	                    _react2.default.createElement(_Card.CardTitle, { subtitle: 'No Movies in your playlist' }),
 	                    _react2.default.createElement(_FlatButton2.default, { label: 'Import Playlist',
 	                        labelPosition: 'before',
 	                        icon: _react2.default.createElement(_openInBrowser2.default, null),
