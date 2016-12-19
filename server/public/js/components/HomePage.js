@@ -403,11 +403,12 @@ class SearchBar extends React.Component {
                     var totalPages = parseInt(res.total);
                     if ((totalPages - page) > 0) {
                         //react_com.setState({ currentPage: page });
-                        newArr.push({
-                            id: "next",
-                            poster_path: "/public/images/next.png",
-                            title: "Load More"
-                        });
+                        if(newArr && newArr.length > 0)
+                            newArr.push({
+                                id: "next",
+                                poster_path: "/public/images/next.png",
+                                title: "Load More"
+                            });
                     }
                     if(isNextOperation){
                         console.log('Next Movie operation');

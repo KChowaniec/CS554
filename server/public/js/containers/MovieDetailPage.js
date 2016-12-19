@@ -15,8 +15,9 @@ class MovieDetailsPage extends React.Component {
       },
       recs: [],
       reviews: [],
-      internalReviews: []
+      internalReviews: [{_id:12345,comment:"",name:""}]
     };
+    this.addReview = this.addReview.bind(this);
   }
 
   componentDidMount() {
@@ -34,9 +35,34 @@ class MovieDetailsPage extends React.Component {
       });
     axios.get('/movies/allreviews/' + this.props.params.id)
       .then(res => {
-        this.setState({ internalReviews: res.data});
+        if (res.data.length > 0) {
+            this.setState({ internalReviews: res.data});
+        }
+        else {
+            document.getElementById("intReviewsTitle").style.display = "none";
+        }
       });
   }
+    
+   addReview () {
+        axios.post('/movies/reviews/add/',{movieId:this.state.movie._id,review:document.getElementById("review").value})
+            .then(res => {
+                if (res.data.success)
+                {
+                    alert("Your review has been added!");
+                    var idtmp = new Date();
+                    if (this.state.internalReviews[0]._id == 12345){
+                        this.state.internalReviews = [];
+                    }
+                    this.state.internalReviews.push({key:idtmp.getTime(),name:decodeURI(res.data.result.name),comment:document.getElementById("review").value});
+                    this.setState({internalReviews:this.state.internalReviews});
+                    document.getElementById("intReviewsTitle").style.display = "inline";
+                }
+                else{
+                    alert(res.data.error);
+                }
+            });    
+    }
 
   render() {
     return (
@@ -46,6 +72,7 @@ class MovieDetailsPage extends React.Component {
         recs={this.state.recs}
         reviews={this.state.reviews}
         intreviews={this.state.internalReviews}
+        addReview={this.addReview}
         />
     );
   }
