@@ -53,7 +53,7 @@ redisConnection.on('register-user:*', (data, channel) => {
                 });
         }
         else {
-            let error = "Username '" + username + "' already exists";
+            var error = "Username '" + username + "' already exists";
             redisConnection.emit(`user-registered-failed:${messageId}`, error);
         }
     }).catch((error) => {
@@ -185,9 +185,9 @@ redisConnection.on('get-preferences:*', (data, channel) => {
 
 //Update Genre
 redisConnection.on('update-genre:*', (data, channel) => {
-    let messageId = data.requestId;
-    let userId = data.userId;
-    let genreList = data.genreList;
+    var messageId = data.requestId;
+    var userId = data.userId;
+    var genreList = data.genreList;
     if(genreList!="")
     {
         genreList = genreList.split(",");
@@ -195,7 +195,7 @@ redisConnection.on('update-genre:*', (data, channel) => {
         genreList = [];
     }
     //update genre in preference
-    let fullyComposeUser = userData
+    var fullyComposeUser = userData
         .updateGenre(userId,genreList)
         .then((preferences) => {
             client.setAsync(userId, JSON.stringify(preferences));
@@ -208,9 +208,9 @@ redisConnection.on('update-genre:*', (data, channel) => {
 
 //update keywords
 redisConnection.on('update-keywords:*', (data, channel) => {
-    let messageId = data.requestId;
-    let userId = data.userId;
-    let keywords = data.keywords;
+    var messageId = data.requestId;
+    var userId = data.userId;
+    var keywords = data.keywords;
     if(keywords!="")
     {
         keywords = keywords.split(",");
@@ -218,7 +218,7 @@ redisConnection.on('update-keywords:*', (data, channel) => {
         keywords = [];
     }
     //update keywords in preference
-    let fullyComposeUser = userData
+    var fullyComposeUser = userData
         .updateKeywords(userId,keywords)
         .then((preferences) => {
             client.setAsync(userId, JSON.stringify(preferences));
@@ -232,10 +232,10 @@ redisConnection.on('update-keywords:*', (data, channel) => {
 
 //Update Person - actor/crew
 redisConnection.on('update-person:*', (data, channel) => {
-    let messageId = data.requestId;
-    let userId = data.userId;
-    let crew = data.crew;
-    let actor = data.actor;
+    var messageId = data.requestId;
+    var userId = data.userId;
+    var crew = data.crew;
+    var actor = data.actor;
 
     if(crew==null)
     {
@@ -248,7 +248,7 @@ redisConnection.on('update-person:*', (data, channel) => {
     console.log("crew",crew)
     console.log("actor",actor)
     // update actor/crew in preference
-    let fullyComposeUser = userData
+    var fullyComposeUser = userData
         .updateActor(userId,actor)
         .then((data) => {
             userData.updateCrew(userId,crew).then((data) => {
@@ -261,12 +261,12 @@ redisConnection.on('update-person:*', (data, channel) => {
 });
 
 redisConnection.on('get-preference:*', (data, channel) => {
-    let messageId = data.requestId;
-    let userId = data.userId;
+    var messageId = data.requestId;
+    var userId = data.userId;
 
     console.log(userId);
     //update genre in preference
-    let fullyComposeUser = userData
+    var fullyComposeUser = userData
         .getUserById(userId)
         .then((data) => {
             // client.setAsync(user._id, JSON.stringify(data));
@@ -281,9 +281,9 @@ redisConnection.on('get-preference:*', (data, channel) => {
 
 //Update age rating
 redisConnection.on('update-ageRating:*', (data, channel) => {
-    let messageId = data.requestId;
-    let userId = data.userId;
-    let ageRating = data.ageRating;
+    var messageId = data.requestId;
+    var userId = data.userId;
+    var ageRating = data.ageRating;
     if(ageRating!="")
     {
         ageRating = ageRating.split(",");
@@ -291,7 +291,7 @@ redisConnection.on('update-ageRating:*', (data, channel) => {
         ageRating = [];
     }
     //update genre in preference
-    let fullyComposeUser = userData
+    var fullyComposeUser = userData
         .updateAgeRating(userId,ageRating)
         .then((data) => {
             client.setAsync(userId, JSON.stringify(data));
@@ -305,9 +305,9 @@ redisConnection.on('update-ageRating:*', (data, channel) => {
 
 //Update release year
 redisConnection.on('update-year:*', (data, channel) => {
-    let messageId = data.requestId;
-    let userId = data.userId;
-    let year = data.year;
+    var messageId = data.requestId;
+    var userId = data.userId;
+    var year = data.year;
     if(year!="")
     {
         year = year.split(",");
@@ -315,7 +315,7 @@ redisConnection.on('update-year:*', (data, channel) => {
         year = [];
     }
     //update genre in preference
-    let fullyComposeUser = userData
+    var fullyComposeUser = userData
         .updateReleaseYear(userId,year)
         .then((data) => {
             client.setAsync(userId, JSON.stringify(data));
