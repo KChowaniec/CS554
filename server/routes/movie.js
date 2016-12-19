@@ -15,12 +15,12 @@ var xss = require('xss');
 
 //get movie details
 router.get('/detail/:id', function (req, res) {
-	let movieId = req.params.id;
-	let redisConnection = req
+	var movieId = req.params.id;
+	var redisConnection = req
 		.app
 		.get("redis");
-	let messageId = uuid.v4();
-	let killswitchTimeoutId = undefined;
+	var messageId = uuid.v4();
+	var killswitchTimeoutId = undefined;
 
 	redisConnection.on(`details-retrieved:${messageId}`, (details, channel) => {
 
@@ -57,12 +57,12 @@ router.get('/detail/:id', function (req, res) {
 
 //get recommended movies
 router.get('/recommendations/:id', function (req, res) {
-	let movieId = req.params.id;
-	let redisConnection = req
+	var movieId = req.params.id;
+	var redisConnection = req
 		.app
 		.get("redis");
-	let messageId = uuid.v4();
-	let killswitchTimeoutId = undefined;
+	var messageId = uuid.v4();
+	var killswitchTimeoutId = undefined;
 
 	redisConnection.on(`recommendations-retrieved:${messageId}`, (movies, channel) => {
 		redisConnection.off(`recommendations-retrieved:${messageId}`);
@@ -99,12 +99,12 @@ router.get('/recommendations/:id', function (req, res) {
 
 //get reviews by movie id from api
 router.get('/reviews/:id', function (req, res) {
-	let movieId = req.params.id;
-	let redisConnection = req
+	var movieId = req.params.id;
+	var redisConnection = req
 		.app
 		.get("redis");
-	let messageId = uuid.v4();
-	let killswitchTimeoutId = undefined;
+	var messageId = uuid.v4();
+	var killswitchTimeoutId = undefined;
 
 	redisConnection.on(`reviews-retrieved:${messageId}`, (movies, channel) => {
 		redisConnection.off(`reviews-retrieved:${messageId}`);
@@ -140,14 +140,14 @@ router.get('/reviews/:id', function (req, res) {
 
 //ADD REVIEW TO MOVIE
 router.post("/reviews/add/", (req, res) => {
-    let movieId = req.body.movieId;
-	let reviewData = xss(req.body.review);
-    let userId = req.session.name;
-    let redisConnection = req
+    var movieId = req.body.movieId;
+	var reviewData = xss(req.body.review);
+    var userId = req.session.name;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`added-review:${messageId}`, (result, channel) => {
         redisConnection.off(`added-review:${messageId}`);
@@ -186,14 +186,14 @@ router.post("/reviews/add/", (req, res) => {
 
 //REMOVE REVIEW FROM MOVIE
 router.delete("/movie/:movieId/reviews/:reviewId", (req, res) => {
-    let reviewId = req.params.reviewId;
-    let movieId = req.params.movieId;
+    var reviewId = req.params.reviewId;
+    var movieId = req.params.movieId;
 
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`removed-review:${messageId}`, (result, channel) => {
@@ -236,12 +236,12 @@ router.delete("/movie/:movieId/reviews/:reviewId", (req, res) => {
 
 //get all user reviews for movie from movie collection
 router.get('/allreviews/:id', function (req, res) {
-	let movieId = req.params.id;
-	let redisConnection = req
+	var movieId = req.params.id;
+	var redisConnection = req
 		.app
 		.get("redis");
-	let messageId = uuid.v4();
-	let killswitchTimeoutId = undefined;
+	var messageId = uuid.v4();
+	var killswitchTimeoutId = undefined;
 
 	redisConnection.on(`all-reviews-retrieved:${messageId}`, (reviews, channel) => {
 

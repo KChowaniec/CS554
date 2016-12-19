@@ -244,8 +244,8 @@ router.get('/user', function (req, res) {
 router.put('/user', function (req, res) {
     var userId = req.session.userId;
     var newData = xss(req.body);
-    let email = xss(req.body.email);
-    let password = xss(req.body.password);
+    var email = xss(req.body.email);
+    var password = xss(req.body.password);
     var redisConnection = req
         .app
         .get("redis");

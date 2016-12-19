@@ -215,7 +215,7 @@ var exportedMethods = {
     //search movies by criteria
     searchByCriteria(searchString, page) {
         return new Promise((fulfill, reject) => {
-            https.get(restHost + "/discover/movie" + pathTail + searchString + "&page=" + page, function (response) {
+            https.get(restHost + "/discover/movie" + pathTail + searchString + "&include_adult=false&page=" + page, function (response) {
                 response.setEncoding('utf8');
                 var body = '';
                 response.on('data', function (d) {
