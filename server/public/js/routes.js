@@ -14,7 +14,7 @@ import axios from 'axios';
 
 function redirectToLogin(nextState, replace) {
   axios.get('/user/authorized').then(res => {
-    let data = res.data;
+    var data = res.data;
     if (!data.authorized || !auth.loggedIn()) {
       browserHistory.push('/login');
     }

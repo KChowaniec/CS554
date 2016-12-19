@@ -69,7 +69,7 @@ redisConnection.on('update-user:*', (data, channel) => {
     var email = data.email;
     var password = data.password;
     var userId = data.userId;
-    let newData = {};
+    var newData = {};
     if (email) {
         newData.email = email;
     }
@@ -134,6 +134,7 @@ redisConnection.on('get-user:*', (data, channel) => {
     //get user information - check if exists in cache first
     var entryExists = client.getAsync(userId);
     entryExists.then((userInfo) => {
+        //console.log('User information : ' + userInfo);
         if (userInfo) { //retrieve cached data
             redisConnection.emit(`user-retrieved:${messageId}`, JSON.parse(userInfo));
         }
@@ -183,11 +184,11 @@ redisConnection.on('get-preferences:*', (data, channel) => {
 
 //SAVE USER PREFERENCES WORKER  
 redisConnection.on('save-preferences:*', (data, channel) => {
-    let messageId = data.requestId;
-    let userId = data.userId;
-    let preferences = data.preferences;
+    var messageId = data.requestId;
+    var userId = data.userId;
+    var preferences = data.preferences;
     //get preferences 
-    let fullyComposeUser = userData
+    var fullyComposeUser = userData
         .saveUserPreferences(userId, preferences)
         .then((user) => {
             redisConnection.emit(`preferences-saved:${messageId}`, user);

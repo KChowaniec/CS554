@@ -165,14 +165,14 @@ var exportedMethods = {
 
     //update user
     updateUserById(id, obj) {
-        let newData = {};
+        var newData = {};
         if (obj.password) {
             newData.password = passwordHash.generate(obj.password);
         }
         if (obj.email) {
             newData['profile.email'] = obj.email;
         }
-        let updateCommand = {
+        var updateCommand = {
             $set: newData
         };
         return Users().then((userCollection) => {
