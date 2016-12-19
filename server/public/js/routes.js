@@ -59,7 +59,7 @@ const routes = {
       onEnter: redirectToLogin
     },
     {
-      path: '/playlist',
+      path: '/playlists',
       component: Playlist,
       onEnter: redirectToLogin
     },

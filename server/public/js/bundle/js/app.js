@@ -34494,7 +34494,7 @@
 	    component: _HomePage2.default,
 	    onEnter: redirectToLogin
 	  }, {
-	    path: '/playlist',
+	    path: '/playlists',
 	    component: _Playlist2.default,
 	    onEnter: redirectToLogin
 	  }, {
