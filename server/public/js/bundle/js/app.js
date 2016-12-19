@@ -50654,7 +50654,11 @@
 	                this.state.tilesData.length > 0 ? _react2.default.createElement(
 	                    _Card.Card,
 	                    { className: 'container' },
-	                    _react2.default.createElement(_Card.CardTitle, { title: 'My Playlist' }),
+	                    _react2.default.createElement(
+	                        'h2',
+	                        { className: 'card-heading' },
+	                        'My Playlist'
+	                    ),
 	                    _react2.default.createElement(_FlatButton2.default, { label: 'Import',
 	                        labelPosition: 'before',
 	                        icon: _react2.default.createElement(_openInBrowser2.default, null),
@@ -54816,8 +54820,12 @@
 	            return _react2.default.createElement(
 	                _Card.Card,
 	                { className: 'container' },
+	                _react2.default.createElement(
+	                    'h2',
+	                    { className: 'card-heading' },
+	                    'Movie Preferences'
+	                ),
 	                _react2.default.createElement(_Card.CardHeader, {
-	                    title: 'Preferences',
 	                    subtitle: 'these will be used as your movie search defaults'
 	                }),
 	                _react2.default.createElement(
