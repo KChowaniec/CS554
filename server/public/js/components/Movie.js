@@ -13,18 +13,20 @@ import TextField from 'material-ui/TextField';
 import axios from 'axios';
 
 class Movie extends React.Component {
-     
+
     constructor(props) {
     super(props);
     this.state = {
-        open: false
+        open: false,
+        errorText:'',
+        errorVisibility: false,
     };
     this.addMovie = this.addMovie.bind(this);
     this.clickAddReview = this.clickAddReview.bind(this);
     this.handleTouchTap = this.handleTouchTap.bind(this);
     this.handleRequestClose = this.handleRequestClose.bind(this);
   }
-    
+
 
     handleTouchTap(event){
         event.preventDefault();
@@ -46,21 +48,23 @@ class Movie extends React.Component {
           .then(res => {
             if (res.data.success)
             {
-                alert("Movie has been successfully added to your playlist!");
+                // alert("Movie has been successfully added to your playlist!");
+                this.setState({errorVisibility:true});
+                this.setState({errorText:'Movie has been successfully added to your playlist!'});
             }
             else{
                 alert(res.data.error);
             }
         });
     }
-    
+
    clickAddReview = () => {
        this.props.addReview();
        this.setState({
         open: false
        });
    }
-        
+
     render() {
         const styles = {
           root: {
@@ -94,7 +98,7 @@ class Movie extends React.Component {
             revs = this.props.reviews.map(function (rec,i){
                 return (
                     <ListItem
-                      key={rec.id}
+                      key={Math.floor((Math.random() * 10000000) + 1)}
                       primaryText={rec.author}
                       secondaryText={rec.content}
                       secondaryTextLines={2}
@@ -108,7 +112,7 @@ class Movie extends React.Component {
             intrevs = this.props.intreviews.map(function (rec,i){
                 return (
                     <ListItem
-                      key={rec._id}
+                      key={Math.floor((Math.random() * 10000000) + 1)}
                       primaryText={decodeURI(rec.name)}
                       secondaryText={rec.comment}
                       secondaryTextLines={2}
@@ -116,7 +120,7 @@ class Movie extends React.Component {
                 );
             });
         }
-        
+
         return (
                 <Card style={{width:'70%',margin: '0 auto',color:'#1976d2'}}>
                     <CardHeader title={this.props.movie.title} subtitle={this.props.movie.releaseDate} titleColor="#00bcd4" titleStyle={{fontSize:'30px',fontWeight:'bold'}} children={<a href="#" onClick={() => this.addMovie()}><RaisedButton label="Add To Playlist" primary={true} style={{float:'right'}} /></a>} />
@@ -166,6 +170,11 @@ class Movie extends React.Component {
                             </List>
                         </div>
                     </CardText>
+                    <Snackbar
+                        open={this.state.errorVisibility}
+                        message={this.state.errorText}
+                        autoHideDuration={4000}
+                    />
               </Card>
             );
     }
