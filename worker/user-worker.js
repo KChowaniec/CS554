@@ -130,28 +130,18 @@ redisConnection.on('get-users:*', (data, channel) => {
 redisConnection.on('get-user:*', (data, channel) => {
     var messageId = data.requestId;
     var userId = data.userId;
-    //get user information - check if exists in cache first
-    var entryExists = client.getAsync(userId);
-    entryExists.then((userInfo) => {
-        //console.log('User information : ' + userInfo);
-        if (userInfo) { //retrieve cached data
-            redisConnection.emit(`user-retrieved:${messageId}`, JSON.parse(userInfo));
-        }
-        else { //retrieve from db
-            var fullyComposeUser = userData
-                .getUserById(userId)
-                .then((user) => {
-                    var retrieveUser = client.setAsync(userId, JSON.stringify(user));
-                    retrieveUser.then(() => {
-                        redisConnection.emit(`user-retrieved:${messageId}`, user);
-                    }).catch(error => {
-                        redisConnection.emit(`user-retrieved-failed:${messageId}`, error);
-                    });
-                });
-        }
-    }).catch(error => {
-        redisConnection.emit(`user-retrieved-failed:${messageId}`, error);
-    });
+    
+    var fullyComposeUser = userData
+        .getUserById(userId)
+        .then((user) => {
+            var retrieveUser = client.setAsync(userId, JSON.stringify(user));
+            retrieveUser.then(() => {
+                redisConnection.emit(`user-retrieved:${messageId}`, user);
+            }).catch(error => {
+                redisConnection.emit(`user-retrieved-failed:${messageId}`, error);
+            });
+        });
+    
 });
 
 //LOGIN WORKER
