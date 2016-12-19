@@ -54,7 +54,7 @@ class AccountPage extends React.Component {
         const password = this.state.user.password;
         const confirm = this.state.user.confirm;
 
-        let errors = {};
+        var errors = {};
         if (confirm && !password) {
             errors.password = "This field is required";
         }
@@ -80,11 +80,11 @@ class AccountPage extends React.Component {
                     password: password
                 })
             };
-            let reactThis = this;
+            var reactThis = this;
             $.ajax(requestConfig).then((responseMessage) => {
                 if (responseMessage.success) {
                     if (responseMessage.user.profile.email) {
-                        let newInfo = {};
+                        var newInfo = {};
                         newInfo.email = responseMessage.user.profile.email;
                         newInfo.password = '';
                         newInfo.confirm = '';
@@ -94,7 +94,7 @@ class AccountPage extends React.Component {
                         return reactThis.setState({ success: true })
                     }
                 } else {
-                    let errors = {};
+                    var errors = {};
                     errors.message = "An error occurred";
                     return reactThis.setState({ error: true, errors: errors })
                 }
