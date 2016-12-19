@@ -53063,7 +53063,9 @@
 
 	        _this.state = {
 	            open: false,
-	            intreviews: []
+	            intreviews: [],
+	            errorText: '',
+	            errorVisibility: false
 	        };
 	        _this.addMovie = _this.addMovie.bind(_this);
 	        _this.addReview = _this.addReview.bind(_this);
@@ -53092,29 +53094,39 @@
 	    }, {
 	        key: 'addMovie',
 	        value: function addMovie() {
+	            var _this2 = this;
+
 	            _axios2.default.get('/playlist/addmovie/' + this.props.movie._id).then(function (res) {
 	                if (res.data.success) {
-	                    alert("Movie has been successfully added to your playlist!");
+	                    // alert("Movie has been successfully added to your playlist!");
+
+	                    _this2.setState({ errorVisibility: true });
+	                    _this2.setState({ errorText: 'Movie has been successfully added to your playlist!' });
 	                } else {
-	                    alert(res.data.error);
+	                    // alert(res.data.error);
+	                    _this2.setState({ errorVisibility: true });
+	                    _this2.setState({ errorText: res.data.error });
 	                }
 	            });
 	        }
 	    }, {
 	        key: 'addReview',
 	        value: function addReview() {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            _axios2.default.post('/movies/reviews/add/', { movieId: this.props.movie._id, review: document.getElementById("review").value }).then(function (res) {
 	                if (res.data.success) {
-	                    alert("Your review has been added!");
+	                    // alert("Your review has been added!");
+	                    _this3.setState({ errorVisibility: true });
+	                    _this3.setState({ errorText: "Your review has been added!" });
 	                    var idtmp = new Date();
-	                    _this2.props.intreviews.push({ id: idtmp.getTime(), name: decodeURI(res.data.result.name), comment: document.getElementById("review").value });
-	                    _this2.setState({ intreviews: _this2.props.intreviews });
+	                    _this3.props.intreviews.push({ id: idtmp.getTime(), name: decodeURI(res.data.result.name), comment: document.getElementById("review").value });
+	                    _this3.setState({ intreviews: _this3.props.intreviews });
 	                } else {
-	                    alert(res.data.error);
+	                    _this3.setState({ errorVisibility: true });
+	                    _this3.setState({ errorText: res.data.error });
 	                }
-	                _this2.setState({
+	                _this3.setState({
 	                    open: false
 	                });
 	            });
@@ -53122,7 +53134,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            var styles = {
 	                root: {
@@ -53164,7 +53176,7 @@
 	            if (this.props.reviews && this.props.reviews.length > 0) {
 	                revs = this.props.reviews.map(function (rec, i) {
 	                    return _react2.default.createElement(_List.ListItem, {
-	                        key: rec.id,
+	                        key: Math.floor(Math.random() * 10000000 + 1),
 	                        primaryText: rec.author,
 	                        secondaryText: rec.content,
 	                        secondaryTextLines: 2
@@ -53174,8 +53186,9 @@
 	            var intrevs = "";
 	            if (this.props.intreviews && this.props.intreviews.length > 0) {
 	                intrevs = this.props.intreviews.map(function (rec, i) {
+
 	                    return _react2.default.createElement(_List.ListItem, {
-	                        key: rec.id,
+	                        key: Math.floor(Math.random() * 10000000 + 1),
 	                        primaryText: decodeURI(rec.name),
 	                        secondaryText: rec.comment,
 	                        secondaryTextLines: 2
@@ -53189,7 +53202,7 @@
 	                _react2.default.createElement(_Card.CardHeader, { title: this.props.movie.title, subtitle: this.props.movie.releaseDate, titleColor: '#00bcd4', titleStyle: { fontSize: '30px', fontWeight: 'bold' }, children: _react2.default.createElement(
 	                        'a',
 	                        { href: '#', onClick: function onClick() {
-	                                return _this3.addMovie();
+	                                return _this4.addMovie();
 	                            } },
 	                        _react2.default.createElement(_RaisedButton2.default, { label: 'Add To Playlist', primary: true, style: { float: 'right' } })
 	                    ) }),
@@ -53232,7 +53245,7 @@
 	                            _react2.default.createElement(
 	                                'a',
 	                                { href: '#', onClick: function onClick() {
-	                                        return _this3.addReview();
+	                                        return _this4.addReview();
 	                                    } },
 	                                _react2.default.createElement(_RaisedButton2.default, { label: 'Submit', primary: true })
 	                            )
@@ -53259,7 +53272,7 @@
 	                        ),
 	                        _react2.default.createElement(
 	                            _List.List,
-	                            null,
+	                            { key: 'internal-reviews' },
 	                            intrevs != "" && _react2.default.createElement(
 	                                'h3',
 	                                null,
@@ -53269,7 +53282,7 @@
 	                        ),
 	                        _react2.default.createElement(
 	                            _List.List,
-	                            null,
+	                            { key: 'reviews' },
 	                            revs != "" && _react2.default.createElement(
 	                                'h3',
 	                                null,
@@ -53278,7 +53291,12 @@
 	                            revs
 	                        )
 	                    )
-	                )
+	                ),
+	                _react2.default.createElement(_Snackbar2.default, {
+	                    open: this.state.errorVisibility,
+	                    message: this.state.errorText,
+	                    autoHideDuration: 4000
+	                })
 	            );
 	        }
 	    }]);
