@@ -166,7 +166,7 @@ var exportedMethods = {
 
     //update user
     updateUserById(id, obj) {
-        let newData = {};
+        var newData = {};
         if (obj.password) {
             var salt = bcrypt.genSaltSync(10);
             var hashedPassword = bcrypt.hashSync(obj.password, salt);
@@ -175,7 +175,7 @@ var exportedMethods = {
         if (obj.email) {
             newData['profile.email'] = obj.email;
         }
-        let updateCommand = {
+        var updateCommand = {
             $set: newData
         };
         return Users().then((userCollection) => {

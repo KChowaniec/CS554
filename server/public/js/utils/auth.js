@@ -1,4 +1,4 @@
-// var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+
 module.exports = {
   login(username, password, cb) {
     cb = arguments[arguments.length - 1]

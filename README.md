@@ -1,6 +1,8 @@
 # CS554
 Final Project: Matrix Movie Search
 
+Github repo: https://github.com/KChowaniec/CS554
+
 In-class technologies used:
 
 1. React

@@ -129,8 +129,8 @@ redisConnection.on('get-playlist:*', (data, channel) => {
     var fullyComposePlaylist = playlistData
         .getPlaylistByUserId(userId)
         .then((playlist) => {
-            console.log("IN playlist Worker");
-            console.log(playlist);
+            //console.log("IN playlist Worker");
+            //console.log(playlist);
             redisConnection.emit(`playlist-retrieved:${messageId}`, playlist);
         }).catch(error => {
             redisConnection.emit(`playlist-retrieved-failed:${messageId}`, error);
