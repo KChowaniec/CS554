@@ -28,7 +28,6 @@ function redirectToLogin(nextState, replace, callback) {
 }
 
 function replaceWithHome(nextState, replace) {
-
   replace('/home');
 }
 

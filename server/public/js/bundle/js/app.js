@@ -34472,7 +34472,6 @@
 	}
 
 	function replaceWithHome(nextState, replace) {
-
 	  replace('/home');
 	}
 
