@@ -129,8 +129,6 @@ redisConnection.on('get-playlist:*', (data, channel) => {
     var fullyComposePlaylist = playlistData
         .getPlaylistByUserId(userId)
         .then((playlist) => {
-            //console.log("IN playlist Worker");
-            //console.log(playlist);
             redisConnection.emit(`playlist-retrieved:${messageId}`, playlist);
         }).catch(error => {
             redisConnection.emit(`playlist-retrieved-failed:${messageId}`, error);
@@ -210,7 +208,6 @@ redisConnection.on('export-playlist:*', (data, channel) => {
 });
 
 redisConnection.on('import-playlist:*', (data, channel) => {
-    console.log("In playlist worker Import");
     var messageId = data.requestId;
     var playlist = data.playlist_data;
     var user_id = data.userId
@@ -218,7 +215,6 @@ redisConnection.on('import-playlist:*', (data, channel) => {
     var fullyComposePlaylist = playlistData
         .updateMoviePlaylistArray(user_id, playlist)
         .then((newPlaylist) => {
-            console.log("new playlist received");
             redisConnection.emit(`import-playlist-success:${messageId}`, newPlaylist);
         }).catch(error => {
 

@@ -34998,12 +34998,9 @@
 	    _createClass(SearchBar, [{
 	        key: 'itemClicked',
 	        value: function itemClicked(id) {
-	            //console.log("itemClicked Clicked");
 	            if (id !== "next") {
-	                //console.log("Item Clicked: " + id);
 	                _reactRouter.browserHistory.push('/movie/' + id);
 	            } else {
-	                //console.log("Next Clicked");
 	                this.getQueryStr_Movies(true);
 	            }
 	        }
@@ -35013,14 +35010,11 @@
 	            var _this2 = this;
 
 	            if (!this.state.data[index].isAdded) {
-	                console.log("Add Movie Clicked " + this.state.data[index].id);
 	                var react_component = this;
 	                var movie_index = index;
 
 	                _axios2.default.get('/playlist/addmovie/' + this.state.data[index].id).then(function (res) {
 	                    if (res.data.success === true) {
-	                        console.log("Movie Added");
-	                        //[movie_index].isAdded = true;
 	                        var arr_search = react_component.state.data;
 	                        arr_search[movie_index].isAdded = true;
 	                        react_component.setState({
@@ -35029,7 +35023,6 @@
 	                        _this2.setState({ errorVisibility: true });
 	                        _this2.setState({ errorText: 'Movie added to your playlist!' });
 	                    } else {
-	                        console.log("Movie NOT Added");
 	                        _this2.setState({ errorVisibility: true });
 	                        _this2.setState({ errorText: 'There was some problem in adding movie to the playlist.' });
 	                    }
@@ -35046,9 +35039,7 @@
 	                currentPage: 1
 	            });
 	            var field = 'years';
-	            //console.log('@ search bar : target property : ' + field);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = event.target.value;
 
 	            this.setState({ parameters: parameters });
@@ -35056,14 +35047,11 @@
 	    }, {
 	        key: 'handleMovieNameChange',
 	        value: function handleMovieNameChange(event) {
-	            //console.log('@ search bar : handleChange');
 	            this.setState({
 	                currentPage: 1
 	            });
 	            var field = 'movie';
-	            //console.log('@ search bar : target property : ' + field);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = event.target.value;
 
 	            this.setState({ parameters: parameters });
@@ -35071,14 +35059,11 @@
 	    }, {
 	        key: 'handleActorChange',
 	        value: function handleActorChange(event) {
-	            //console.log('@ search bar : handleChange');
 	            this.setState({
 	                currentPage: 1
 	            });
 	            var field = 'actor';
-	            //console.log('@ search bar : target property : ' + field);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = event.target.value;
 
 	            this.setState({ parameters: parameters });
@@ -35086,14 +35071,11 @@
 	    }, {
 	        key: 'handleCrewChange',
 	        value: function handleCrewChange(event) {
-	            //console.log('@ search bar : handleChange');
 	            this.setState({
 	                currentPage: 1
 	            });
 	            var field = 'crew';
-	            //console.log('@ search bar : target property : ' + field);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = event.target.value;
 
 	            this.setState({ parameters: parameters });
@@ -35105,26 +35087,19 @@
 	                currentPage: 1
 	            });
 	            var field = 'keywords';
-	            //console.log('@ search bar : target property : ' + field);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = event.target.value;
-	            console.log(event.target.value);
 	            this.setState({ parameters: parameters });
 	        }
 	    }, {
 	        key: 'handleGenreChange',
 	        value: function handleGenreChange(event, index, value) {
-	            //console.log('@ search bar : handleChange');
 	            this.state.GenreSelected = true;
 	            this.setState({
 	                currentPage: 1
 	            });
 	            var field = 'genre';
-	            //console.log('Genre changed : ' + value);
-	            //console.log('Genre changed : ' + index);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = value;
 
 	            this.setState({ parameters: parameters });
@@ -35136,21 +35111,14 @@
 	            var ids = [];
 	            var filter_indexes = [];
 
-	            //console.log('Playlist Ids : ' + ids);
 	            var index = 0;
 	            var isFound = false;
 
-	            //console.log('Pre Filter');
-	            searchResult.forEach(function (element) {
-	                //if(element.title == "300")
-	                //console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
-	            }, this);
+	            searchResult.forEach(function (element) {}, this);
 
 	            var counter = 0;
 	            searchResult.forEach(function (search_item) {
-	                //console.log('id : ' + element.id + 'is in ids array @ : ' + ids.indexOf(element.id));
 	                playlist.forEach(function (pl_item) {
-	                    //console.log('Search Item id : ' + search_item.id + " is compared with pl item id : " + pl_item._id + ' and the result is : ' + search_item.id == pl_item._id );
 	                    if (search_item.id == pl_item._id) filter_indexes.push(counter);
 	                }, this);
 	                counter++;
@@ -35160,12 +35128,7 @@
 	                searchResult[index].isAdded = true;
 	            }, this);
 
-	            //console.log('filtered Indexes : ' + filter_indexes);
-	            //console.log('Post Filter');
-	            searchResult.forEach(function (element) {
-	                //if(element.title == "300")
-	                //console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
-	            }, this);
+	            searchResult.forEach(function (element) {}, this);
 	            return searchResult;
 	        }
 	    }, {
@@ -35180,9 +35143,7 @@
 
 	            $.ajax(get_playlist).then(function (res) {
 	                myplayList = res;
-	            }, function (err) {
-	                console.log("error while getting user playlist : " + JSON.stringify(err));
-	            });
+	            }, function (err) {});
 
 	            var title = this.state.parameters.movie;
 
@@ -35263,23 +35224,17 @@
 	                    react_com.setState({ currentPage: page_index });
 
 	                    var qry_str = "/search/results/" + page_index + "?" + response.query;
-	                    console.log(' ************* Query String  ************** ');
-	                    console.log(qry_str);
-	                    console.log(' ************* Query String  ************** ');
 	                    var getSearch_result = {
 	                        url: qry_str,
 	                        method: "GET",
 	                        contentType: "application/json"
 	                    };
 	                    $.ajax(getSearch_result).then(function (res) {
-	                        //console.log('Movies : ' + JSON.stringify(res));
 	                        var newArr = res.movies ? res.movies : [];
 	                        newArr = react_com.applyfilter(myplayList, newArr);
-	                        console.log(newArr);
 	                        var page = parseInt(res.page);
 	                        var totalPages = parseInt(res.total);
 	                        if (totalPages - page > 0) {
-	                            //react_com.setState({ currentPage: page });
 	                            if (newArr && newArr.length > 0) newArr.push({
 	                                id: "next",
 	                                poster_path: "/public/images/next.png",
@@ -35287,12 +35242,9 @@
 	                            });
 	                        }
 	                        if (isNextOperation) {
-	                            console.log('Next Movie operation');
 
 	                            var exsisting_movies = react_com.state.data;
 	                            var final_movie_list = [];
-	                            console.log('Old movie Count' + exsisting_movies.length);
-	                            console.log('New movie Count' + newArr.length);
 	                            exsisting_movies.forEach(function (exsisting_item) {
 	                                if (exsisting_item.id != 'next') final_movie_list.push(exsisting_item);
 	                            }, this);
@@ -35310,19 +35262,16 @@
 	                            });
 	                        }
 	                    }, function (err2) {
-	                        console.log('Get query string returned error  : ' + JSON.stringify(err2));
 	                        react_com.setState({
 	                            searchMessage: 'No movie for such criteria'
 	                        });
 	                    });
 	                } else {
-	                    console.log('Error  : ' + JSON.stringify(response.error));
 	                    react_com.setState({
 	                        searchMessage: 'No movie for such criteria'
 	                    });
 	                }
 	            }, function (err) {
-	                console.log('Error in getting query string : ' + JSON.stringify(err));
 	                react_com.setState({
 	                    searchMessage: 'No movie for such criteria'
 	                });
@@ -35334,12 +35283,6 @@
 
 	            event.preventDefault();
 	            this.getQueryStr_Movies(false);
-	            // *************************************************
-
-
-	            // $.ajax(requestConfig).then(function (response) {
-	            //     alert('data : ' + JSON.stringify(response));
-	            // });
 	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
@@ -35360,7 +35303,6 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            this.setState({ mounted: true });
-	            console.log('Gonning to get user preferences');
 	            var getuser_pref = {
 	                url: "/user",
 	                method: "GET",
@@ -35368,13 +35310,10 @@
 	            };
 	            var react_component = this;
 	            $.ajax(getuser_pref).then(function (res) {
-	                console.log('server returned preference with : ' + JSON.stringify(res));
 	                if (res.user && res.user.preferences) {
 	                    var pref = res.user.preferences;
-	                    //
 	                    var _movies = pref.Title ? react_component.mergeArray(pref.Title) : '';
 	                    var _actors = pref.Actor ? react_component.mergeArray(pref.Actor) : '';
-	                    console.log('Actor : ' + _actors);
 
 	                    var _crew = pref.Crew ? react_component.mergeArray(pref.Crew) : '';
 
@@ -35383,11 +35322,6 @@
 
 	                    var _keywords = pref.keywords ? react_component.mergeArray(pref.keywords) : '';
 
-	                    // ***************************************************************
-	                    // var _genre = pref.Genre ? genres.filter(x=>{
-	                    //     x.textKey == pref.Genre[0]
-	                    // })[0] : genres[0];
-	                    //var _genre = genres[0];
 	                    var xgenre = pref.Genre && pref.Genre.length > 0 && genres.filter(function (x) {
 	                        return x.textKey == pref.Genre[0];
 	                    }).length > 0 ? genres.filter(function (x) {
@@ -35409,16 +35343,13 @@
 	                        parameters: user_params
 	                    });
 	                }
-	            }, function (err) {
-	                console.log('server returned error with : ' + err);
-	            });
+	            }, function (err) {});
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this3 = this;
 
-	            //console.log('rendering search bar');
 	            return _react2.default.createElement(
 	                'div',
 	                null,
@@ -35479,7 +35410,7 @@
 	                            _react2.default.createElement(_TextField2.default, {
 	                                type: 'text',
 	                                name: 'keywords',
-	                                floatingLabelText: 'Years',
+	                                floatingLabelText: 'Release Year',
 	                                value: this.state.parameters.years,
 	                                onChange: this.handleYearChange })
 	                        ),
@@ -35516,13 +35447,7 @@
 	                        _react2.default.createElement(
 	                            'div',
 	                            { className: 'button-line' },
-	                            _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Search', primary: true }),
-	                            _react2.default.createElement(
-	                                _Card.CardText,
-	                                null,
-	                                'Save this Search? ',
-	                                _react2.default.createElement(_RaisedButton2.default, { type: 'button', label: 'Save', secondary: true })
-	                            )
+	                            _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Search', primary: true })
 	                        )
 	                    )
 	                ),
@@ -35590,11 +35515,7 @@
 	    getInitialState: function getInitialState() {
 	        return { data: [], mounted: false };
 	    },
-	    // getInitialState : function() {
-	    //   console.log('Initial State');
-	    //   return {title : "Title is Null"}
-	    // },
-	    // <Banners playlist={this.state.data}/>);
+
 	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
 	        this.setState({ mounted: false });
@@ -35605,18 +35526,11 @@
 	    },
 
 	    render: function render() {
-	        // console.log('In Home Page Component');
-	        // return (<Card className="container">
-	        //           <CardTitle title={this.state.title} subtitle="This is the home page." />
-	        //         </Card>  );
-	        //return ( <Banners playlist={playlist_fake}/>);
-	        //if(this.state.data) {
 	        return _react2.default.createElement(
 	            'div',
 	            null,
 	            _react2.default.createElement(SearchBar, null)
 	        );
-	        //}
 	    }
 	}));
 
@@ -53058,7 +52972,6 @@
 	    }, {
 	        key: 'itemClicked',
 	        value: function itemClicked(id) {
-	            console.log("Item Clicked: " + id);
 	            _reactRouter.browserHistory.push('/movie/' + id);
 	        }
 	    }, {
@@ -53066,7 +52979,6 @@
 	        value: function deleteItem(index) {
 	            var _this3 = this;
 
-	            console.log("delete movie : " + index);
 	            _axios2.default.delete('/playlist/delete/' + this.state.tilesData[index]._id).then(function (res) {
 	                if (res.data.success === true) {
 	                    return _axios2.default.get('/playlist');
@@ -53089,7 +53001,6 @@
 	        key: 'onFormSubmit',
 	        value: function onFormSubmit(event) {
 	            event.preventDefault();
-	            console.log("Form Submit Clicked");
 	            var self = this;
 	            var reader = new FileReader();
 	            reader.onload = function (upload) {
@@ -53104,7 +53015,6 @@
 	                    dataType: "json",
 	                    contentType: "application/json"
 	                }).then(function (res) {
-	                    //console.log(res);
 	                    if (res.data.success === true) {
 	                        return _axios2.default.get('/playlist');
 	                    }
@@ -53114,16 +53024,9 @@
 	                        import_open: false
 	                    });
 	                });
-	                /*console.log(JSON.parse(contents));
-	                self.setState({
-	                    tilesData: JSON.parse(contents),
-	                    import_open: false
-	                })*/
 	            };
 
-	            reader.onloadend = function () {
-	                console.log("in load Ended");
-	            };
+	            reader.onloadend = function () {};
 	            if (this.state.import_file) {
 	                reader.readAsText(this.state.import_file);
 	            }
@@ -53131,13 +53034,11 @@
 	    }, {
 	        key: 'handleOpen',
 	        value: function handleOpen() {
-	            console.log("Import Dialog opened : " + this.state.import_open);
 	            this.setState({ import_open: true });
 	        }
 	    }, {
 	        key: 'handleOpen_empty',
 	        value: function handleOpen_empty() {
-	            console.log("empty Import Dialog opened : " + this.state.import_open);
 	            this.setState({ import_open: true });
 	        }
 	    }, {
@@ -57503,7 +57404,7 @@
 	            //prepopulate user info 
 	            _axios2.default.get('/user').then(function (res) {
 	                var userInfo = {};
-	                var data = JSON.parse(res.data.user);
+	                var data = JSON.parse(JSON.stringify(res.data.user));
 	                if (data.profile.email) {
 	                    userInfo.email = data.profile.email;
 	                }
