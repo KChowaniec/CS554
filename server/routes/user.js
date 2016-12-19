@@ -195,7 +195,7 @@ router.post('/user/register', function (req, res) {
 
 //get user information
 router.get('/user', function (req, res) {
-    let redisConnection = req
+    var redisConnection = req
 
         .app
         .get("redis");
@@ -349,15 +349,15 @@ router.post('/user/login', function (req, res, next) {
 
 //update user
 router.post('/user/update_genre', function (req, res) {
-    let userId = req.session.userId;
-    let genreList = xss(req.body.genreList);
+    var userId = req.session.userId;
+    var genreList = xss(req.body.genreList);
 
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
 
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`update-genre-success:${messageId}`, (updatedUser, channel) => {
@@ -398,15 +398,15 @@ router.post('/user/update_genre', function (req, res) {
 
 //update user
 router.post('/user/update_keywords', function (req, res) {
-    let userId = req.session.userId;
-    let keywords = xss(req.body.keywords);
+    var userId = req.session.userId;
+    var keywords = xss(req.body.keywords);
 
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
 
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`update-keywords-success:${messageId}`, (updatedUser, channel) => {
@@ -444,13 +444,13 @@ router.post('/user/update_keywords', function (req, res) {
 });
 
 router.post('/user/add_person',function (req, res) {
-    let userId = req.session.userId;
-    let person = req.body.value;
-    let redisConnection = req
+    var userId = req.session.userId;
+    var person = req.body.value;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`get-person-byID-success:${messageId}`, (result, channel) => {
         redisConnection.off(`get-person-byID-success:${messageId}`);
@@ -490,14 +490,14 @@ router.post('/user/add_person',function (req, res) {
 })
 
 router.post('/user/update_person',function (req, res) {
-    let userId = req.session.userId;
-    let actor = req.body.actor;
-    let crew = req.body.crew;
-    let redisConnection = req
+    var userId = req.session.userId;
+    var actor = req.body.actor;
+    var crew = req.body.crew;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`update-person-success:${messageId}`, (result, channel) => {
         redisConnection.off(`update-person-success:${messageId}`);
@@ -532,12 +532,12 @@ router.post('/user/update_person',function (req, res) {
 })
 
 router.get('/user/get_preferences',function (req, res) {
-    let userId = req.session.userId;
-    let redisConnection = req
+    var userId = req.session.userId;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`get-preference-success:${messageId}`, (updatedUser, channel) => {
@@ -579,14 +579,14 @@ router.get('/user/get_preferences',function (req, res) {
 
 //update age rating
 router.post('/user/update_ageRating', function (req, res) {
-    let userId = req.session.userId;
-    let ageRating = xss(req.body.ageRating);
-    let redisConnection = req
+    var userId = req.session.userId;
+    var ageRating = xss(req.body.ageRating);
+    var redisConnection = req
         .app
         .get("redis");
 
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`update-ageRating-success:${messageId}`, (updatedUser, channel) => {
@@ -627,14 +627,14 @@ router.post('/user/update_ageRating', function (req, res) {
 
 //update year
 router.post('/user/update_year', function (req, res) {
-    let userId = req.session.userId;
-    let year = xss(req.body.year);
-    let redisConnection = req
+    var userId = req.session.userId;
+    var year = xss(req.body.year);
+    var redisConnection = req
         .app
         .get("redis");
 
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
 
     redisConnection.on(`update-year-success:${messageId}`, (updatedUser, channel) => {
@@ -676,12 +676,12 @@ router.post('/user/update_year', function (req, res) {
 // //get user's password
 // router.get('/forgot/:username', function (req, res) {
 
-//     let redisConnection = req
+//     var redisConnection = req
 //         .app
 //         .get("redis");
-//     let username = req.params.username;
-//     let messageId = uuid.v4();
-//     let killswitchTimeoutId = undefined;
+//     var username = req.params.username;
+//     var messageId = uuid.v4();
+//     var killswitchTimeoutId = undefined;
 
 //     redisConnection.on(`user-retrieved:${messageId}`, (retrievedUser, channel) => {
 

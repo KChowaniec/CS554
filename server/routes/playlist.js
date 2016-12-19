@@ -29,16 +29,16 @@ router.get('/download', function (req, res) {
 router.post('/import', function (req, res) {
     console.log("In playlist Import");
     //console.log(req.body.playlist_data);
-    let userId = req.session.userId;
+    var userId = req.session.userId;
     // REMOVE IT
     // if (userId === undefined) {
     //     userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
     // }
-    let redisConnection = req
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`import-playlist-success:${messageId}`, (playlist, channel) => {
 

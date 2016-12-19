@@ -101,9 +101,9 @@ router.post("/", (req, res) => {
     var parseActors = req.body.parseActors;
     var parseGenre = req.body.parseGenre;
     var parseCrew = req.body.parseCrew;
-    
+    var year = req.body.year;
     var parseWords = req.body.parseWords;
-
+    console.log('Year Filter : ' + year);
     var queryData = {
         title: title,
         actors: parseActors,
@@ -111,7 +111,7 @@ router.post("/", (req, res) => {
         crew: parseCrew,
         rating: '',
         evaluation: '',
-        year: '',
+        year: year,
         keywords: parseWords
     };
     console.log()
