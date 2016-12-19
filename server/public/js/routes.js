@@ -9,7 +9,6 @@ import Logout from './components/Logout.js';
 import { browserHistory } from 'react-router';
 import auth from './utils/auth.js';
 import PreferencePage from './containers/PreferencePage'
-// import HomePage from './containers/HomePage.js';
 import AccountPage from './containers/AccountPage';
 import axios from 'axios';
 

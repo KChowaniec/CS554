@@ -34458,7 +34458,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// import HomePage from './containers/HomePage.js';
 	function redirectToLogin(nextState, replace, callback) {
 	  _axios2.default.get('/user/authorized').then(function (res) {
 	    var data = res.data;
@@ -34644,7 +34643,6 @@
 
 	"use strict";
 
-	// var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 	module.exports = {
 	  login: function login(username, password, cb) {
 	    var _this = this;
