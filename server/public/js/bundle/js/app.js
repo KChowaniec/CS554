@@ -52364,8 +52364,9 @@
 	      movie: {},
 	      recs: [],
 	      reviews: [],
-	      internalReviews: []
+	      internalReviews: [{ _id: 12345, comment: "", name: "" }]
 	    };
+	    _this.addReview = _this.addReview.bind(_this);
 	    return _this;
 	  }
 
@@ -52384,7 +52385,31 @@
 	        _this2.setState({ reviews: res.data.results });
 	      });
 	      _axios2.default.get('/movies/allreviews/' + this.props.params.id).then(function (res) {
-	        _this2.setState({ internalReviews: res.data });
+	        if (res.data.length > 0) {
+	          _this2.setState({ internalReviews: res.data });
+	        } else {
+	          document.getElementById("intReviewsTitle").style.display = "none";
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'addReview',
+	    value: function addReview() {
+	      var _this3 = this;
+
+	      _axios2.default.post('/movies/reviews/add/', { movieId: this.state.movie._id, review: document.getElementById("review").value }).then(function (res) {
+	        if (res.data.success) {
+	          alert("Your review has been added!");
+	          var idtmp = new Date();
+	          if (_this3.state.internalReviews[0]._id == 12345) {
+	            _this3.state.internalReviews = [];
+	          }
+	          _this3.state.internalReviews.push({ key: idtmp.getTime(), name: decodeURI(res.data.result.name), comment: document.getElementById("review").value });
+	          _this3.setState({ internalReviews: _this3.state.internalReviews });
+	          document.getElementById("intReviewsTitle").style.display = "inline";
+	        } else {
+	          alert(res.data.error);
+	        }
 	      });
 	    }
 	  }, {
@@ -52395,7 +52420,8 @@
 	        movie: this.state.movie,
 	        recs: this.state.recs,
 	        reviews: this.state.reviews,
-	        intreviews: this.state.internalReviews
+	        intreviews: this.state.internalReviews,
+	        addReview: this.addReview
 	      });
 	    }
 	  }]);
@@ -52479,12 +52505,18 @@
 
 	        var _this = _possibleConstructorReturn(this, (Movie.__proto__ || Object.getPrototypeOf(Movie)).call(this, props));
 
+	        _this.clickAddReview = function () {
+	            _this.props.addReview();
+	            _this.setState({
+	                open: false
+	            });
+	        };
+
 	        _this.state = {
-	            open: false,
-	            intreviews: []
+	            open: false
 	        };
 	        _this.addMovie = _this.addMovie.bind(_this);
-	        _this.addReview = _this.addReview.bind(_this);
+	        _this.clickAddReview = _this.clickAddReview.bind(_this);
 	        _this.handleTouchTap = _this.handleTouchTap.bind(_this);
 	        _this.handleRequestClose = _this.handleRequestClose.bind(_this);
 	        return _this;
@@ -52519,28 +52551,9 @@
 	            });
 	        }
 	    }, {
-	        key: 'addReview',
-	        value: function addReview() {
-	            var _this2 = this;
-
-	            _axios2.default.post('/movies/reviews/add/', { movieId: this.props.movie._id, review: document.getElementById("review").value }).then(function (res) {
-	                if (res.data.success) {
-	                    alert("Your review has been added!");
-	                    var idtmp = new Date();
-	                    _this2.props.intreviews.push({ id: idtmp.getTime(), name: decodeURI(res.data.result.name), comment: document.getElementById("review").value });
-	                    _this2.setState({ intreviews: _this2.props.intreviews });
-	                } else {
-	                    alert(res.data.error);
-	                }
-	                _this2.setState({
-	                    open: false
-	                });
-	            });
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this3 = this;
+	            var _this2 = this;
 
 	            var styles = {
 	                root: {
@@ -52590,10 +52603,11 @@
 	                });
 	            }
 	            var intrevs = "";
-	            if (this.props.intreviews && this.props.intreviews.length > 0) {
+	            //if (this.props.intreviews.length > 0)
+	            {
 	                intrevs = this.props.intreviews.map(function (rec, i) {
 	                    return _react2.default.createElement(_List.ListItem, {
-	                        key: rec.id,
+	                        key: rec._id,
 	                        primaryText: decodeURI(rec.name),
 	                        secondaryText: rec.comment,
 	                        secondaryTextLines: 2
@@ -52607,7 +52621,7 @@
 	                _react2.default.createElement(_Card.CardHeader, { title: this.props.movie.title, subtitle: this.props.movie.releaseDate, titleColor: '#00bcd4', titleStyle: { fontSize: '30px', fontWeight: 'bold' }, children: _react2.default.createElement(
 	                        'a',
 	                        { href: '#', onClick: function onClick() {
-	                                return _this3.addMovie();
+	                                return _this2.addMovie();
 	                            } },
 	                        _react2.default.createElement(_RaisedButton2.default, { label: 'Add To Playlist', primary: true, style: { float: 'right' } })
 	                    ) }),
@@ -52650,7 +52664,7 @@
 	                            _react2.default.createElement(
 	                                'a',
 	                                { href: '#', onClick: function onClick() {
-	                                        return _this3.addReview();
+	                                        return _this2.clickAddReview();
 	                                    } },
 	                                _react2.default.createElement(_RaisedButton2.default, { label: 'Submit', primary: true })
 	                            )
@@ -52664,7 +52678,7 @@
 	                            null,
 	                            'If you loved ',
 	                            this.props.movie.title,
-	                            ', you would like these:'
+	                            ', you will like these:'
 	                        ),
 	                        _react2.default.createElement(
 	                            'div',
@@ -52678,9 +52692,9 @@
 	                        _react2.default.createElement(
 	                            _List.List,
 	                            null,
-	                            intrevs != "" && _react2.default.createElement(
+	                            _react2.default.createElement(
 	                                'h3',
-	                                null,
+	                                { id: 'intReviewsTitle' },
 	                                'Internal Reviews'
 	                            ),
 	                            intrevs
