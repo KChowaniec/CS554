@@ -330,7 +330,7 @@ router.delete("/delete/:movieId", (req, res) => {
 
 
 //ADD MOVIE TO PLAYLIST
-router.post("/addmovie/:movieId", (req, res) => {
+router.get("/addmovie/:movieId", (req, res) => {
     var movieId = req.params.movieId;
     //Hardcoded the UserID to add movie to playlist using POSTMAN
     var userId = req.session.userId;

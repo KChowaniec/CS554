@@ -34978,6 +34978,7 @@
 	                genre: ''
 	            },
 	            currentPage: 1,
+	            snackbar_open: false,
 	            customWidth: {
 	                width: 150
 	            },
@@ -35012,11 +35013,11 @@
 	            var _this2 = this;
 
 	            if (!this.state.data[index].isAdded) {
-	                //console.log("Add Movie Clicked "+this.state.data[index].id);
+	                console.log("Add Movie Clicked " + this.state.data[index].id);
 	                var react_component = this;
 	                var movie_index = index;
-	                //console.log('Movie is going to be added : ' + this.state.data[index].id);
-	                _axios2.default.post('/playlist/addmovie' + this.state.data[index].id).then(function (res) {
+
+	                _axios2.default.get('/playlist/addmovie/' + this.state.data[index].id).then(function (res) {
 	                    if (res.data.success === true) {
 	                        console.log("Movie Added");
 	                        //[movie_index].isAdded = true;
@@ -35186,7 +35187,6 @@
 	            var title = this.state.parameters.movie;
 
 	            var actors = this.state.parameters.actor;
-
 	            var genres = !isNaN(this.state.parameters.genre) && this.state.parameters.genre != -1 ? [this.state.parameters.genre] : [];
 	            //alert(genres);
 	            var crew = this.state.parameters.crew;
@@ -53204,7 +53204,12 @@
 	                ) : _react2.default.createElement(
 	                    _Card.Card,
 	                    { className: 'container' },
-	                    _react2.default.createElement(_Card.CardTitle, { title: 'My Playlist', subtitle: 'No Movies in your playlist' }),
+	                    _react2.default.createElement(
+	                        'h2',
+	                        { className: 'card-heading' },
+	                        'My Playlist'
+	                    ),
+	                    _react2.default.createElement(_Card.CardTitle, { subtitle: 'No Movies in your playlist' }),
 	                    _react2.default.createElement(_FlatButton2.default, { label: 'Import Playlist',
 	                        labelPosition: 'before',
 	                        icon: _react2.default.createElement(_openInBrowser2.default, null),
@@ -54412,7 +54417,9 @@
 	        };
 
 	        _this.state = {
-	            open: false
+	            open: false,
+	            errorText: '',
+	            errorVisibility: false
 	        };
 	        _this.addMovie = _this.addMovie.bind(_this);
 	        _this.clickAddReview = _this.clickAddReview.bind(_this);
@@ -54441,9 +54448,13 @@
 	    }, {
 	        key: 'addMovie',
 	        value: function addMovie() {
+	            var _this2 = this;
+
 	            _axios2.default.get('/playlist/addmovie/' + this.props.movie._id).then(function (res) {
 	                if (res.data.success) {
-	                    alert("Movie has been successfully added to your playlist!");
+	                    // alert("Movie has been successfully added to your playlist!");
+	                    _this2.setState({ errorVisibility: true });
+	                    _this2.setState({ errorText: 'Movie has been successfully added to your playlist!' });
 	                } else {
 	                    alert(res.data.error);
 	                }
@@ -54452,7 +54463,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            var styles = {
 	                root: {
@@ -54494,7 +54505,7 @@
 	            if (this.props.reviews && this.props.reviews.length > 0) {
 	                revs = this.props.reviews.map(function (rec, i) {
 	                    return _react2.default.createElement(_List.ListItem, {
-	                        key: rec.id,
+	                        key: Math.floor(Math.random() * 10000000 + 1),
 	                        primaryText: rec.author,
 	                        secondaryText: rec.content,
 	                        secondaryTextLines: 2
@@ -54506,7 +54517,7 @@
 	            {
 	                intrevs = this.props.intreviews.map(function (rec, i) {
 	                    return _react2.default.createElement(_List.ListItem, {
-	                        key: rec._id,
+	                        key: Math.floor(Math.random() * 10000000 + 1),
 	                        primaryText: decodeURI(rec.name),
 	                        secondaryText: rec.comment,
 	                        secondaryTextLines: 2
@@ -54520,7 +54531,7 @@
 	                _react2.default.createElement(_Card.CardHeader, { title: this.props.movie.title, subtitle: this.props.movie.releaseDate, titleColor: '#00bcd4', titleStyle: { fontSize: '30px', fontWeight: 'bold' }, children: _react2.default.createElement(
 	                        'a',
 	                        { href: '#', onClick: function onClick() {
-	                                return _this2.addMovie();
+	                                return _this3.addMovie();
 	                            } },
 	                        _react2.default.createElement(_RaisedButton2.default, { label: 'Add To Playlist', primary: true, style: { float: 'right' } })
 	                    ) }),
@@ -54563,7 +54574,7 @@
 	                            _react2.default.createElement(
 	                                'a',
 	                                { href: '#', onClick: function onClick() {
-	                                        return _this2.clickAddReview();
+	                                        return _this3.clickAddReview();
 	                                    } },
 	                                _react2.default.createElement(_RaisedButton2.default, { label: 'Submit', primary: true })
 	                            )
@@ -54609,7 +54620,12 @@
 	                            revs
 	                        )
 	                    )
-	                )
+	                ),
+	                _react2.default.createElement(_Snackbar2.default, {
+	                    open: this.state.errorVisibility,
+	                    message: this.state.errorText,
+	                    autoHideDuration: 4000
+	                })
 	            );
 	        }
 	    }]);
@@ -55602,7 +55618,6 @@
 	        var _this = _possibleConstructorReturn(this, (PreferencePage.__proto__ || Object.getPrototypeOf(PreferencePage)).call(this, props));
 
 	        _this.addGenre = function (key) {
-	            console.log(key);
 	            var selected = _this.state.selectedGenre;
 	            selected.push(key);
 	            _this.setState({ selectedGenre: selected });
@@ -55617,14 +55632,13 @@
 	            _axios2.default.post('/user/update_genre', {
 	                genreList: _this.state.selectedGenre
 	            }).then(function (response) {
-	                console.log(response);
+	                // console.log(response);
 	            }).catch(function (error) {
 	                console.log(error);
 	            });
 	        };
 
 	        _this.deleteGenre = function (key) {
-	            console.log(key);
 	            var allGenre = _this.state.allGenre;
 	            allGenre.push(key);
 	            _this.setState({ allGenre: allGenre });
@@ -55636,12 +55650,10 @@
 	            }
 	            _this.setState({ selectedGenre: selected });
 
-	            console.log(selected);
-
 	            _axios2.default.post('/user/update_genre', {
 	                genreList: _this.state.selectedGenre
 	            }).then(function (response) {
-	                console.log(response);
+	                // console.log(response);
 	            }).catch(function (error) {
 	                console.log(error);
 	            });
@@ -55799,9 +55811,6 @@
 	                    });break;
 	            }
 
-	            console.log(actor);
-	            console.log(crew);
-
 	            this.setState({ actor: actor, crew: crew });
 	            $.ajax({
 	                url: '/user/update_person',
@@ -55810,7 +55819,7 @@
 	                cache: false,
 	                data: { actor: actor, crew: crew },
 	                success: function success(response) {
-	                    console.log(response);
+	                    // console.log(response);
 	                },
 	                error: function error(xhr, status, err) {
 	                    console.error(status, err.toString());
@@ -55874,7 +55883,7 @@
 	            _axios2.default.post('/user/update_ageRating', {
 	                ageRating: this.state.selectedAgeRating
 	            }).then(function (response) {
-	                console.log(response);
+	                // console.log(response);
 	            }).catch(function (error) {
 	                console.log(error);
 	            });
@@ -55896,7 +55905,7 @@
 	            _axios2.default.post('/user/update_ageRating', {
 	                ageRating: this.state.selectedAgeRating
 	            }).then(function (response) {
-	                console.log(response);
+	                // console.log(response);
 	            }).catch(function (error) {
 	                console.log(error);
 	            });
@@ -55930,7 +55939,6 @@
 	    }, {
 	        key: 'deleteYear',
 	        value: function deleteYear(key) {
-	            console.log(key);
 	            var allYear = this.state.year;
 	            var index = allYear.indexOf(key);
 	            if (index > -1) {
@@ -55941,7 +55949,7 @@
 	            _axios2.default.post('/user/update_year', {
 	                year: this.state.year
 	            }).then(function (response) {
-	                console.log(response);
+	                // console.log(response);
 	            }).catch(function (error) {
 	                console.log(error);
 	            });
@@ -55978,7 +55986,7 @@
 	            _axios2.default.post('/user/update_keywords', {
 	                keywords: this.state.keywords
 	            }).then(function (response) {
-	                console.log(response);
+	                // console.log(response);
 	            }).catch(function (error) {
 	                console.log(error);
 	            });
@@ -55986,7 +55994,6 @@
 	    }, {
 	        key: 'deleteKeywords',
 	        value: function deleteKeywords(data) {
-	            console.log(data);
 	            var keywords = this.state.keywords;
 	            var index = keywords.indexOf(data);
 	            if (index > -1) {
@@ -55997,7 +56004,7 @@
 	            _axios2.default.post('/user/update_keywords', {
 	                keywords: this.state.keywords
 	            }).then(function (response) {
-	                console.log(response);
+	                // console.log(response);
 	            }).catch(function (error) {
 	                console.log(error);
 	            });
@@ -56073,7 +56080,7 @@
 	                _axios2.default.post('/user/update_year', {
 	                    year: this.state.year
 	                }).then(function (response) {
-	                    console.log(response);
+	                    // console.log(response);
 	                }).catch(function (error) {
 	                    console.log(error);
 	                });
@@ -57515,6 +57522,8 @@
 	    }, {
 	        key: 'processForm',
 	        value: function processForm(event) {
+	            var _this3 = this;
+
 	            // prevent default action. in this case, action is the form submission event
 	            event.preventDefault();
 
@@ -57536,34 +57545,39 @@
 	                errors.message = "Please correct the errors";
 	                return this.setState({ errors: errors });
 	            } else {
-	                //change account information
-	                var requestConfig = {
-	                    method: "PUT",
-	                    url: "/user",
-	                    contentType: 'application/json',
-	                    data: JSON.stringify({
-	                        email: email,
-	                        password: password
-	                    })
-	                };
-	                var reactThis = this;
-	                $.ajax(requestConfig).then(function (responseMessage) {
-	                    if (responseMessage.success) {
-	                        if (responseMessage.user.profile.email) {
-	                            var newInfo = {};
-	                            newInfo.email = responseMessage.user.profile.email;
-	                            newInfo.password = '';
-	                            newInfo.confirm = '';
-	                            return reactThis.setState({ success: true, user: newInfo });
+	                var requestConfig;
+
+	                (function () {
+	                    //change account information
+	                    requestConfig = {
+	                        method: "PUT",
+	                        url: "/user",
+	                        contentType: 'application/json',
+	                        data: JSON.stringify({
+	                            email: email,
+	                            password: password
+	                        })
+	                    };
+
+	                    var reactThis = _this3;
+	                    $.ajax(requestConfig).then(function (responseMessage) {
+	                        if (responseMessage.success) {
+	                            if (responseMessage.user.profile.email) {
+	                                var newInfo = {};
+	                                newInfo.email = responseMessage.user.profile.email;
+	                                newInfo.password = '';
+	                                newInfo.confirm = '';
+	                                return reactThis.setState({ success: true, user: newInfo });
+	                            } else {
+	                                return reactThis.setState({ success: true });
+	                            }
 	                        } else {
-	                            return reactThis.setState({ success: true });
+	                            var _errors = {};
+	                            _errors.message = "An error occurred";
+	                            return reactThis.setState({ error: true, errors: _errors });
 	                        }
-	                    } else {
-	                        var errors = {};
-	                        errors.message = "An error occurred";
-	                        return reactThis.setState({ error: true, errors: errors });
-	                    }
-	                });
+	                    });
+	                })();
 	            }
 	        }
 

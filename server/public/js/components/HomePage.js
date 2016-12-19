@@ -114,10 +114,10 @@ class SearchBar extends React.Component {
 
         // set the initial component state
         this.state = {
-            GenreSelected : false,
+            GenreSelected: false,
             errors: {},
             data: [],
-            errorText:'',
+            errorText: '',
             errorVisibility: false,
             styles: {
 
@@ -147,6 +147,7 @@ class SearchBar extends React.Component {
                 genre: ''
             },
             currentPage: 1,
+            snackbar_open: false,
             customWidth: {
                 width: 150,
             },
@@ -167,19 +168,19 @@ class SearchBar extends React.Component {
         if (id !== "next") {
             //console.log("Item Clicked: " + id);
             browserHistory.push('/movie/' + id);
-        } else{
+        } else {
             //console.log("Next Clicked");
             this.getQueryStr_Movies(true);
         }
     }
 
-    additem(index){
+    additem(index) {
         if (!this.state.data[index].isAdded) {
-            //console.log("Add Movie Clicked "+this.state.data[index].id);
+            console.log("Add Movie Clicked " + this.state.data[index].id);
             var react_component = this;
             var movie_index = index;
-            //console.log('Movie is going to be added : ' + this.state.data[index].id);
-            axios.post('/playlist/addmovie' + this.state.data[index].id)
+
+            axios.get('/playlist/addmovie/' + this.state.data[index].id)
                 .then(res => {
                     if (res.data.success === true) {
                         console.log("Movie Added");
@@ -189,17 +190,17 @@ class SearchBar extends React.Component {
                         react_component.setState({
                             data: arr_search,
                         });
-                        this.setState({errorVisibility:true});
-                        this.setState({errorText:'Movie added to your playlist!'});
+                        this.setState({ errorVisibility: true });
+                        this.setState({ errorText: 'Movie added to your playlist!' });
                     } else {
                         console.log("Movie NOT Added");
-                        this.setState({errorVisibility:true});
-                        this.setState({errorText:'There was some problem in adding movie to the playlist.'});
+                        this.setState({ errorVisibility: true });
+                        this.setState({ errorText: 'There was some problem in adding movie to the playlist.' });
                     }
                 });
         } else {
-            this.setState({errorVisibility:true});
-            this.setState({errorText:'Movie Already Added!'});
+            this.setState({ errorVisibility: true });
+            this.setState({ errorText: 'Movie Already Added!' });
         }
     }
 
@@ -218,7 +219,7 @@ class SearchBar extends React.Component {
     handleMovieNameChange(event) {
         //console.log('@ search bar : handleChange');
         this.setState({
-            currentPage : 1
+            currentPage: 1
         });
         const field = 'movie';
         //console.log('@ search bar : target property : ' + field);
@@ -232,7 +233,7 @@ class SearchBar extends React.Component {
     handleActorChange(event) {
         //console.log('@ search bar : handleChange');
         this.setState({
-            currentPage : 1
+            currentPage: 1
         });
         const field = 'actor';
         //console.log('@ search bar : target property : ' + field);
@@ -242,11 +243,11 @@ class SearchBar extends React.Component {
 
         this.setState({ parameters });
     }
-    
+
     handleCrewChange(event) {
         //console.log('@ search bar : handleChange');
         this.setState({
-            currentPage : 1
+            currentPage: 1
         });
         const field = 'crew';
         //console.log('@ search bar : target property : ' + field);
@@ -257,9 +258,9 @@ class SearchBar extends React.Component {
         this.setState({ parameters });
     }
 
-    handleKeywordChange(event){
+    handleKeywordChange(event) {
         this.setState({
-            currentPage : 1
+            currentPage: 1
         });
         const field = 'keywords';
         //console.log('@ search bar : target property : ' + field);
@@ -274,7 +275,7 @@ class SearchBar extends React.Component {
         //console.log('@ search bar : handleChange');
         this.state.GenreSelected = true;
         this.setState({
-            currentPage : 1
+            currentPage: 1
         });
         const field = 'genre';
         //console.log('Genre changed : ' + value);
@@ -283,31 +284,31 @@ class SearchBar extends React.Component {
         //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = value;
 
-        this.setState({parameters});
+        this.setState({ parameters });
     }
 
-    
-    applyfilter(playlist, searchResult){
-        
+
+    applyfilter(playlist, searchResult) {
+
         var ids = [];
         var filter_indexes = [];
-        
+
         //console.log('Playlist Ids : ' + ids);
         var index = 0;
         var isFound = false;
-        
+
         //console.log('Pre Filter');
-        searchResult.forEach(function(element) {
+        searchResult.forEach(function (element) {
             //if(element.title == "300")
-                //console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
+            //console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
         }, this);
 
         var counter = 0;
         searchResult.forEach(function (search_item) {
             //console.log('id : ' + element.id + 'is in ids array @ : ' + ids.indexOf(element.id));
-            playlist.forEach(function(pl_item) {
+            playlist.forEach(function (pl_item) {
                 //console.log('Search Item id : ' + search_item.id + " is compared with pl item id : " + pl_item._id + ' and the result is : ' + search_item.id == pl_item._id );
-                if(search_item.id == pl_item._id)
+                if (search_item.id == pl_item._id)
                     filter_indexes.push(counter);
             }, this);
             counter++;
@@ -319,15 +320,15 @@ class SearchBar extends React.Component {
 
         //console.log('filtered Indexes : ' + filter_indexes);
         //console.log('Post Filter');
-        searchResult.forEach(function(element) {
+        searchResult.forEach(function (element) {
             //if(element.title == "300")
-                //console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
+            //console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
         }, this);
         return searchResult;
     }
 
-    
-    getQueryStr_Movies(isNextOperation){
+
+    getQueryStr_Movies(isNextOperation) {
         var myplayList = [];
         var get_playlist = {
             url: "/playlist",
@@ -342,13 +343,12 @@ class SearchBar extends React.Component {
         });
 
         let title = this.state.parameters.movie;
-        
-        let actors = this.state.parameters.actor;
-        
+
+        let actors = this.state.parameters.actor;  
         var genres = !isNaN(this.state.parameters.genre) && this.state.parameters.genre != -1 ? [this.state.parameters.genre] : [];
         //alert(genres);
         var crew = this.state.parameters.crew;
-        
+
         var keywords = this.state.parameters.keywords;
         var year = this.state.parameters.years;
         var date = new Date();
@@ -403,15 +403,14 @@ class SearchBar extends React.Component {
                 parseWords.push(keywords);
             }
         }
-       
-        
+
         var getQueryStr = {
             method: "POST",
             url: "search/",
             contentType: 'application/json',
             data: JSON.stringify({
                 title: title,
-                parseActors: parseActors,                
+                parseActors: parseActors,
                 parseGenre: parseGenre,
                 parseWords: parseWords,                
                 parseCrew: parseCrew,
@@ -419,12 +418,12 @@ class SearchBar extends React.Component {
             })
         };
         var react_com = this;
-        $.ajax(getQueryStr).then(function(response){
-            if(response.success){
-                var page_index = isNextOperation ? react_com.state.currentPage +1 : react_com.state.currentPage;
-                react_com.setState({ currentPage : page_index});
+        $.ajax(getQueryStr).then(function (response) {
+            if (response.success) {
+                var page_index = isNextOperation ? react_com.state.currentPage + 1 : react_com.state.currentPage;
+                react_com.setState({ currentPage: page_index });
 
-                var qry_str = "/search/results/"+ page_index + "?" + response.query;
+                var qry_str = "/search/results/" + page_index + "?" + response.query;
                 console.log(' ************* Query String  ************** ');
                 console.log(qry_str);
                 console.log(' ************* Query String  ************** ');
@@ -433,7 +432,7 @@ class SearchBar extends React.Component {
                     method: "GET",
                     contentType: "application/json"
                 };
-                $.ajax(getSearch_result).then(function(res){
+                $.ajax(getSearch_result).then(function (res) {
                     //console.log('Movies : ' + JSON.stringify(res));
                     var newArr = res.movies ? res.movies : [];
                     newArr = react_com.applyfilter(myplayList, newArr);
@@ -442,25 +441,25 @@ class SearchBar extends React.Component {
                     var totalPages = parseInt(res.total);
                     if ((totalPages - page) > 0) {
                         //react_com.setState({ currentPage: page });
-                        if(newArr && newArr.length > 0)
+                        if (newArr && newArr.length > 0)
                             newArr.push({
                                 id: "next",
                                 poster_path: "/public/images/next.png",
                                 title: "Load More"
                             });
                     }
-                    if(isNextOperation){
+                    if (isNextOperation) {
                         console.log('Next Movie operation');
-                        
+
                         var exsisting_movies = react_com.state.data;
                         var final_movie_list = [];
                         console.log('Old movie Count' + exsisting_movies.length);
                         console.log('New movie Count' + newArr.length);
-                        exsisting_movies.forEach(function(exsisting_item) {
-                            if(exsisting_item.id != 'next')
+                        exsisting_movies.forEach(function (exsisting_item) {
+                            if (exsisting_item.id != 'next')
                                 final_movie_list.push(exsisting_item);
-                        }, this); 
-                        newArr.forEach(function(new_item) {
+                        }, this);
+                        newArr.forEach(function (new_item) {
                             final_movie_list.push(new_item);
                         }, this);
                         newArr = final_movie_list;
@@ -499,44 +498,44 @@ class SearchBar extends React.Component {
         event.preventDefault();
         this.getQueryStr_Movies(false);
         // *************************************************
-        
+
 
         // $.ajax(requestConfig).then(function (response) {
         //     alert('data : ' + JSON.stringify(response));
         // });
 
     }
-    
-    
-    
-    componentWillReceiveProps (nextProps){
+
+
+
+    componentWillReceiveProps(nextProps) {
         this.setState({ mounted: false });
     }
 
-    mergeArray(array){
+    mergeArray(array) {
         var result = '';
-        for(var i=0;i<array.length;i++){
+        for (var i = 0; i < array.length; i++) {
             result += array[i] + ',';
         }
-        result = result.charAt(result.length-1) == ',' ? result.substr(0,result.length -1) : result;
+        result = result.charAt(result.length - 1) == ',' ? result.substr(0, result.length - 1) : result;
         return result;
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.setState({ mounted: true });
         console.log('Gonning to get user preferences');
         var getuser_pref = {
-            url : "/user",
-            method : "GET",
+            url: "/user",
+            method: "GET",
             contentType: "application/json; charset=utf-8"
         };
         var react_component = this;
-        $.ajax(getuser_pref).then(function(res){
+        $.ajax(getuser_pref).then(function (res) {
             console.log('server returned preference with : ' + JSON.stringify(res));
-            if(res.user && res.user.preferences){
+            if (res.user && res.user.preferences) {
                 var pref = res.user.preferences;
                 //
-                var _movies = pref.Title ?  react_component.mergeArray(pref.Title) : ''; 
+                var _movies = pref.Title ? react_component.mergeArray(pref.Title) : '';
                 var _actors = pref.Actor ? react_component.mergeArray(pref.Actor) : '';
                 console.log('Actor : ' + _actors);
 
@@ -546,7 +545,7 @@ class SearchBar extends React.Component {
                 var _ageratings = pref.ageRating ? react_component.mergeArray(pref.ageRating) : '';
                 
                 var _keywords = pref.keywords ? react_component.mergeArray(pref.keywords) : '';
-                
+
                 // ***************************************************************
                 // var _genre = pref.Genre ? genres.filter(x=>{
                 //     x.textKey == pref.Genre[0]
@@ -555,7 +554,7 @@ class SearchBar extends React.Component {
                 var xgenre = (pref.Genre && pref.Genre.length > 0 && genres.filter( x=> { return x.textKey == pref.Genre[0]}).length > 0) ? genres.filter( x=> { return x.textKey == pref.Genre[0]})[0].valueKey : -1;
                 
                 // ***************************************************************
-                var user_params =  {
+                var user_params = {
                     movie: _movies,
                     actor: _actors, 
                     genre:xgenre,
@@ -564,18 +563,18 @@ class SearchBar extends React.Component {
                     years : _years,
                     crew : _crew 
                 };
-                
+
                 react_component.setState({
-                    parameters : user_params
+                    parameters: user_params
                 })
             }
-        },function(err){
+        }, function (err) {
             console.log('server returned error with : ' + err);
         })
-        
+
     }
-    
-    render(){
+
+    render() {
         //console.log('rendering search bar');
         return (
             <div>
@@ -599,19 +598,19 @@ class SearchBar extends React.Component {
                                 onChange={this.handleActorChange} />
                         </div>
                         <div className="field-line">
-                            <TextField 
-                                type="text" 
+                            <TextField
+                                type="text"
                                 name="crew"
                                 floatingLabelText="Crew"
-                                value={this.state.parameters.crew} 
+                                value={this.state.parameters.crew}
                                 onChange={this.handleCrewChange} />
                         </div>
                         <div className="field-line">
                             <TextField
                                 type="text"
                                 name="keywords"
-                                floatingLabelText="Keywords" 
-                                value={this.state.parameters.keywords} 
+                                floatingLabelText="Keywords"
+                                value={this.state.parameters.keywords}
                                 onChange={this.handleKeywordChange} />
                         </div>
                         <div>
@@ -649,7 +648,7 @@ class SearchBar extends React.Component {
                             </SelectField>
                         </div>
                         <div className="button-line">
-                           <RaisedButton type="submit" label="Search" primary />
+                            <RaisedButton type="submit" label="Search" primary />
                             <CardText>Save this Search? <RaisedButton type="button" label="Save" secondary /></CardText>
                         </div>
 
@@ -695,7 +694,7 @@ class SearchBar extends React.Component {
                     open={this.state.errorVisibility}
                     message={this.state.errorText}
                     autoHideDuration={4000}
-                />
+                    />
             </div>
         );
     }
