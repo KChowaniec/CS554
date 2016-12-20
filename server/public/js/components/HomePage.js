@@ -107,6 +107,11 @@ const dataSourceConfig = {
     value: 'valueKey',
 };
 
+const style = {
+    margin: 12,
+};
+
+
 class SearchBar extends React.Component {
 
     constructor(props) {
@@ -144,14 +149,15 @@ class SearchBar extends React.Component {
                 movie: '',
                 actor: '',
                 director: '',
-                genre: ''
+                genre: '',
+                genreText: ''
             },
             currentPage: 1,
             snackbar_open: false,
             customWidth: {
                 width: 150,
             },
-            searchMessage : 'Search Results will be shown here'
+            searchMessage: 'Search Results will be shown here'
         };
 
         this.handleMovieNameChange = this.handleMovieNameChange.bind(this);
@@ -161,7 +167,9 @@ class SearchBar extends React.Component {
         this.handleKeywordChange = this.handleKeywordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleYearChange = this.handleYearChange.bind(this);
+        this.handleClear = this.handleClear.bind(this);
     }
+
 
     itemClicked(id) {
         if (id !== "next") {
@@ -197,9 +205,20 @@ class SearchBar extends React.Component {
         }
     }
 
-    handleYearChange(event){
+    handleClear(event) {
         this.setState({
-            currentPage : 1
+            parameters: {
+                movie: '',
+                actor: '',
+                director: '',
+                genre: '',
+                genreText: ''
+            },
+        })
+    }
+    handleYearChange(event) {
+        this.setState({
+            currentPage: 1
         });
         const field = 'years';
         const parameters = this.state.parameters;
@@ -250,17 +269,32 @@ class SearchBar extends React.Component {
         this.setState({ parameters });
     }
 
-    handleGenreChange(event, index, value) {
+    handleGenreChange(value) {
         this.state.GenreSelected = true;
         this.setState({
             currentPage: 1
         });
         const field = 'genre';
         const parameters = this.state.parameters;
-        parameters[field] = value;
+        var result = genres.filter(function (key) { return (key.textKey === value) });
+
+        if (result[0]) {
+            let genreId = result[0].valueKey;
+            parameters[field] = genreId;
+        // }
+        // else {
+        //     parameters[field] = '';
+        }
+        parameters['genreText'] = value;
 
         this.setState({ parameters });
     }
+
+    handleUpdateInput(value) {
+        //map text value to id
+        var result = genres.filter(function (key) { return (key.textKey === value) });
+        let genreId = result[0].valueKey;
+    };
 
 
     applyfilter(playlist, searchResult) {
@@ -308,7 +342,7 @@ class SearchBar extends React.Component {
 
         let title = this.state.parameters.movie;
 
-        let actors = this.state.parameters.actor;  
+        let actors = this.state.parameters.actor;
         var genres = !isNaN(this.state.parameters.genre) && this.state.parameters.genre != -1 ? [this.state.parameters.genre] : [];
         //alert(genres);
         var crew = this.state.parameters.crew;
@@ -317,36 +351,36 @@ class SearchBar extends React.Component {
         var year = this.state.parameters.years;
         var date = new Date();
 
-        try{
-            if(year){
-                if(year.indexOf(',') > -1){
+        try {
+            if (year) {
+                if (year.indexOf(',') > -1) {
                     year = year.split(',')[0];
                 }
-                else{
-                    if(isNaN(year)){
-                        this.setState({errorVisibility:true});
-                        this.setState({errorText:'Please enter a 4 digit number less than 1950'});
+                else {
+                    if (isNaN(year)) {
+                        this.setState({ errorVisibility: true });
+                        this.setState({ errorText: 'Please enter a 4 digit number less than 1950' });
                         return;
-                    }else if(parseInt(year)  < 1950 && parseInt(year) > date.getFullYear()){
-                        this.setState({errorVisibility:true});
-                        this.setState({errorText:'Please enter a valid year between 1950 to ' + date.getFullYear()});
+                    } else if (parseInt(year) < 1950 && parseInt(year) > date.getFullYear()) {
+                        this.setState({ errorVisibility: true });
+                        this.setState({ errorText: 'Please enter a valid year between 1950 to ' + date.getFullYear() });
                         return;
                     }
                 }
             }
-            
 
-        }catch(e){
-            this.setState({errorVisibility:true});
-            this.setState({errorText:'Please enter a 4 digit number less than 1950'});
+
+        } catch (e) {
+            this.setState({ errorVisibility: true });
+            this.setState({ errorText: 'Please enter a 4 digit number less than 1950' });
             return;
         }
-        
+
         var parseActors = [];
         var parseWords = [];
         var parseGenre = genres;
-        var parseCrew = [];       
-        
+        var parseCrew = [];
+
         if (actors) {
             parseActors = actors.split(',');
             if (parseActors.length == 0) {
@@ -376,9 +410,9 @@ class SearchBar extends React.Component {
                 title: title,
                 parseActors: parseActors,
                 parseGenre: parseGenre,
-                parseWords: parseWords,                
+                parseWords: parseWords,
                 parseCrew: parseCrew,
-                year : year
+                year: year
             })
         };
         var react_com = this;
@@ -386,7 +420,6 @@ class SearchBar extends React.Component {
             if (response.success) {
                 var page_index = isNextOperation ? react_com.state.currentPage + 1 : react_com.state.currentPage;
                 react_com.setState({ currentPage: page_index });
-
                 var qry_str = "/search/results/" + page_index + "?" + response.query;
                 var getSearch_result = {
                     url: qry_str,
@@ -422,25 +455,25 @@ class SearchBar extends React.Component {
                     react_com.setState({
                         data: newArr
                     });
-                    if(newArr && newArr.length == 0){		
-                        react_com.setState({		
-                            searchMessage : 'No movie for such criteria'		
-                        });   		
-	                }
+                    if (newArr && newArr.length == 0) {
+                        react_com.setState({
+                            searchMessage: 'No movie for such criteria'
+                        });
+                    }
                 }, function (err2) {
-                    react_com.setState({		
-	                    searchMessage : 'No movie for such criteria'		
-	                });
+                    react_com.setState({
+                        searchMessage: 'No movie for such criteria'
+                    });
                 });
             } else {
-                react_com.setState({		
-                    searchMessage : 'No movie for such criteria'		
+                react_com.setState({
+                    searchMessage: 'No movie for such criteria'
                 });
             }
 
         }, function (err) {
-            react_com.setState({		
-                searchMessage : 'No movie for such criteria'		
+            react_com.setState({
+                searchMessage: 'No movie for such criteria'
             });
         });
     }
@@ -481,23 +514,24 @@ class SearchBar extends React.Component {
                 var _actors = pref.Actor ? react_component.mergeArray(pref.Actor) : '';
 
                 var _crew = pref.Crew ? react_component.mergeArray(pref.Crew) : '';
-                
+
                 var _years = pref.releaseYear ? react_component.mergeArray(pref.releaseYear) : '';
                 var _ageratings = pref.ageRating ? react_component.mergeArray(pref.ageRating) : '';
-                
+
                 var _keywords = pref.keywords ? react_component.mergeArray(pref.keywords) : '';
 
-                var xgenre = (pref.Genre && pref.Genre.length > 0 && genres.filter( x=> { return x.textKey == pref.Genre[0]}).length > 0) ? genres.filter( x=> { return x.textKey == pref.Genre[0]})[0].valueKey : -1;
-                
-                // ***************************************************************
+                var xgenre = (pref.Genre && pref.Genre.length > 0 && genres.filter(x => { return x.textKey == pref.Genre[0] }).length > 0) ? genres.filter(x => { return x.textKey == pref.Genre[0] })[0].valueKey : -1;
+                var genreText = (pref.Genre && pref.Genre.length > 0 && genres.filter(x => { return x.textKey == pref.Genre[0] }).length > 0) ? genres.filter(x => { return x.textKey == pref.Genre[0] })[0].textKey : '';
+
                 var user_params = {
                     movie: _movies,
-                    actor: _actors, 
-                    genre:xgenre,
-                    keywords : _keywords,
-                    ageRating : _ageratings,
-                    years : _years,
-                    crew : _crew 
+                    actor: _actors,
+                    genre: xgenre,
+                    genreText: genreText,
+                    keywords: _keywords,
+                    ageRating: _ageratings,
+                    years: _years,
+                    crew: _crew
                 };
 
                 react_component.setState({
@@ -551,38 +585,25 @@ class SearchBar extends React.Component {
                             <TextField
                                 type="text"
                                 name="keywords"
-                                floatingLabelText="Release Year" 
-                                value={this.state.parameters.years} 
+                                floatingLabelText="Release Year"
+                                value={this.state.parameters.years}
                                 onChange={this.handleYearChange} />
                         </div>
                         <div className="field-line">
-                            <SelectField
+                            <AutoComplete
                                 floatingLabelText="Genre"
-                                value={this.state.parameters.genre}
-                                onChange={this.handleGenreChange}>
-                                <MenuItem value={-1} primaryText="None" />
-                                <MenuItem value={28} primaryText="Action" />
-                                <MenuItem value={12} primaryText="Adventure" />
-                                <MenuItem value={16} primaryText="Animation" />
-                                <MenuItem value={35} primaryText="Comedy" />
-                                <MenuItem value={80} primaryText="Crime" />
-                                <MenuItem value={99} primaryText="Documentary" />
-                                <MenuItem value={10751} primaryText="Family" />
-                                <MenuItem value={14} primaryText="Fantasy" />
-                                <MenuItem value={10769} primaryText="Foreign" />
-                                <MenuItem value={27} primaryText="Horror" />
-                                <MenuItem value={10402} primaryText="Music" />
-                                <MenuItem value={9648} primaryText="Mystery" />
-                                <MenuItem value={10749} primaryText="Romance" />
-                                <MenuItem value={878} primaryText="Science Fiction" />
-                                <MenuItem value={10770} primaryText="TV Movie" />
-                                <MenuItem value={53} primaryText="Thriller" />
-                                <MenuItem value={10752} primaryText="War" />
-                                <MenuItem value={37} primaryText="Western" />
-                            </SelectField>
+                                filter={AutoComplete.fuzzyFilter}
+                                openOnFocus={true}
+                                dataSource={genres}
+                                onUpdateInput={this.handleGenreChange}
+                                dataSourceConfig={dataSourceConfig}
+                                searchText={this.state.parameters.genreText}
+                                />
                         </div>
+
                         <div className="button-line">
-                            <RaisedButton type="submit" label="Search" primary />
+                            <RaisedButton type="submit" label="Search" primary style={style} />
+                            <RaisedButton onClick={this.handleClear.bind(this)} label="Clear" primary style={style} />
                         </div>
 
                     </form>
@@ -614,13 +635,13 @@ class SearchBar extends React.Component {
                                 <br /><br />
                             </div>
                         </Card>
-                    ) : 
-                      (		
-	                        <Card className="container">		
-	                            <CardTitle title={this.state.searchMessage} />		
-	                        </Card>		
-	                    )
-            }
+                    ) :
+                        (
+                            <Card className="container">
+                                <CardTitle title={this.state.searchMessage} />
+                            </Card>
+                        )
+                    }
 
                 </div>
                 <Snackbar

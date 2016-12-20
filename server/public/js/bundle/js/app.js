@@ -34935,6 +34935,10 @@
 	    value: 'valueKey'
 	};
 
+	var style = {
+	    margin: 12
+	};
+
 	var SearchBar = function (_React$Component) {
 	    _inherits(SearchBar, _React$Component);
 
@@ -34975,7 +34979,8 @@
 	                movie: '',
 	                actor: '',
 	                director: '',
-	                genre: ''
+	                genre: '',
+	                genreText: ''
 	            },
 	            currentPage: 1,
 	            snackbar_open: false,
@@ -34992,6 +34997,7 @@
 	        _this.handleKeywordChange = _this.handleKeywordChange.bind(_this);
 	        _this.handleSubmit = _this.handleSubmit.bind(_this);
 	        _this.handleYearChange = _this.handleYearChange.bind(_this);
+	        _this.handleClear = _this.handleClear.bind(_this);
 	        return _this;
 	    }
 
@@ -35031,6 +35037,19 @@
 	                this.setState({ errorVisibility: true });
 	                this.setState({ errorText: 'Movie Already Added!' });
 	            }
+	        }
+	    }, {
+	        key: 'handleClear',
+	        value: function handleClear(event) {
+	            this.setState({
+	                parameters: {
+	                    movie: '',
+	                    actor: '',
+	                    director: '',
+	                    genre: '',
+	                    genreText: ''
+	                }
+	            });
 	        }
 	    }, {
 	        key: 'handleYearChange',
@@ -35093,16 +35112,36 @@
 	        }
 	    }, {
 	        key: 'handleGenreChange',
-	        value: function handleGenreChange(event, index, value) {
+	        value: function handleGenreChange(value) {
 	            this.state.GenreSelected = true;
 	            this.setState({
 	                currentPage: 1
 	            });
 	            var field = 'genre';
 	            var parameters = this.state.parameters;
-	            parameters[field] = value;
+	            var result = genres.filter(function (key) {
+	                return key.textKey === value;
+	            });
+
+	            if (result[0]) {
+	                var genreId = result[0].valueKey;
+	                parameters[field] = genreId;
+	                // }
+	                // else {
+	                //     parameters[field] = '';
+	            }
+	            parameters['genreText'] = value;
 
 	            this.setState({ parameters: parameters });
+	        }
+	    }, {
+	        key: 'handleUpdateInput',
+	        value: function handleUpdateInput(value) {
+	            //map text value to id
+	            var result = genres.filter(function (key) {
+	                return key.textKey === value;
+	            });
+	            var genreId = result[0].valueKey;
 	        }
 	    }, {
 	        key: 'applyfilter',
@@ -35222,7 +35261,6 @@
 	                if (response.success) {
 	                    var page_index = isNextOperation ? react_com.state.currentPage + 1 : react_com.state.currentPage;
 	                    react_com.setState({ currentPage: page_index });
-
 	                    var qry_str = "/search/results/" + page_index + "?" + response.query;
 	                    var getSearch_result = {
 	                        url: qry_str,
@@ -35327,12 +35365,17 @@
 	                    }).length > 0 ? genres.filter(function (x) {
 	                        return x.textKey == pref.Genre[0];
 	                    })[0].valueKey : -1;
+	                    var genreText = pref.Genre && pref.Genre.length > 0 && genres.filter(function (x) {
+	                        return x.textKey == pref.Genre[0];
+	                    }).length > 0 ? genres.filter(function (x) {
+	                        return x.textKey == pref.Genre[0];
+	                    })[0].textKey : '';
 
-	                    // ***************************************************************
 	                    var user_params = {
 	                        movie: _movies,
 	                        actor: _actors,
 	                        genre: xgenre,
+	                        genreText: genreText,
 	                        keywords: _keywords,
 	                        ageRating: _ageratings,
 	                        years: _years,
@@ -35417,37 +35460,21 @@
 	                        _react2.default.createElement(
 	                            'div',
 	                            { className: 'field-line' },
-	                            _react2.default.createElement(
-	                                _SelectField2.default,
-	                                {
-	                                    floatingLabelText: 'Genre',
-	                                    value: this.state.parameters.genre,
-	                                    onChange: this.handleGenreChange },
-	                                _react2.default.createElement(_MenuItem2.default, { value: -1, primaryText: 'None' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 28, primaryText: 'Action' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 12, primaryText: 'Adventure' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 16, primaryText: 'Animation' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 35, primaryText: 'Comedy' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 80, primaryText: 'Crime' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 99, primaryText: 'Documentary' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 10751, primaryText: 'Family' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 14, primaryText: 'Fantasy' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 10769, primaryText: 'Foreign' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 27, primaryText: 'Horror' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 10402, primaryText: 'Music' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 9648, primaryText: 'Mystery' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 10749, primaryText: 'Romance' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 878, primaryText: 'Science Fiction' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 10770, primaryText: 'TV Movie' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 53, primaryText: 'Thriller' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 10752, primaryText: 'War' }),
-	                                _react2.default.createElement(_MenuItem2.default, { value: 37, primaryText: 'Western' })
-	                            )
+	                            _react2.default.createElement(_AutoComplete2.default, {
+	                                floatingLabelText: 'Genre',
+	                                filter: _AutoComplete2.default.fuzzyFilter,
+	                                openOnFocus: true,
+	                                dataSource: genres,
+	                                onUpdateInput: this.handleGenreChange,
+	                                dataSourceConfig: dataSourceConfig,
+	                                searchText: this.state.parameters.genreText
+	                            })
 	                        ),
 	                        _react2.default.createElement(
 	                            'div',
 	                            { className: 'button-line' },
-	                            _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Search', primary: true })
+	                            _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Search', primary: true, style: style }),
+	                            _react2.default.createElement(_RaisedButton2.default, { onClick: this.handleClear.bind(this), label: 'Clear', primary: true, style: style })
 	                        )
 	                    )
 	                ),
