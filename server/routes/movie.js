@@ -1,9 +1,3 @@
-/*Program Title: routes/movie.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This script handles the /movie routes
-*/
 
 var express = require('express');
 var data = require("data");

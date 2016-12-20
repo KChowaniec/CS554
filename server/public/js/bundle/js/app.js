@@ -34677,16 +34677,6 @@
 	      if (cb) cb(true);
 	      _this2.onChange(true);
 	    });
-	    // registerRequest(username, password, confirm, email, name, (res) => {
-	    //   if (res.authenticated) {
-	    //     localStorage.token = res.token
-	    //     if (cb) cb(true)
-	    //     this.onChange(true)
-	    //   } else {
-	    //     if (cb) cb(false)
-	    //     this.onChange(false)
-	    //   }
-	    // })
 	  },
 
 
@@ -55450,17 +55440,6 @@
 	  componentDidMount: function componentDidMount() {
 	    _auth2.default.logout();
 	    _reactRouter.browserHistory.push('/');
-	    // var requestConfig = {
-	    //   method: "GET",
-	    //   url: "/logout",
-	    //   contentType: 'application/json'
-	    // };
-	    // let react = this;
-	    // $.ajax(requestConfig).then((responseMessage) => {
-	    //   if (responseMessage.success) {
-	    //     react.browserHistory.push('/login');
-	    //   }
-	    // });
 	  },
 	  render: function render() {
 	    return _react2.default.createElement(
@@ -55573,9 +55552,7 @@
 
 	            _axios2.default.post('/user/update_genre', {
 	                genreList: _this.state.selectedGenre
-	            }).then(function (response) {
-	                // console.log(response);
-	            }).catch(function (error) {
+	            }).then(function (response) {}).catch(function (error) {
 	                console.log(error);
 	            });
 	        };
@@ -55594,9 +55571,7 @@
 
 	            _axios2.default.post('/user/update_genre', {
 	                genreList: _this.state.selectedGenre
-	            }).then(function (response) {
-	                // console.log(response);
-	            }).catch(function (error) {
+	            }).then(function (response) {}).catch(function (error) {
 	                console.log(error);
 	            });
 	        };
@@ -55760,9 +55735,7 @@
 	                method: "POST",
 	                cache: false,
 	                data: { actor: actor, crew: crew },
-	                success: function success(response) {
-	                    // console.log(response);
-	                },
+	                success: function success(response) {},
 	                error: function error(xhr, status, err) {
 	                    console.error(status, err.toString());
 	                }
@@ -55824,9 +55797,7 @@
 
 	            _axios2.default.post('/user/update_ageRating', {
 	                ageRating: this.state.selectedAgeRating
-	            }).then(function (response) {
-	                // console.log(response);
-	            }).catch(function (error) {
+	            }).then(function (response) {}).catch(function (error) {
 	                console.log(error);
 	            });
 	        }
@@ -55846,9 +55817,7 @@
 
 	            _axios2.default.post('/user/update_ageRating', {
 	                ageRating: this.state.selectedAgeRating
-	            }).then(function (response) {
-	                // console.log(response);
-	            }).catch(function (error) {
+	            }).then(function (response) {}).catch(function (error) {
 	                console.log(error);
 	            });
 	        }
@@ -55890,9 +55859,7 @@
 
 	            _axios2.default.post('/user/update_year', {
 	                year: this.state.year
-	            }).then(function (response) {
-	                // console.log(response);
-	            }).catch(function (error) {
+	            }).then(function (response) {}).catch(function (error) {
 	                console.log(error);
 	            });
 	        }
@@ -55927,9 +55894,7 @@
 
 	            _axios2.default.post('/user/update_keywords', {
 	                keywords: this.state.keywords
-	            }).then(function (response) {
-	                // console.log(response);
-	            }).catch(function (error) {
+	            }).then(function (response) {}).catch(function (error) {
 	                console.log(error);
 	            });
 	        }
@@ -55945,9 +55910,7 @@
 
 	            _axios2.default.post('/user/update_keywords', {
 	                keywords: this.state.keywords
-	            }).then(function (response) {
-	                // console.log(response);
-	            }).catch(function (error) {
+	            }).then(function (response) {}).catch(function (error) {
 	                console.log(error);
 	            });
 	        }
@@ -56021,9 +55984,7 @@
 
 	                _axios2.default.post('/user/update_year', {
 	                    year: this.state.year
-	                }).then(function (response) {
-	                    // console.log(response);
-	                }).catch(function (error) {
+	                }).then(function (response) {}).catch(function (error) {
 	                    console.log(error);
 	                });
 	            }

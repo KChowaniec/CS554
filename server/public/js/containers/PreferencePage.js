@@ -115,7 +115,6 @@ class PreferencePage extends React.Component {
         axios.post('/user/update_genre', {
             genreList: this.state.selectedGenre
         }).then(function (response) {
-            // console.log(response);
         }).catch(function (error) {
             console.log(error);
         });
@@ -137,7 +136,6 @@ class PreferencePage extends React.Component {
         axios.post('/user/update_genre', {
             genreList: this.state.selectedGenre
         }).then(function (response) {
-            // console.log(response);
         }).catch(function (error) {
             console.log(error);
         });
@@ -221,7 +219,6 @@ class PreferencePage extends React.Component {
             cache: false,
             data: {actor:actor,crew:crew},
             success: (response) => {
-                // console.log(response);
             },
             error: (xhr, status, err) => {
                 console.error(status, err.toString());
@@ -269,7 +266,6 @@ class PreferencePage extends React.Component {
         axios.post('/user/update_ageRating', {
             ageRating: this.state.selectedAgeRating
         }).then(function (response) {
-            // console.log(response);
         }).catch(function (error) {
             console.log(error);
         });
@@ -290,7 +286,6 @@ class PreferencePage extends React.Component {
         axios.post('/user/update_ageRating', {
             ageRating: this.state.selectedAgeRating
         }).then(function (response) {
-            // console.log(response);
         }).catch(function (error) {
             console.log(error);
         });
@@ -323,7 +318,6 @@ class PreferencePage extends React.Component {
         axios.post('/user/update_year', {
             year: this.state.year
         }).then(function (response) {
-            // console.log(response);
         }).catch(function (error) {
             console.log(error);
         });
@@ -354,7 +348,6 @@ class PreferencePage extends React.Component {
         axios.post('/user/update_keywords', {
             keywords: this.state.keywords
         }).then(function (response) {
-            // console.log(response);
         }).catch(function (error) {
             console.log(error);
         });
@@ -372,7 +365,6 @@ class PreferencePage extends React.Component {
         axios.post('/user/update_keywords', {
             keywords: this.state.keywords
         }).then(function (response) {
-            // console.log(response);
         }).catch(function (error) {
             console.log(error);
         });
@@ -434,7 +426,6 @@ class PreferencePage extends React.Component {
             axios.post('/user/update_year', {
                 year: this.state.year
             }).then(function (response) {
-                // console.log(response);
             }).catch(function (error) {
                 console.log(error);
             });

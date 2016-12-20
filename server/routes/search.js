@@ -1,9 +1,4 @@
-/*Program Title: routes/search.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This script handles all /search routes
-*/
+
 var express = require('express');
 var router = express.Router();
 var data = require("data");

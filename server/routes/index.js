@@ -22,7 +22,4 @@ module.exports = function(app) {
     app.use("/playlist", routerPlaylist);
     app.use("/search", routerSearch);
     app.use("/analyticss", routerAnalytics);
-      // app.use("*", (req, res) => { //any other routes, redirect to user page
-      //   res.redirect("/views/static/index.html");
-      // })
 };

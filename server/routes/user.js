@@ -1,9 +1,3 @@
-/*Program Title: routes/user.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This script handles all user-related routes
-*/
 
 var express = require('express');
 var data = require("data");
@@ -457,7 +451,6 @@ router.post('/user/add_person',function (req, res) {
         redisConnection.off(`get-person-byID-failed:${messageId}`);
 
         clearTimeout(killswitchTimeoutId);
-        console.log(result);
         if (result) {
              return res.json({ success: true, results: result });
         }
