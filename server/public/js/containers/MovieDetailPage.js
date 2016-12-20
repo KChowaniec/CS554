@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import Movie from '../components/Movie.js';
 import axios from 'axios';
+import Snackbar from 'material-ui/Snackbar';
+
 
 class MovieDetailsPage extends React.Component {
-    
-  
+
+
   constructor(props) {
     super(props);
 
@@ -15,7 +17,9 @@ class MovieDetailsPage extends React.Component {
       },
       recs: [],
       reviews: [],
-      internalReviews: [{_id:12345,comment:"",name:""}]
+      internalReviews: [{_id:12345,comment:"",name:""}],
+      errorText:'',
+      errorVisibility: false,
     };
     this.addReview = this.addReview.bind(this);
   }
@@ -43,13 +47,15 @@ class MovieDetailsPage extends React.Component {
         }
       });
   }
-    
+
    addReview () {
         axios.post('/movies/reviews/add/',{movieId:this.state.movie._id,review:document.getElementById("review").value})
             .then(res => {
                 if (res.data.success)
                 {
-                    alert("Your review has been added!");
+                    // alert("Your review has been added!");
+                    this.setState({errorVisibility:true});
+                    this.setState({errorText:'Your review has been added!'});
                     var idtmp = new Date();
                     if (this.state.internalReviews[0]._id == 12345){
                         this.state.internalReviews = [];
@@ -61,19 +67,26 @@ class MovieDetailsPage extends React.Component {
                 else{
                     alert(res.data.error);
                 }
-            });    
+            });
     }
 
   render() {
     return (
-      <Movie
-        error={this.state.error}
-        movie={this.state.movie}
-        recs={this.state.recs}
-        reviews={this.state.reviews}
-        intreviews={this.state.internalReviews}
-        addReview={this.addReview}
-        />
+        <div>
+          <Movie
+            error={this.state.error}
+            movie={this.state.movie}
+            recs={this.state.recs}
+            reviews={this.state.reviews}
+            intreviews={this.state.internalReviews}
+            addReview={this.addReview}
+            />
+          <Snackbar
+          open={this.state.errorVisibility}
+          message={this.state.errorText}
+          autoHideDuration={4000}
+              />
+        </div>
     );
   }
 
