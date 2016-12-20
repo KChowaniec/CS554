@@ -54237,6 +54237,10 @@
 
 	var _axios2 = _interopRequireDefault(_axios);
 
+	var _Snackbar = __webpack_require__(525);
+
+	var _Snackbar2 = _interopRequireDefault(_Snackbar);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var MovieDetailsPage = function (_React$Component) {
@@ -54253,7 +54257,9 @@
 	      movie: {},
 	      recs: [],
 	      reviews: [],
-	      internalReviews: [{ _id: 12345, comment: "", name: "" }]
+	      internalReviews: [{ _id: 12345, comment: "", name: "" }],
+	      errorText: '',
+	      errorVisibility: false
 	    };
 	    _this.addReview = _this.addReview.bind(_this);
 	    return _this;
@@ -54288,7 +54294,9 @@
 
 	      _axios2.default.post('/movies/reviews/add/', { movieId: this.state.movie._id, review: document.getElementById("review").value }).then(function (res) {
 	        if (res.data.success) {
-	          alert("Your review has been added!");
+	          // alert("Your review has been added!");
+	          _this3.setState({ errorVisibility: true });
+	          _this3.setState({ errorText: 'Your review has been added!' });
 	          var idtmp = new Date();
 	          if (_this3.state.internalReviews[0]._id == 12345) {
 	            _this3.state.internalReviews = [];
@@ -54304,14 +54312,23 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(_Movie2.default, {
-	        error: this.state.error,
-	        movie: this.state.movie,
-	        recs: this.state.recs,
-	        reviews: this.state.reviews,
-	        intreviews: this.state.internalReviews,
-	        addReview: this.addReview
-	      });
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(_Movie2.default, {
+	          error: this.state.error,
+	          movie: this.state.movie,
+	          recs: this.state.recs,
+	          reviews: this.state.reviews,
+	          intreviews: this.state.internalReviews,
+	          addReview: this.addReview
+	        }),
+	        _react2.default.createElement(_Snackbar2.default, {
+	          open: this.state.errorVisibility,
+	          message: this.state.errorText,
+	          autoHideDuration: 4000
+	        })
+	      );
 	    }
 	  }]);
 	  return MovieDetailsPage;
