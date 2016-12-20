@@ -281,9 +281,6 @@ class SearchBar extends React.Component {
         if (result[0]) {
             let genreId = result[0].valueKey;
             parameters[field] = genreId;
-        // }
-        // else {
-        //     parameters[field] = '';
         }
         parameters['genreText'] = value;
 

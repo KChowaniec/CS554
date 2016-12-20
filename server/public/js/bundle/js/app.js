@@ -35126,9 +35126,6 @@
 	            if (result[0]) {
 	                var genreId = result[0].valueKey;
 	                parameters[field] = genreId;
-	                // }
-	                // else {
-	                //     parameters[field] = '';
 	            }
 	            parameters['genreText'] = value;
 
