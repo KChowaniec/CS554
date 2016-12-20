@@ -553,20 +553,6 @@ class PreferencePage extends React.Component {
                             </form>
                         </div>
                     </Tab>
-                    <Tab label="Age Rating" >
-                        <div>
-                            <div className={this.state.selectedAgeRating.length?'visible':'hidden'} style={this.styles.wrapper}>
-                                {this.state.selectedAgeRating.map(this.renderSelectedAgeRating,this)}
-                                <hr/>
-                            </div>
-                            <div className={this.state.allAgeRating.length?'visible':'hidden'}>
-                                <h3>Options:</h3>
-                                <div style={this.styles.wrapper} >
-                                    {this.state.allAgeRating.map(this.renderOptionsForAgeRating,this)}
-                                </div>
-                            </div>
-                        </div>
-                    </Tab>
                 </Tabs>
                 <Snackbar
                     open={this.state.errorVisibility}

@@ -35450,7 +35450,7 @@
 	                            _react2.default.createElement(_TextField2.default, {
 	                                type: 'text',
 	                                name: 'keywords',
-	                                floatingLabelText: 'Years',
+	                                floatingLabelText: 'Release Year',
 	                                value: this.state.parameters.years || '',
 	                                onChange: this.handleYearChange })
 	                        ),
@@ -56218,34 +56218,6 @@
 	                                    required: true
 	                                }),
 	                                _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Add', primary: true, style: this.styles.personForm })
-	                            )
-	                        )
-	                    ),
-	                    _react2.default.createElement(
-	                        _Tabs.Tab,
-	                        { label: 'Age Rating' },
-	                        _react2.default.createElement(
-	                            'div',
-	                            null,
-	                            _react2.default.createElement(
-	                                'div',
-	                                { className: this.state.selectedAgeRating.length ? 'visible' : 'hidden', style: this.styles.wrapper },
-	                                this.state.selectedAgeRating.map(this.renderSelectedAgeRating, this),
-	                                _react2.default.createElement('hr', null)
-	                            ),
-	                            _react2.default.createElement(
-	                                'div',
-	                                { className: this.state.allAgeRating.length ? 'visible' : 'hidden' },
-	                                _react2.default.createElement(
-	                                    'h3',
-	                                    null,
-	                                    'Options:'
-	                                ),
-	                                _react2.default.createElement(
-	                                    'div',
-	                                    { style: this.styles.wrapper },
-	                                    this.state.allAgeRating.map(this.renderOptionsForAgeRating, this)
-	                                )
 	                            )
 	                        )
 	                    )

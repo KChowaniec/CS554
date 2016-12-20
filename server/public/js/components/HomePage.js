@@ -582,7 +582,7 @@ class SearchBar extends React.Component {
                             <TextField
                                 type="text"
                                 name="keywords"
-                                floatingLabelText="Years" 
+                                floatingLabelText="Release Year" 
                                 value={this.state.parameters.years || ''} 
                                 onChange={this.handleYearChange} />
                         </div>
