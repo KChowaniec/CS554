@@ -1,9 +1,3 @@
-/*Program Title: data/index.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This module exports the data modules
-*/
 var form = require("./form");
 var users = require("./users");
 var playlist = require("./playlist");

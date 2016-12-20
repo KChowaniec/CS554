@@ -1,9 +1,3 @@
-/*Program Title: tasks/seed.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This script is the seed file to populate the movie collection with some initial movies
-*/
 var dbConnection = require("../config/mongoConnection");
 var users = require("../users");
 var playlist = require("../playlist");

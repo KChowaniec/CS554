@@ -1,9 +1,3 @@
-/*Program Title: data/users.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This module exports methods related to the user collection
-*/
 
 mongoCollections = require("./config/mongoCollections");
 Users = mongoCollections.users;

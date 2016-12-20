@@ -1,9 +1,3 @@
-/*Program Title: data/movie.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This module exports methods related to the movie collection
-*/
 
 mongoCollections = require("./config/mongoCollections");
 movie = mongoCollections.movie;
@@ -88,7 +82,6 @@ var exportedMethods = {
     updateMovieById(id, obj) {
         return movie().then((movieCollection) => {
             return movieCollection.update({ _id: id }, { $set: obj }).then(function () {
-                //console.log(typeof this.getRecipeById(id));
                 return id;
             });
         }).then(id => {
@@ -144,13 +137,6 @@ var exportedMethods = {
               }
                 
             });
-    /*then((movieObj) => {
-                console.log("all");console.log(movieObj.allReviews);
-                return movieObj.allReviews;
-            }).catch((error) => {
-                 console.log("error");
-                return { error: error };
-            });*/
         });
     },
 

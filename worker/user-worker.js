@@ -235,8 +235,6 @@ redisConnection.on('update-person:*', (data, channel) => {
     {
         actor = []
     }
-    console.log("crew",crew)
-    console.log("actor",actor)
     // update actor/crew in preference
     var fullyComposeUser = userData
         .updateActor(userId,actor)
@@ -253,8 +251,6 @@ redisConnection.on('update-person:*', (data, channel) => {
 redisConnection.on('get-preference:*', (data, channel) => {
     var messageId = data.requestId;
     var userId = data.userId;
-
-    console.log(userId);
     //update genre in preference
     var fullyComposeUser = userData
         .getUserById(userId)

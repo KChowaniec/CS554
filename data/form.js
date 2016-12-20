@@ -1,9 +1,3 @@
-/*Program Title: data/form.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This module exports methods related to the search form
-*/
 
 var api = require("./api");
 

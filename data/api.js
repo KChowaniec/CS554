@@ -1,10 +1,3 @@
-/*Program Title: data/api.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This module exports methods related to the movie api
-*/
-
 
 var https = require("https");
 var pathTail = "?api_key=e443ee14fb107feee75db8b448e6a13e";

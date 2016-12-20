@@ -1,9 +1,3 @@
-/*Program Title: data/movie.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This module exports methods related to the movie collection
-*/
 mongoCollections = require("./config/mongoCollections");
 analytics = mongoCollections.analytics;
 var uuid = require('node-uuid');

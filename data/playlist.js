@@ -1,10 +1,3 @@
-/*Program Title: data/playlist.js
-Course: CS546-WS
-Date: 08/18/2016
-Description:
-This module exports methods related to the playlist collection
-*/
-
 
 mongoCollections = require("./config/mongoCollections");
 Playlist = mongoCollections.playlist;
@@ -344,7 +337,6 @@ var exportedMethods = {
             }).then((result) => {
                 if (result.modifiedCount == 0) throw "Could not remove review with id of " + reviewId;
             }).catch((error) => {
-                console.log("error");
                 return { error: error };
 
             });

@@ -4,7 +4,7 @@ const movieRoutes = require("./movie-worker");
 const searchRoutes = require("./search-worker");
 
 var constructorMethod = (app) => {
-    app.use("/playlist", recipeRoutes);
+    app.use("/playlist", playlistRoutes);
     app.use("/user", userRoutes);
     app.use("/movie", movieRoutes);
     app.use("/search", searchRoutes);
