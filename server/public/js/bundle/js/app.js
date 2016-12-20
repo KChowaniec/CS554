@@ -35440,7 +35440,7 @@
 	                                floatingLabelText: 'Movie Name',
 	                                name: 'title',
 	                                type: 'text',
-	                                value: this.state.parameters.movie,
+	                                value: this.state.parameters.movie || '',
 	                                onChange: this.handleMovieNameChange })
 	                        ),
 	                        _react2.default.createElement(
@@ -35450,7 +35450,7 @@
 	                                floatingLabelText: 'Actor',
 	                                name: 'actor',
 	                                type: 'text',
-	                                value: this.state.parameters.actor,
+	                                value: this.state.parameters.actor || '',
 	                                onChange: this.handleActorChange })
 	                        ),
 	                        _react2.default.createElement(
@@ -35460,7 +35460,7 @@
 	                                type: 'text',
 	                                name: 'crew',
 	                                floatingLabelText: 'Crew',
-	                                value: this.state.parameters.crew,
+	                                value: this.state.parameters.crew || '',
 	                                onChange: this.handleCrewChange })
 	                        ),
 	                        _react2.default.createElement(
@@ -35470,7 +35470,7 @@
 	                                type: 'text',
 	                                name: 'keywords',
 	                                floatingLabelText: 'Keywords',
-	                                value: this.state.parameters.keywords,
+	                                value: this.state.parameters.keywords || '',
 	                                onChange: this.handleKeywordChange })
 	                        ),
 	                        _react2.default.createElement(
@@ -35480,7 +35480,7 @@
 	                                type: 'text',
 	                                name: 'keywords',
 	                                floatingLabelText: 'Years',
-	                                value: this.state.parameters.years,
+	                                value: this.state.parameters.years || '',
 	                                onChange: this.handleYearChange })
 	                        ),
 	                        _react2.default.createElement(
@@ -35490,7 +35490,7 @@
 	                                _SelectField2.default,
 	                                {
 	                                    floatingLabelText: 'Genre',
-	                                    value: this.state.parameters.genre,
+	                                    value: this.state.parameters.genre || '',
 	                                    onChange: this.handleGenreChange },
 	                                _react2.default.createElement(_MenuItem2.default, { value: -1, primaryText: 'None' }),
 	                                _react2.default.createElement(_MenuItem2.default, { value: 28, primaryText: 'Action' }),

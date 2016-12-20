@@ -586,7 +586,7 @@ class SearchBar extends React.Component {
                                 floatingLabelText="Movie Name"
                                 name="title"
                                 type="text"
-                                value={this.state.parameters.movie}
+                                value={this.state.parameters.movie || ''}
                                 onChange={this.handleMovieNameChange} />
                         </div>
                         <div className="field-line">
@@ -594,7 +594,7 @@ class SearchBar extends React.Component {
                                 floatingLabelText="Actor"
                                 name="actor"
                                 type="text"
-                                value={this.state.parameters.actor}
+                                value={this.state.parameters.actor || ''}
                                 onChange={this.handleActorChange} />
                         </div>
                         <div className="field-line">
@@ -602,7 +602,7 @@ class SearchBar extends React.Component {
                                 type="text"
                                 name="crew"
                                 floatingLabelText="Crew"
-                                value={this.state.parameters.crew}
+                                value={this.state.parameters.crew || ''}
                                 onChange={this.handleCrewChange} />
                         </div>
                         <div className="field-line">
@@ -610,7 +610,7 @@ class SearchBar extends React.Component {
                                 type="text"
                                 name="keywords"
                                 floatingLabelText="Keywords"
-                                value={this.state.parameters.keywords}
+                                value={this.state.parameters.keywords || ''}
                                 onChange={this.handleKeywordChange} />
                         </div>
                         <div>
@@ -618,13 +618,13 @@ class SearchBar extends React.Component {
                                 type="text"
                                 name="keywords"
                                 floatingLabelText="Years" 
-                                value={this.state.parameters.years} 
+                                value={this.state.parameters.years || ''} 
                                 onChange={this.handleYearChange} />
                         </div>
                         <div className="field-line">
                             <SelectField
                                 floatingLabelText="Genre"
-                                value={this.state.parameters.genre}
+                                value={this.state.parameters.genre || ''}
                                 onChange={this.handleGenreChange}>
                                 <MenuItem value={-1} primaryText="None" />
                                 <MenuItem value={28} primaryText="Action" />
