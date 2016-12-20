@@ -1,12 +1,5 @@
 [
   {
-    "_id": "429457",
-    "title": "Michel",
-    "overview": "Michel wants to go home.",
-    "viewed": false,
-    "image": "/xaIlZPxdqQiHNOIePclj18KQQA.jpg"
-  },
-  {
     "_id": "332654",
     "title": "James Bond: In Service of Nothing",
     "overview": "An aging former super spy struggles to find his place in a self absorbed world without boarders, where service to one's nation is an antiquated concept.",
@@ -33,5 +26,19 @@
     "overview": "An experimental science fiction/drama of parallel realities: the reality of the fictional narrative, the aural component of the film, in which a man is still caught in the chasm of grief years after losing his spouse, and the reality of the filmmaker, whose mother has been a widow since 2012 and whose father's folk art collection, left behind before his death, makes up the visual component of the film.",
     "viewed": false,
     "image": "/txWeENZ1pNnbLqMkRN1x6UpqFRm.jpg"
+  },
+  {
+    "_id": "69270",
+    "title": "Super Hybrid",
+    "overview": "Late one night, a mysterious car is brought into the Chicago police impound garage after a deadly traffic accident. The on-call mechanics soon discover the car has a mind of its own. With hundreds of horsepower and two tons of reinforced steel at its command, it's a seemingly unstoppable killing machine capable of outrunning -- and outwitting -- humans.",
+    "viewed": false,
+    "image": "/qYYr5JZ0EJwGH0AaRfYdnBSj10s.jpg"
+  },
+  {
+    "_id": "396899",
+    "title": "The Girl Without Hands",
+    "overview": "A poor miller gets tricked by the Devil and accidentally sells his daughter for a bit of gold. But Satan can't take her because she's too pure and has wept on her hands. So Satan orders the miller to cut her hands off. It's the beginning of the young girl's journey towards freedom.",
+    "viewed": false,
+    "image": "/rWkknLkAY6u9l4bWYdZiqDucDZT.jpg"
   }
 ]
