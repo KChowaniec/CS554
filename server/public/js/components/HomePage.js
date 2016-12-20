@@ -107,6 +107,11 @@ const dataSourceConfig = {
     value: 'valueKey',
 };
 
+const style = {
+    margin: 12,
+};
+
+
 class SearchBar extends React.Component {
 
     constructor(props) {
@@ -144,14 +149,15 @@ class SearchBar extends React.Component {
                 movie: '',
                 actor: '',
                 director: '',
-                genre: ''
+                genre: '',
+                genreText: ''
             },
             currentPage: 1,
             snackbar_open: false,
             customWidth: {
                 width: 150,
             },
-            searchMessage : 'Search Results will be shown here'
+            searchMessage: 'Search Results will be shown here'
         };
 
         this.handleMovieNameChange = this.handleMovieNameChange.bind(this);
@@ -161,30 +167,26 @@ class SearchBar extends React.Component {
         this.handleKeywordChange = this.handleKeywordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleYearChange = this.handleYearChange.bind(this);
+        this.handleClear = this.handleClear.bind(this);
     }
 
+
     itemClicked(id) {
-        //console.log("itemClicked Clicked");
         if (id !== "next") {
-            //console.log("Item Clicked: " + id);
             browserHistory.push('/movie/' + id);
         } else {
-            //console.log("Next Clicked");
             this.getQueryStr_Movies(true);
         }
     }
 
     additem(index) {
         if (!this.state.data[index].isAdded) {
-            console.log("Add Movie Clicked " + this.state.data[index].id);
             var react_component = this;
             var movie_index = index;
 
             axios.get('/playlist/addmovie/' + this.state.data[index].id)
                 .then(res => {
                     if (res.data.success === true) {
-                        console.log("Movie Added");
-                        //[movie_index].isAdded = true;
                         var arr_search = react_component.state.data;
                         arr_search[movie_index].isAdded = true;
                         react_component.setState({
@@ -193,7 +195,6 @@ class SearchBar extends React.Component {
                         this.setState({ errorVisibility: true });
                         this.setState({ errorText: 'Movie added to your playlist!' });
                     } else {
-                        console.log("Movie NOT Added");
                         this.setState({ errorVisibility: true });
                         this.setState({ errorText: 'There was some problem in adding movie to the playlist.' });
                     }
@@ -204,55 +205,55 @@ class SearchBar extends React.Component {
         }
     }
 
-    handleYearChange(event){
+    handleClear(event) {
         this.setState({
-            currentPage : 1
+            parameters: {
+                movie: '',
+                actor: '',
+                director: '',
+                genre: '',
+                genreText: ''
+            },
+        })
+    }
+    handleYearChange(event) {
+        this.setState({
+            currentPage: 1
         });
         const field = 'years';
-        //console.log('@ search bar : target property : ' + field);
         const parameters = this.state.parameters;
-        //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
 
         this.setState({ parameters });
     }
     handleMovieNameChange(event) {
-        //console.log('@ search bar : handleChange');
         this.setState({
             currentPage: 1
         });
         const field = 'movie';
-        //console.log('@ search bar : target property : ' + field);
         const parameters = this.state.parameters;
-        //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
 
         this.setState({ parameters });
     }
 
     handleActorChange(event) {
-        //console.log('@ search bar : handleChange');
         this.setState({
             currentPage: 1
         });
         const field = 'actor';
-        //console.log('@ search bar : target property : ' + field);
         const parameters = this.state.parameters;
-        //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
 
         this.setState({ parameters });
     }
 
     handleCrewChange(event) {
-        //console.log('@ search bar : handleChange');
         this.setState({
             currentPage: 1
         });
         const field = 'crew';
-        //console.log('@ search bar : target property : ' + field);
         const parameters = this.state.parameters;
-        //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
 
         this.setState({ parameters });
@@ -263,29 +264,34 @@ class SearchBar extends React.Component {
             currentPage: 1
         });
         const field = 'keywords';
-        //console.log('@ search bar : target property : ' + field);
         const parameters = this.state.parameters;
-        //console.log('@ search bar : value : ' + event.target.value);
         parameters[field] = event.target.value;
-        console.log(event.target.value);
         this.setState({ parameters });
     }
 
-    handleGenreChange(event, index, value) {
-        //console.log('@ search bar : handleChange');
+    handleGenreChange(value) {
         this.state.GenreSelected = true;
         this.setState({
             currentPage: 1
         });
         const field = 'genre';
-        //console.log('Genre changed : ' + value);
-        //console.log('Genre changed : ' + index);
         const parameters = this.state.parameters;
-        //console.log('@ search bar : value : ' + event.target.value);
-        parameters[field] = value;
+        var result = genres.filter(function (key) { return (key.textKey === value) });
+
+        if (result[0]) {
+            let genreId = result[0].valueKey;
+            parameters[field] = genreId;
+        }
+        parameters['genreText'] = value;
 
         this.setState({ parameters });
     }
+
+    handleUpdateInput(value) {
+        //map text value to id
+        var result = genres.filter(function (key) { return (key.textKey === value) });
+        let genreId = result[0].valueKey;
+    };
 
 
     applyfilter(playlist, searchResult) {
@@ -293,21 +299,15 @@ class SearchBar extends React.Component {
         var ids = [];
         var filter_indexes = [];
 
-        //console.log('Playlist Ids : ' + ids);
         var index = 0;
         var isFound = false;
 
-        //console.log('Pre Filter');
         searchResult.forEach(function (element) {
-            //if(element.title == "300")
-            //console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
         }, this);
 
         var counter = 0;
         searchResult.forEach(function (search_item) {
-            //console.log('id : ' + element.id + 'is in ids array @ : ' + ids.indexOf(element.id));
             playlist.forEach(function (pl_item) {
-                //console.log('Search Item id : ' + search_item.id + " is compared with pl item id : " + pl_item._id + ' and the result is : ' + search_item.id == pl_item._id );
                 if (search_item.id == pl_item._id)
                     filter_indexes.push(counter);
             }, this);
@@ -318,11 +318,7 @@ class SearchBar extends React.Component {
             searchResult[index].isAdded = true;
         }, this);
 
-        //console.log('filtered Indexes : ' + filter_indexes);
-        //console.log('Post Filter');
         searchResult.forEach(function (element) {
-            //if(element.title == "300")
-            //console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
         }, this);
         return searchResult;
     }
@@ -339,12 +335,11 @@ class SearchBar extends React.Component {
         $.ajax(get_playlist).then(function (res) {
             myplayList = res;
         }, function (err) {
-            console.log("error while getting user playlist : " + JSON.stringify(err));
         });
 
         let title = this.state.parameters.movie;
 
-        let actors = this.state.parameters.actor;  
+        let actors = this.state.parameters.actor;
         var genres = !isNaN(this.state.parameters.genre) && this.state.parameters.genre != -1 ? [this.state.parameters.genre] : [];
         //alert(genres);
         var crew = this.state.parameters.crew;
@@ -353,36 +348,36 @@ class SearchBar extends React.Component {
         var year = this.state.parameters.years;
         var date = new Date();
 
-        try{
-            if(year){
-                if(year.indexOf(',') > -1){
+        try {
+            if (year) {
+                if (year.indexOf(',') > -1) {
                     year = year.split(',')[0];
                 }
-                else{
-                    if(isNaN(year)){
-                        this.setState({errorVisibility:true});
-                        this.setState({errorText:'Please enter a 4 digit number less than 1950'});
+                else {
+                    if (isNaN(year)) {
+                        this.setState({ errorVisibility: true });
+                        this.setState({ errorText: 'Please enter a 4 digit number less than 1950' });
                         return;
-                    }else if(parseInt(year)  < 1950 && parseInt(year) > date.getFullYear()){
-                        this.setState({errorVisibility:true});
-                        this.setState({errorText:'Please enter a valid year between 1950 to ' + date.getFullYear()});
+                    } else if (parseInt(year) < 1950 && parseInt(year) > date.getFullYear()) {
+                        this.setState({ errorVisibility: true });
+                        this.setState({ errorText: 'Please enter a valid year between 1950 to ' + date.getFullYear() });
                         return;
                     }
                 }
             }
-            
 
-        }catch(e){
-            this.setState({errorVisibility:true});
-            this.setState({errorText:'Please enter a 4 digit number less than 1950'});
+
+        } catch (e) {
+            this.setState({ errorVisibility: true });
+            this.setState({ errorText: 'Please enter a 4 digit number less than 1950' });
             return;
         }
-        
+
         var parseActors = [];
         var parseWords = [];
         var parseGenre = genres;
-        var parseCrew = [];       
-        
+        var parseCrew = [];
+
         if (actors) {
             parseActors = actors.split(',');
             if (parseActors.length == 0) {
@@ -412,9 +407,9 @@ class SearchBar extends React.Component {
                 title: title,
                 parseActors: parseActors,
                 parseGenre: parseGenre,
-                parseWords: parseWords,                
+                parseWords: parseWords,
                 parseCrew: parseCrew,
-                year : year
+                year: year
             })
         };
         var react_com = this;
@@ -422,25 +417,18 @@ class SearchBar extends React.Component {
             if (response.success) {
                 var page_index = isNextOperation ? react_com.state.currentPage + 1 : react_com.state.currentPage;
                 react_com.setState({ currentPage: page_index });
-
                 var qry_str = "/search/results/" + page_index + "?" + response.query;
-                console.log(' ************* Query String  ************** ');
-                console.log(qry_str);
-                console.log(' ************* Query String  ************** ');
                 var getSearch_result = {
                     url: qry_str,
                     method: "GET",
                     contentType: "application/json"
                 };
                 $.ajax(getSearch_result).then(function (res) {
-                    //console.log('Movies : ' + JSON.stringify(res));
                     var newArr = res.movies ? res.movies : [];
                     newArr = react_com.applyfilter(myplayList, newArr);
-                    console.log(newArr);
                     var page = parseInt(res.page);
                     var totalPages = parseInt(res.total);
                     if ((totalPages - page) > 0) {
-                        //react_com.setState({ currentPage: page });
                         if (newArr && newArr.length > 0)
                             newArr.push({
                                 id: "next",
@@ -449,12 +437,9 @@ class SearchBar extends React.Component {
                             });
                     }
                     if (isNextOperation) {
-                        console.log('Next Movie operation');
 
                         var exsisting_movies = react_com.state.data;
                         var final_movie_list = [];
-                        console.log('Old movie Count' + exsisting_movies.length);
-                        console.log('New movie Count' + newArr.length);
                         exsisting_movies.forEach(function (exsisting_item) {
                             if (exsisting_item.id != 'next')
                                 final_movie_list.push(exsisting_item);
@@ -467,28 +452,25 @@ class SearchBar extends React.Component {
                     react_com.setState({
                         data: newArr
                     });
-                    if(newArr && newArr.length == 0){		
-                        react_com.setState({		
-                            searchMessage : 'No movie for such criteria'		
-                        });   		
-	                }
+                    if (newArr && newArr.length == 0) {
+                        react_com.setState({
+                            searchMessage: 'No movie for such criteria'
+                        });
+                    }
                 }, function (err2) {
-                    console.log('Get query string returned error  : ' + JSON.stringify(err2));
-                    react_com.setState({		
-	                    searchMessage : 'No movie for such criteria'		
-	                });
+                    react_com.setState({
+                        searchMessage: 'No movie for such criteria'
+                    });
                 });
             } else {
-                console.log('Error  : ' + JSON.stringify(response.error));
-                react_com.setState({		
-                    searchMessage : 'No movie for such criteria'		
+                react_com.setState({
+                    searchMessage: 'No movie for such criteria'
                 });
             }
 
         }, function (err) {
-            console.log('Error in getting query string : ' + JSON.stringify(err));
-            react_com.setState({		
-                searchMessage : 'No movie for such criteria'		
+            react_com.setState({
+                searchMessage: 'No movie for such criteria'
             });
         });
     }
@@ -497,13 +479,6 @@ class SearchBar extends React.Component {
 
         event.preventDefault();
         this.getQueryStr_Movies(false);
-        // *************************************************
-
-
-        // $.ajax(requestConfig).then(function (response) {
-        //     alert('data : ' + JSON.stringify(response));
-        // });
-
     }
 
 
@@ -523,7 +498,6 @@ class SearchBar extends React.Component {
 
     componentDidMount() {
         this.setState({ mounted: true });
-        console.log('Gonning to get user preferences');
         var getuser_pref = {
             url: "/user",
             method: "GET",
@@ -531,37 +505,30 @@ class SearchBar extends React.Component {
         };
         var react_component = this;
         $.ajax(getuser_pref).then(function (res) {
-            console.log('server returned preference with : ' + JSON.stringify(res));
             if (res.user && res.user.preferences) {
                 var pref = res.user.preferences;
-                //
                 var _movies = pref.Title ? react_component.mergeArray(pref.Title) : '';
                 var _actors = pref.Actor ? react_component.mergeArray(pref.Actor) : '';
-                console.log('Actor : ' + _actors);
 
                 var _crew = pref.Crew ? react_component.mergeArray(pref.Crew) : '';
-                
+
                 var _years = pref.releaseYear ? react_component.mergeArray(pref.releaseYear) : '';
                 var _ageratings = pref.ageRating ? react_component.mergeArray(pref.ageRating) : '';
-                
+
                 var _keywords = pref.keywords ? react_component.mergeArray(pref.keywords) : '';
 
-                // ***************************************************************
-                // var _genre = pref.Genre ? genres.filter(x=>{
-                //     x.textKey == pref.Genre[0]
-                // })[0] : genres[0];
-                //var _genre = genres[0];
-                var xgenre = (pref.Genre && pref.Genre.length > 0 && genres.filter( x=> { return x.textKey == pref.Genre[0]}).length > 0) ? genres.filter( x=> { return x.textKey == pref.Genre[0]})[0].valueKey : -1;
-                
-                // ***************************************************************
+                var xgenre = (pref.Genre && pref.Genre.length > 0 && genres.filter(x => { return x.textKey == pref.Genre[0] }).length > 0) ? genres.filter(x => { return x.textKey == pref.Genre[0] })[0].valueKey : -1;
+                var genreText = (pref.Genre && pref.Genre.length > 0 && genres.filter(x => { return x.textKey == pref.Genre[0] }).length > 0) ? genres.filter(x => { return x.textKey == pref.Genre[0] })[0].textKey : '';
+
                 var user_params = {
                     movie: _movies,
-                    actor: _actors, 
-                    genre:xgenre,
-                    keywords : _keywords,
-                    ageRating : _ageratings,
-                    years : _years,
-                    crew : _crew 
+                    actor: _actors,
+                    genre: xgenre,
+                    genreText: genreText,
+                    keywords: _keywords,
+                    ageRating: _ageratings,
+                    years: _years,
+                    crew: _crew
                 };
 
                 react_component.setState({
@@ -569,13 +536,11 @@ class SearchBar extends React.Component {
                 })
             }
         }, function (err) {
-            console.log('server returned error with : ' + err);
         })
 
     }
 
     render() {
-        //console.log('rendering search bar');
         return (
             <div>
                 <Card className="container">
@@ -622,34 +587,20 @@ class SearchBar extends React.Component {
                                 onChange={this.handleYearChange} />
                         </div>
                         <div className="field-line">
-                            <SelectField
+                            <AutoComplete
                                 floatingLabelText="Genre"
-                                value={this.state.parameters.genre || ''}
-                                onChange={this.handleGenreChange}>
-                                <MenuItem value={-1} primaryText="None" />
-                                <MenuItem value={28} primaryText="Action" />
-                                <MenuItem value={12} primaryText="Adventure" />
-                                <MenuItem value={16} primaryText="Animation" />
-                                <MenuItem value={35} primaryText="Comedy" />
-                                <MenuItem value={80} primaryText="Crime" />
-                                <MenuItem value={99} primaryText="Documentary" />
-                                <MenuItem value={10751} primaryText="Family" />
-                                <MenuItem value={14} primaryText="Fantasy" />
-                                <MenuItem value={10769} primaryText="Foreign" />
-                                <MenuItem value={27} primaryText="Horror" />
-                                <MenuItem value={10402} primaryText="Music" />
-                                <MenuItem value={9648} primaryText="Mystery" />
-                                <MenuItem value={10749} primaryText="Romance" />
-                                <MenuItem value={878} primaryText="Science Fiction" />
-                                <MenuItem value={10770} primaryText="TV Movie" />
-                                <MenuItem value={53} primaryText="Thriller" />
-                                <MenuItem value={10752} primaryText="War" />
-                                <MenuItem value={37} primaryText="Western" />
-                            </SelectField>
+                                filter={AutoComplete.fuzzyFilter}
+                                openOnFocus={true}
+                                dataSource={genres}
+                                onUpdateInput={this.handleGenreChange}
+                                dataSourceConfig={dataSourceConfig}
+                                searchText={this.state.parameters.genreText || ''}
+                                />
                         </div>
+
                         <div className="button-line">
-                            <RaisedButton type="submit" label="Search" primary />
-                            <CardText>Save this Search? <RaisedButton type="button" label="Save" secondary /></CardText>
+                            <RaisedButton type="submit" label="Search" primary style={style} />
+                            <RaisedButton onClick={this.handleClear.bind(this)} label="Clear" primary style={style} />
                         </div>
 
                     </form>
@@ -681,13 +632,13 @@ class SearchBar extends React.Component {
                                 <br /><br />
                             </div>
                         </Card>
-                    ) : 
-                      (		
-	                        <Card className="container">		
-	                            <CardTitle title={this.state.searchMessage} />		
-	                        </Card>		
-	                    )
-            }
+                    ) :
+                        (
+                            <Card className="container">
+                                <CardTitle title={this.state.searchMessage} />
+                            </Card>
+                        )
+                    }
 
                 </div>
                 <Snackbar
@@ -706,11 +657,7 @@ const HomePage = withRouter(React.createClass({
     getInitialState: function () {
         return { data: [], mounted: false };
     },
-    // getInitialState : function() {
-    //   console.log('Initial State');
-    //   return {title : "Title is Null"}
-    // },
-    // <Banners playlist={this.state.data}/>);
+
     componentWillReceiveProps: function (nextProps) {
 
         this.setState({ mounted: false });
@@ -722,16 +669,9 @@ const HomePage = withRouter(React.createClass({
 
 
     render: function () {
-        // console.log('In Home Page Component');
-        // return (<Card className="container">
-        //           <CardTitle title={this.state.title} subtitle="This is the home page." />
-        //         </Card>  );
-        //return ( <Banners playlist={playlist_fake}/>);
-        //if(this.state.data) {
         return (<div>
             <SearchBar />
         </div>);
-        //}
     }
 }
 

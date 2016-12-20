@@ -31,7 +31,7 @@ class AccountPage extends React.Component {
         axios.get('/user')
             .then(res => {
                 let userInfo = {};
-                let data = JSON.parse(res.data.user);
+                let data = JSON.parse(JSON.stringify(res.data.user));
                 if (data.profile.email) {
                     userInfo.email = data.profile.email;
                 }
