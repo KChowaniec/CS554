@@ -172,7 +172,7 @@ class PreferencePage extends React.Component {
             data: "value="+this.state.personForm,
             cache: false,
             success: (response) => {
-               this.setState({personSearchResult:response.results});
+                this.setState({personSearchResult:response.results});
             },
             error: (xhr, status, err) => {
                 console.error(status, err.toString());
@@ -451,7 +451,7 @@ class PreferencePage extends React.Component {
     render(){
         return (
             <Card className="container">
-            <h2 className="card-heading">Movie Preferences</h2>
+                <h2 className="card-heading">Movie Preferences</h2>
                 <CardHeader
                     subtitle="these will be used as your movie search defaults"
                 />
@@ -579,3 +579,4 @@ class PreferencePage extends React.Component {
 }
 
 export default PreferencePage;
+
