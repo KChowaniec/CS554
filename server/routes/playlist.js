@@ -27,18 +27,12 @@ router.get('/download', function (req, res) {
 
 // CHANGES BY SUVEER
 router.post('/import', function (req, res) {
-    console.log("In playlist Import");
-    //console.log(req.body.playlist_data);
-    let userId = req.session.userId;
-    // REMOVE IT
-    // if (userId === undefined) {
-    //     userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
-    // }
-    let redisConnection = req
+    var userId = req.session.userId;
+    var redisConnection = req
         .app
         .get("redis");
-    let messageId = uuid.v4();
-    let killswitchTimeoutId = undefined;
+    var messageId = uuid.v4();
+    var killswitchTimeoutId = undefined;
 
     redisConnection.on(`import-playlist-success:${messageId}`, (playlist, channel) => {
 
@@ -90,9 +84,7 @@ router.get("/", (req, res) => {
         redisConnection.off(`playlist-retrieved:${messageId}`);
         redisConnection.off(`playlist-retrieved-failed:${messageId}`);
         clearTimeout(killswitchTimeoutId);
-        //console.log('response from get all playlist ');
         if (playlist && playlist.playlistMovies) {
-            //console.log('Playlist : ' + playlist);
             var viewed = [];
             var unviewed = [];
             if (playlist.playlistMovies) {
@@ -109,7 +101,6 @@ router.get("/", (req, res) => {
             jsonfile.writeFile(file, playlist.playlistMovies, {
                 spaces: 2
             }, function (err) {
-                console.log("Data Written to file");
             })
             res.json(playlist.playlistMovies);
         }
@@ -280,12 +271,6 @@ router.put("/title/:playlistId", (req, res) => {
 router.delete("/delete/:movieId", (req, res) => {
     var movieId = req.params.movieId;
     var userId = req.session.userId;
-    console.log("Delete from playlist route: " + movieId);
-    console.log("User Id : " + userId);
-    // REMOVE IT
-    // if(userId === undefined){
-    //     userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
-    // }
     var redisConnection = req.app.get("redis");
     var messageId = uuid.v4();
     var killswitchTimeoutId = undefined;
@@ -332,13 +317,7 @@ router.delete("/delete/:movieId", (req, res) => {
 //ADD MOVIE TO PLAYLIST
 router.get("/addmovie/:movieId", (req, res) => {
     var movieId = req.params.movieId;
-    //Hardcoded the UserID to add movie to playlist using POSTMAN
     var userId = req.session.userId;
-    // Remove it
-    // if(userId === undefined){
-    //     userId = "b7cda109-ecf2-4f17-b2ac-3b58e529a850";
-    // }
-    console.log("User ID - " + req.session.userId);
     var redisConnection = req.app.get("redis");
     var messageId = uuid.v4();
     var killswitchTimeoutId = undefined;

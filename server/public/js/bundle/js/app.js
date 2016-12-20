@@ -34904,6 +34904,9 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var genres = [{
+	    textKey: 'None',
+	    valueKey: -1
+	}, {
 	    textKey: 'Action',
 	    valueKey: 28
 	}, {
@@ -35016,8 +35019,8 @@
 	            snackbar_open: false,
 	            customWidth: {
 	                width: 150
-	            }
-
+	            },
+	            searchMessage: 'Search Results will be shown here'
 	        };
 
 	        _this.handleMovieNameChange = _this.handleMovieNameChange.bind(_this);
@@ -35026,19 +35029,16 @@
 	        _this.handleGenreChange = _this.handleGenreChange.bind(_this);
 	        _this.handleKeywordChange = _this.handleKeywordChange.bind(_this);
 	        _this.handleSubmit = _this.handleSubmit.bind(_this);
-
+	        _this.handleYearChange = _this.handleYearChange.bind(_this);
 	        return _this;
 	    }
 
 	    (0, _createClass3.default)(SearchBar, [{
 	        key: 'itemClicked',
 	        value: function itemClicked(id) {
-	            //console.log("itemClicked Clicked");
 	            if (id !== "next") {
-	                //console.log("Item Clicked: " + id);
 	                _reactRouter.browserHistory.push('/movie/' + id);
 	            } else {
-	                //console.log("Next Clicked");
 	                this.getQueryStr_Movies(true);
 	            }
 	        }
@@ -35048,14 +35048,11 @@
 	            var _this2 = this;
 
 	            if (!this.state.data[index].isAdded) {
-	                console.log("Add Movie Clicked " + this.state.data[index].id);
 	                var react_component = this;
 	                var movie_index = index;
 
 	                _axios2.default.get('/playlist/addmovie/' + this.state.data[index].id).then(function (res) {
 	                    if (res.data.success === true) {
-	                        console.log("Movie Added");
-	                        //[movie_index].isAdded = true;
 	                        var arr_search = react_component.state.data;
 	                        arr_search[movie_index].isAdded = true;
 	                        react_component.setState({
@@ -35064,7 +35061,6 @@
 	                        _this2.setState({ errorVisibility: true });
 	                        _this2.setState({ errorText: 'Movie added to your playlist!' });
 	                    } else {
-	                        console.log("Movie NOT Added");
 	                        _this2.setState({ errorVisibility: true });
 	                        _this2.setState({ errorText: 'There was some problem in adding movie to the playlist.' });
 	                    }
@@ -35075,16 +35071,25 @@
 	            }
 	        }
 	    }, {
+	        key: 'handleYearChange',
+	        value: function handleYearChange(event) {
+	            this.setState({
+	                currentPage: 1
+	            });
+	            var field = 'years';
+	            var parameters = this.state.parameters;
+	            parameters[field] = event.target.value;
+
+	            this.setState({ parameters: parameters });
+	        }
+	    }, {
 	        key: 'handleMovieNameChange',
 	        value: function handleMovieNameChange(event) {
-	            //console.log('@ search bar : handleChange');
 	            this.setState({
 	                currentPage: 1
 	            });
 	            var field = 'movie';
-	            //console.log('@ search bar : target property : ' + field);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = event.target.value;
 
 	            this.setState({ parameters: parameters });
@@ -35092,14 +35097,11 @@
 	    }, {
 	        key: 'handleActorChange',
 	        value: function handleActorChange(event) {
-	            //console.log('@ search bar : handleChange');
 	            this.setState({
 	                currentPage: 1
 	            });
 	            var field = 'actor';
-	            //console.log('@ search bar : target property : ' + field);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = event.target.value;
 
 	            this.setState({ parameters: parameters });
@@ -35107,14 +35109,11 @@
 	    }, {
 	        key: 'handleCrewChange',
 	        value: function handleCrewChange(event) {
-	            //console.log('@ search bar : handleChange');
 	            this.setState({
 	                currentPage: 1
 	            });
 	            var field = 'crew';
-	            //console.log('@ search bar : target property : ' + field);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = event.target.value;
 
 	            this.setState({ parameters: parameters });
@@ -35126,26 +35125,19 @@
 	                currentPage: 1
 	            });
 	            var field = 'keywords';
-	            //console.log('@ search bar : target property : ' + field);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = event.target.value;
-	            console.log(event.target.value);
 	            this.setState({ parameters: parameters });
 	        }
 	    }, {
 	        key: 'handleGenreChange',
 	        value: function handleGenreChange(event, index, value) {
-	            //console.log('@ search bar : handleChange');
 	            this.state.GenreSelected = true;
 	            this.setState({
 	                currentPage: 1
 	            });
 	            var field = 'genre';
-	            //console.log('Genre changed : ' + value);
-	            //console.log('Genre changed : ' + index);
 	            var parameters = this.state.parameters;
-	            //console.log('@ search bar : value : ' + event.target.value);
 	            parameters[field] = value;
 
 	            this.setState({ parameters: parameters });
@@ -35157,21 +35149,14 @@
 	            var ids = [];
 	            var filter_indexes = [];
 
-	            //console.log('Playlist Ids : ' + ids);
 	            var index = 0;
 	            var isFound = false;
 
-	            //console.log('Pre Filter');
-	            searchResult.forEach(function (element) {
-	                //if(element.title == "300")
-	                //console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
-	            }, this);
+	            searchResult.forEach(function (element) {}, this);
 
 	            var counter = 0;
 	            searchResult.forEach(function (search_item) {
-	                //console.log('id : ' + element.id + 'is in ids array @ : ' + ids.indexOf(element.id));
 	                playlist.forEach(function (pl_item) {
-	                    //console.log('Search Item id : ' + search_item.id + " is compared with pl item id : " + pl_item._id + ' and the result is : ' + search_item.id == pl_item._id );
 	                    if (search_item.id == pl_item._id) filter_indexes.push(counter);
 	                }, this);
 	                counter++;
@@ -35181,12 +35166,7 @@
 	                searchResult[index].isAdded = true;
 	            }, this);
 
-	            //console.log('filtered Indexes : ' + filter_indexes);
-	            //console.log('Post Filter');
-	            searchResult.forEach(function (element) {
-	                //if(element.title == "300")
-	                //console.log('Id: ' + element.id + ' title' + element.title+ ' isAdded' + element.isAdded);
-	            }, this);
+	            searchResult.forEach(function (element) {}, this);
 	            return searchResult;
 	        }
 	    }, {
@@ -35201,21 +35181,40 @@
 
 	            $.ajax(get_playlist).then(function (res) {
 	                myplayList = res;
-	            }, function (err) {
-	                console.log("error while getting user playlist : " + (0, _stringify2.default)(err));
-	            });
+	            }, function (err) {});
 
 	            var title = this.state.parameters.movie;
 
 	            var actors = this.state.parameters.actor;
-
-	            if (!isNaN(this.state.parameters.genre)) alert('Selected : ' + this.state.parameters.genre);else alert('Not Selected : ');
-
-	            var genres = !isNaN(this.state.parameters.genre) ? [this.state.parameters.genre] : [];
+	            var genres = !isNaN(this.state.parameters.genre) && this.state.parameters.genre != -1 ? [this.state.parameters.genre] : [];
 	            //alert(genres);
 	            var crew = this.state.parameters.crew;
 
 	            var keywords = this.state.parameters.keywords;
+	            var year = this.state.parameters.years;
+	            var date = new Date();
+
+	            try {
+	                if (year) {
+	                    if (year.indexOf(',') > -1) {
+	                        year = year.split(',')[0];
+	                    } else {
+	                        if (isNaN(year)) {
+	                            this.setState({ errorVisibility: true });
+	                            this.setState({ errorText: 'Please enter a 4 digit number less than 1950' });
+	                            return;
+	                        } else if (parseInt(year) < 1950 && parseInt(year) > date.getFullYear()) {
+	                            this.setState({ errorVisibility: true });
+	                            this.setState({ errorText: 'Please enter a valid year between 1950 to ' + date.getFullYear() });
+	                            return;
+	                        }
+	                    }
+	                }
+	            } catch (e) {
+	                this.setState({ errorVisibility: true });
+	                this.setState({ errorText: 'Please enter a 4 digit number less than 1950' });
+	                return;
+	            }
 
 	            var parseActors = [];
 	            var parseWords = [];
@@ -35252,7 +35251,8 @@
 	                    parseActors: parseActors,
 	                    parseGenre: parseGenre,
 	                    parseWords: parseWords,
-	                    parseCrew: parseCrew
+	                    parseCrew: parseCrew,
+	                    year: year
 	                })
 	            };
 	            var react_com = this;
@@ -35262,23 +35262,17 @@
 	                    react_com.setState({ currentPage: page_index });
 
 	                    var qry_str = "/search/results/" + page_index + "?" + response.query;
-	                    console.log(' ************* Query String  ************** ');
-	                    console.log(qry_str);
-	                    console.log(' ************* Query String  ************** ');
 	                    var getSearch_result = {
 	                        url: qry_str,
 	                        method: "GET",
 	                        contentType: "application/json"
 	                    };
 	                    $.ajax(getSearch_result).then(function (res) {
-	                        //console.log('Movies : ' + JSON.stringify(res));
 	                        var newArr = res.movies ? res.movies : [];
 	                        newArr = react_com.applyfilter(myplayList, newArr);
-	                        console.log(newArr);
 	                        var page = parseInt(res.page);
 	                        var totalPages = parseInt(res.total);
 	                        if (totalPages - page > 0) {
-	                            //react_com.setState({ currentPage: page });
 	                            if (newArr && newArr.length > 0) newArr.push({
 	                                id: "next",
 	                                poster_path: "/public/images/next.png",
@@ -35286,12 +35280,9 @@
 	                            });
 	                        }
 	                        if (isNextOperation) {
-	                            console.log('Next Movie operation');
 
 	                            var exsisting_movies = react_com.state.data;
 	                            var final_movie_list = [];
-	                            console.log('Old movie Count' + exsisting_movies.length);
-	                            console.log('New movie Count' + newArr.length);
 	                            exsisting_movies.forEach(function (exsisting_item) {
 	                                if (exsisting_item.id != 'next') final_movie_list.push(exsisting_item);
 	                            }, this);
@@ -35303,14 +35294,25 @@
 	                        react_com.setState({
 	                            data: newArr
 	                        });
+	                        if (newArr && newArr.length == 0) {
+	                            react_com.setState({
+	                                searchMessage: 'No movie for such criteria'
+	                            });
+	                        }
 	                    }, function (err2) {
-	                        console.log('Get query string returned error  : ' + (0, _stringify2.default)(err2));
+	                        react_com.setState({
+	                            searchMessage: 'No movie for such criteria'
+	                        });
 	                    });
 	                } else {
-	                    console.log('Error  : ' + (0, _stringify2.default)(response.error));
+	                    react_com.setState({
+	                        searchMessage: 'No movie for such criteria'
+	                    });
 	                }
 	            }, function (err) {
-	                console.log('Error in getting query string : ' + (0, _stringify2.default)(err));
+	                react_com.setState({
+	                    searchMessage: 'No movie for such criteria'
+	                });
 	            });
 	        }
 	    }, {
@@ -35319,12 +35321,6 @@
 
 	            event.preventDefault();
 	            this.getQueryStr_Movies(false);
-	            // *************************************************
-
-
-	            // $.ajax(requestConfig).then(function (response) {
-	            //     alert('data : ' + JSON.stringify(response));
-	            // });
 	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
@@ -35345,7 +35341,6 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            this.setState({ mounted: true });
-	            console.log('Gonning to get user preferences');
 	            var getuser_pref = {
 	                url: "/user",
 	                method: "GET",
@@ -35353,30 +35348,29 @@
 	            };
 	            var react_component = this;
 	            $.ajax(getuser_pref).then(function (res) {
-	                console.log('server returned preference with : ' + (0, _stringify2.default)(res));
 	                if (res.user && res.user.preferences) {
 	                    var pref = res.user.preferences;
-	                    //
 	                    var _movies = pref.Title ? react_component.mergeArray(pref.Title) : '';
 	                    var _actors = pref.Actor ? react_component.mergeArray(pref.Actor) : '';
 
 	                    var _crew = pref.Crew ? react_component.mergeArray(pref.Crew) : '';
+
 	                    var _years = pref.releaseYear ? react_component.mergeArray(pref.releaseYear) : '';
 	                    var _ageratings = pref.ageRating ? react_component.mergeArray(pref.ageRating) : '';
-	                    var _directors = pref.director ? react_component.mergeArray(pref.director) : '';
+
 	                    var _keywords = pref.keywords ? react_component.mergeArray(pref.keywords) : '';
 
-	                    // ***************************************************************
-	                    // var _genre = pref.Genre ? genres.filter(x=>{
-	                    //     x.textKey == pref.Genre[0]
-	                    // })[0] : genres[0];
-	                    var _genre = genres[0];
+	                    var xgenre = pref.Genre && pref.Genre.length > 0 && genres.filter(function (x) {
+	                        return x.textKey == pref.Genre[0];
+	                    }).length > 0 ? genres.filter(function (x) {
+	                        return x.textKey == pref.Genre[0];
+	                    })[0].valueKey : -1;
+
 	                    // ***************************************************************
 	                    var user_params = {
 	                        movie: _movies,
 	                        actor: _actors,
-	                        director: _directors,
-	                        genre: _genre,
+	                        genre: xgenre,
 	                        keywords: _keywords,
 	                        ageRating: _ageratings,
 	                        years: _years,
@@ -35387,16 +35381,13 @@
 	                        parameters: user_params
 	                    });
 	                }
-	            }, function (err) {
-	                console.log('server returned error with : ' + err);
-	            });
+	            }, function (err) {});
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this3 = this;
 
-	            //console.log('rendering search bar');
 	            return _react2.default.createElement(
 	                'div',
 	                null,
@@ -35453,6 +35444,16 @@
 	                        ),
 	                        _react2.default.createElement(
 	                            'div',
+	                            null,
+	                            _react2.default.createElement(_TextField2.default, {
+	                                type: 'text',
+	                                name: 'keywords',
+	                                floatingLabelText: 'Release Year',
+	                                value: this.state.parameters.years,
+	                                onChange: this.handleYearChange })
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
 	                            { className: 'field-line' },
 	                            _react2.default.createElement(
 	                                _SelectField2.default,
@@ -35460,6 +35461,7 @@
 	                                    floatingLabelText: 'Genre',
 	                                    value: this.state.parameters.genre,
 	                                    onChange: this.handleGenreChange },
+	                                _react2.default.createElement(_MenuItem2.default, { value: -1, primaryText: 'None' }),
 	                                _react2.default.createElement(_MenuItem2.default, { value: 28, primaryText: 'Action' }),
 	                                _react2.default.createElement(_MenuItem2.default, { value: 12, primaryText: 'Adventure' }),
 	                                _react2.default.createElement(_MenuItem2.default, { value: 16, primaryText: 'Animation' }),
@@ -35483,13 +35485,7 @@
 	                        _react2.default.createElement(
 	                            'div',
 	                            { className: 'button-line' },
-	                            _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Search', primary: true }),
-	                            _react2.default.createElement(
-	                                _Card.CardText,
-	                                null,
-	                                'Save this Search? ',
-	                                _react2.default.createElement(_RaisedButton2.default, { type: 'button', label: 'Save', secondary: true })
-	                            )
+	                            _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Search', primary: true })
 	                        )
 	                    )
 	                ),
@@ -35498,7 +35494,7 @@
 	                    null,
 	                    _react2.default.createElement('br', null),
 	                    _react2.default.createElement('br', null),
-	                    this.state.data.length > 0 && _react2.default.createElement(
+	                    this.state.data.length > 0 ? _react2.default.createElement(
 	                        _Card.Card,
 	                        { className: 'container' },
 	                        _react2.default.createElement(_Card.CardTitle, { title: 'Search Results' }),
@@ -35532,6 +35528,10 @@
 	                            _react2.default.createElement('br', null),
 	                            _react2.default.createElement('br', null)
 	                        )
+	                    ) : _react2.default.createElement(
+	                        _Card.Card,
+	                        { className: 'container' },
+	                        _react2.default.createElement(_Card.CardTitle, { title: this.state.searchMessage })
 	                    )
 	                ),
 	                _react2.default.createElement(_Snackbar2.default, {
@@ -35552,11 +35552,7 @@
 	    getInitialState: function getInitialState() {
 	        return { data: [], mounted: false };
 	    },
-	    // getInitialState : function() {
-	    //   console.log('Initial State');
-	    //   return {title : "Title is Null"}
-	    // },
-	    // <Banners playlist={this.state.data}/>);
+
 	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
 	        this.setState({ mounted: false });
@@ -35567,18 +35563,11 @@
 	    },
 
 	    render: function render() {
-	        // console.log('In Home Page Component');
-	        // return (<Card className="container">
-	        //           <CardTitle title={this.state.title} subtitle="This is the home page." />
-	        //         </Card>  );
-	        //return ( <Banners playlist={playlist_fake}/>);
-	        //if(this.state.data) {
 	        return _react2.default.createElement(
 	            'div',
 	            null,
 	            _react2.default.createElement(SearchBar, null)
 	        );
-	        //}
 	    }
 	}));
 
@@ -53031,7 +53020,6 @@
 	    }, {
 	        key: 'itemClicked',
 	        value: function itemClicked(id) {
-	            console.log("Item Clicked: " + id);
 	            _reactRouter.browserHistory.push('/movie/' + id);
 	        }
 	    }, {
@@ -53039,7 +53027,6 @@
 	        value: function deleteItem(index) {
 	            var _this3 = this;
 
-	            console.log("delete movie : " + index);
 	            _axios2.default.delete('/playlist/delete/' + this.state.tilesData[index]._id).then(function (res) {
 	                if (res.data.success === true) {
 	                    return _axios2.default.get('/playlist');
@@ -53062,7 +53049,6 @@
 	        key: 'onFormSubmit',
 	        value: function onFormSubmit(event) {
 	            event.preventDefault();
-	            console.log("Form Submit Clicked");
 	            var self = this;
 	            var reader = new FileReader();
 	            reader.onload = function (upload) {
@@ -53077,7 +53063,6 @@
 	                    dataType: "json",
 	                    contentType: "application/json"
 	                }).then(function (res) {
-	                    //console.log(res);
 	                    if (res.data.success === true) {
 	                        return _axios2.default.get('/playlist');
 	                    }
@@ -53087,16 +53072,9 @@
 	                        import_open: false
 	                    });
 	                });
-	                /*console.log(JSON.parse(contents));
-	                self.setState({
-	                    tilesData: JSON.parse(contents),
-	                    import_open: false
-	                })*/
 	            };
 
-	            reader.onloadend = function () {
-	                console.log("in load Ended");
-	            };
+	            reader.onloadend = function () {};
 	            if (this.state.import_file) {
 	                reader.readAsText(this.state.import_file);
 	            }
@@ -53104,13 +53082,11 @@
 	    }, {
 	        key: 'handleOpen',
 	        value: function handleOpen() {
-	            console.log("Import Dialog opened : " + this.state.import_open);
 	            this.setState({ import_open: true });
 	        }
 	    }, {
 	        key: 'handleOpen_empty',
 	        value: function handleOpen_empty() {
-	            console.log("empty Import Dialog opened : " + this.state.import_open);
 	            this.setState({ import_open: true });
 	        }
 	    }, {
@@ -58011,7 +57987,7 @@
 	            //prepopulate user info 
 	            _axios2.default.get('/user').then(function (res) {
 	                var userInfo = {};
-	                var data = JSON.parse(res.data.user);
+	                var data = JSON.parse((0, _stringify2.default)(res.data.user));
 	                if (data.profile.email) {
 	                    userInfo.email = data.profile.email;
 	                }

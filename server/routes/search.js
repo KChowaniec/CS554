@@ -65,45 +65,13 @@ router.get("/preferences", (req, res) => {
 
 //post search criteria
 router.post("/", (req, res) => {
-  
-    
 
-    
-    // console.log(' *************************************** ');
-    // console.log('getting query string');
-    // var title = req.query.title ? req.query.title : "";
-    // console.log('Title : ' + title);
-
-    // var parseActors = req.query.actor ? [req.query.actor.split(',')] : "";
-    // console.log('Actor : ' + parseActors);
-    
-    // var parseGenre = req.query.genre ? [req.query.genre.split(',')] : "";
-    // console.log('genre : ' + parseGenre);
-    
-    // var parseCrew = req.query.crew ? req.query.crew.split(',') : "";
-    // console.log('Crew : ' + parseCrew);
-    // //var crews = req.query.crew ? req.query.crew.split(',') : '';
-    
-    
-    // var rating = req.query.rating ? req.query.rating : "";
-    // console.log('Rating : ' + rating);
-    
-    // var evaluation = req.query.evaluation ? req.query.evaluation : "";
-    // console.log('Evaluation : ' + evaluation);
-    
-    // var year = req.query.releaseYear ? req.query.releaseYear : "";
-    // console.log('Year : ' + year);
-    
-    // var parseWords = req.query.keywords ? req.query.keywords.split(',') : "";
-    // console.log('keywords : ' + parseWords);
-      
     var title = req.body.title;
     var parseActors = req.body.parseActors;
     var parseGenre = req.body.parseGenre;
     var parseCrew = req.body.parseCrew;
-    
+    var year = req.body.year;
     var parseWords = req.body.parseWords;
-
     var queryData = {
         title: title,
         actors: parseActors,
@@ -111,10 +79,9 @@ router.post("/", (req, res) => {
         crew: parseCrew,
         rating: '',
         evaluation: '',
-        year: '',
+        year: year,
         keywords: parseWords
     };
-    console.log()
     var redisConnection = req
         .app
         .get("redis");
@@ -123,8 +90,6 @@ router.post("/", (req, res) => {
 
 
     redisConnection.on(`query-created:${messageId}`, (queryString, channel) => {
-        //console.log('@get search query : query-created ');
-        console.log('Query String : ' + queryString);
         redisConnection.off(`query-created:${messageId}`);
         redisConnection.off(`query-created-failed:${messageId}`);
 
@@ -138,7 +103,6 @@ router.post("/", (req, res) => {
     });
 
     redisConnection.on(`query-created-failed:${messageId}`, (error, channel) => {
-        console.log('@get search query : query-created-failed ' + JSON.stringify(error));
 
         redisConnection.off(`query-created:${messageId}`);
         redisConnection.off(`query-created-failed:${messageId}`);
@@ -154,7 +118,6 @@ router.post("/", (req, res) => {
             .status(500)
             .json({ error: "Timeout error" })
     }, 5000);
-    console.log('Redirecting worker : ' + messageId);
     redisConnection.emit(`create-query:${messageId}`, {
         requestId: messageId,
         query: queryData,
@@ -164,53 +127,21 @@ router.post("/", (req, res) => {
 
 //call search methods using criteria passed in
 router.get("/results/:pageId*", (req, res) => {
-    console.log(' *************************************** ');
-    console.log(' Getting query results ');
-    console.log(' Query from client : ' + JSON.stringify(req.query) );
     var page = req.params.pageId;
-    //console.log('page id : ' + page);
     var queryString = "";
     var title = req.query.title ? req.query.title : "";
-    //console.log('title in Query String : ' + req.query.title);
     if (req.query.title) {
         queryString = req.query.title ? ("title=" + req.query.title) : "";
-        //console.log('Query String : ' + queryString);
     } else {
-        // console.log('Query : ' + JSON.stringify(req.query));
-        // console.log('Query : ' + JSON.stringify(req.query.with_genres));
-        
-        // queryString += req.query.with_cast ? ("with_cast=" + req.query.with_cast + '&') : "";
-        // queryString += req.query.director ? ("director=" + req.query.director + '&') : "";
-        // console.log(' *********************************** Genre : ' + req.query.genre );
-        // queryString += req.query.with_genres ? ("with_genres=" + req.query.with_genres + '&') : "";
-        // queryString += req.query.keywords ? ("keywords=" + req.query.keywords + '&') : "";
-        // queryString += req.query.crew ? ("crew=" + req.query.crew + '&') : "";
-        
-        // queryString += req.query["primary_release_date.lte"] ? ("primary_release_date.lte=" + req.query["primary_release_date.lte"] + '&') : "";
-
-        // queryString += req.query.sort_by ? ("sort_by=" + req.query.sort_by + '&') : "";
-        // queryString = queryString.charAt(queryString.length-1) == '&' ? queryString.substr(0,queryString.length-1) : queryString;
-        
-        // if(req.query.director)
-        //     queryString = req.query.title ? ("director=" + req.query.director + '&') : "";
-
-        // var queryData = (url.parse(xss(req.url), true).query);
-        // console.log('Query String : ' + JSON.stringify(queryData));
-
         //determine search criteria string
 
         var queryData = req.query
         Object.keys(queryData).forEach(function (key, index) {
             queryString = queryString + "&" + key + "=" + queryData[key].split(',');
         });
-        console.log(' *************************** ');
-        console.log(' Query String : ' + queryString);
-        console.log(' *************************** ');
     }
 
 
-
-    
     var redisConnection = req
         .app
         .get("redis");
@@ -219,8 +150,7 @@ router.get("/results/:pageId*", (req, res) => {
 
 
     redisConnection.on(`movies-retrieved:${messageId}`, (results, channel) => {
-        var count = results.movielist ?  results.movielist.length : 0;
-        console.log('@movies-retrieved with results : ' + count );
+        var count = results.movielist ? results.movielist.length : 0;
         redisConnection.off(`movies-retrieved:${messageId}`);
         redisConnection.off(`movies-retrieved-failed:${messageId}`);
 
@@ -230,12 +160,12 @@ router.get("/results/:pageId*", (req, res) => {
         if (results) {
 
             return res.json(
-                    { 
-                        success: true, 
-                        page: results.pages, 
-                        movies: results.movielist, 
-                        total: results.total 
-                    });
+                {
+                    success: true,
+                    page: results.pages,
+                    movies: results.movielist,
+                    total: results.total
+                });
         }
     });
 

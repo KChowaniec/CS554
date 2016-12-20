@@ -64,12 +64,10 @@ class Playlist extends React.Component {
     }
 
     itemClicked(id) {
-        console.log("Item Clicked: " + id);
         browserHistory.push('/movie/' + id);
     }
 
     deleteItem(index) {
-        console.log("delete movie : " + index)
         axios.delete('/playlist/delete/' + this.state.tilesData[index]._id)
             .then(res => {
                 if (res.data.success === true) {
@@ -92,7 +90,6 @@ class Playlist extends React.Component {
 
     onFormSubmit(event) {
         event.preventDefault();
-        console.log("Form Submit Clicked");
         let self = this;
         var reader = new FileReader();
         reader.onload = function (upload) {
@@ -107,7 +104,6 @@ class Playlist extends React.Component {
                 dataType: "json",
                 contentType: "application/json",
             }).then((res) => {
-                //console.log(res);
                 if (res.data.success === true) {
                     return axios.get('/playlist');
                 }
@@ -117,15 +113,9 @@ class Playlist extends React.Component {
                     import_open: false
                 });
             });
-            /*console.log(JSON.parse(contents));
-            self.setState({
-                tilesData: JSON.parse(contents),
-                import_open: false
-            })*/
         }
 
         reader.onloadend = function () {
-            console.log("in load Ended")
         }
         if (this.state.import_file) {
             reader.readAsText(this.state.import_file);
@@ -134,11 +124,9 @@ class Playlist extends React.Component {
 
     }
     handleOpen() {
-        console.log("Import Dialog opened : " + this.state.import_open);
         this.setState({ import_open: true });
     }
     handleOpen_empty() {
-        console.log("empty Import Dialog opened : " + this.state.import_open);
         this.setState({ import_open: true });
     }
 
